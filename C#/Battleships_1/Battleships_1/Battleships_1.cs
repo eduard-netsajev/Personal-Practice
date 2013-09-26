@@ -76,8 +76,9 @@ namespace Battleships_1
         public static int[,] EnemyField = new int[12, 12];//2-rank array with opponent's field data
         public static int PlayerRandoms{ get; set; } //Holds information whether player randoms his ships or not
         public static int DamageDone { get; set; } //Hold information whether enemy has hit your ship (atleast 1 cell is red - damaged) or not
-        public static int x = -20;
+        public static int x = -1;
         public static int TurnBack = 0;
+        public static int level = 0;
     }
 
     class Battleships_1
@@ -793,10 +794,6 @@ namespace Battleships_1
                 game.Phase = 4;
                 
             }
-
-            //It probably would be cool to have a function dedicated specially to the fields drawing
-            //Maybe make 1 function for own field drawing and 2nd function for enemy field drawing
-
             //Creating two fields, 1 for the player, 2nd for the opponent
             Console.Title = "Battleships!"; // When project is finished, add " by NS-Projects"
             // Welcoming message
@@ -817,7 +814,13 @@ namespace Battleships_1
             {
                 goto EnemyShips;
             }
-
+            if (game.level == 0)
+            {
+                Console.Write("\n Choose a level on a scale from Normal to Impossible (1-4):");
+                ReadShipSize();
+                game.level = coord.ShipSize;
+                coord.ShipSize = 0;
+            }
             if (game.PlayerRandoms == 1)
             {
                 Console.Write("\n Do you want to randomize (press R) your ships or place them manually (press M):");
@@ -1299,7 +1302,7 @@ namespace Battleships_1
                 }
                 else {
 
-                    if (game.x == -20)
+                    if (game.x == -1)
                     {
                         game.x = RandomDirection();
                     }
@@ -1512,7 +1515,7 @@ namespace Battleships_1
                                 ShipElimination(1);
                                 game.DamageDone = 0;
                                 game.TurnBack = 0;
-                                game.x = -20;
+                                game.x = -1;
                                 //Checking whether player is alive
                                 PlayerIsAlive = 0;
                                 for (int y = 0; y < 12; y++)
@@ -1544,7 +1547,15 @@ namespace Battleships_1
                     //Missed shot
                     if (game.MyField[coord.EnemyShootY, coord.EnemyShootX] == 0)
                     {
-                        game.MyField[coord.EnemyShootY, coord.EnemyShootX] = 1;
+                        Random rnd = new Random(); //Difficulty level is right here
+                        if ((game.level - 1) * 10 < rnd.Next(1, 101)) //Every 1 level gives AI a 10% chance on missing to reroll
+                        {
+                            game.MyField[coord.EnemyShootY, coord.EnemyShootX] = 1;  //Without actually shooting the field
+                        }
+                        else
+                        {
+                            goto EnemyTurn;
+                        }
                     }
 
                     if (game.DamageDone == 1)
