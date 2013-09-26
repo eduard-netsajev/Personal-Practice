@@ -1058,7 +1058,6 @@ namespace Battleships_1
         }
 
             goto start;
-            //Rerandomize ships?
 
             EnemyShips:
             if (game.Phase > 2)
