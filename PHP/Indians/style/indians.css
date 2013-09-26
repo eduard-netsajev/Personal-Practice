@@ -1,0 +1,33 @@
+body {
+	font-family: Arial;
+	font-size: 11px;
+}
+
+table td {
+	vertical-align:bottom;	
+	padding: 0 5px;
+}
+
+div {
+	background-color:#C2E3FC;
+	width: 30px;
+}
+
+.theOne {
+	background-color:#93D869;
+}
+
+.seen {
+	background-color:#AEF9B3;
+}
+
+.pos, .hght {
+	height:20px;
+	text-align: center;
+	background-color:#DFDFDF;
+	vertical-align:middle
+}
+
+.hght {
+	background-color:#F2EDCC;
+}
