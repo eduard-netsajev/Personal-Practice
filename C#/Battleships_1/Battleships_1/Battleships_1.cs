@@ -1306,11 +1306,6 @@ namespace Battleships_1
                     {
                         game.x = RandomDirection();
                     }
-                    else
-                    {
-                       //
-                           
-                    }
 
                     for (int aproppriate = 0; aproppriate == 0; )
                     {
