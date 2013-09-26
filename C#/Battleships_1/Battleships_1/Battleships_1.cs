@@ -1015,9 +1015,8 @@ namespace Battleships_1
                         }
                     }
                 }
-
-
             }
+
             while (shipsPlaced.Small < 4)
             {
                 int k = 0;
