@@ -57,6 +57,7 @@ namespace Battleships_1
 
         public static int ShipSize { get; set; } //Contains the size of the ship 1-4
         }
+
     //a container with information about the amount of ship placed by a player or enemy
     public static class shipsPlaced
     {
