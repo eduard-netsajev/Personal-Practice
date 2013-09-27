@@ -83,6 +83,7 @@ namespace Battleships_1
         public static int level = 0; //Difficulty level: 1 - Normal, 2-4 - slight advantage to AI (10% - 20% - 30% chance for reroll on miss)
     }
 
+    //Main class with the game
     class Battleships_1
     {
         public static void DrawPlayerField() {
