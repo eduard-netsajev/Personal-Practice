@@ -79,7 +79,7 @@ namespace Battleships_1
         public static int PlayerRandoms{ get; set; } //Holds information whether player randoms his ships or not
         public static int DamageDone { get; set; } //Hold information whether enemy has hit your ship (atleast 1 cell is red - damaged) or not
         public static int x = -1; //A variable for direction of seeking for damaged ship used in AI
-        public static int TurnBack = 0;
+        public static int TurnBack = 0; //A variable which indicates the need to turn the direction of shootings back, when seeking damaged ship
         public static int level = 0;
     }
 
