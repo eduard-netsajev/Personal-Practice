@@ -70,14 +70,15 @@ namespace Battleships_1
         public static int Huge{ get; set; }
     }
 
-    public static class game //Container with the most important current game information
+    //Container with the most important current game information
+    public static class game 
     {
         public static int Phase { get; set; } //Phase of the game
         public static int[,] MyField = new int[12, 12];//2-rank array with player's field data
         public static int[,] EnemyField = new int[12, 12];//2-rank array with opponent's field data
         public static int PlayerRandoms{ get; set; } //Holds information whether player randoms his ships or not
         public static int DamageDone { get; set; } //Hold information whether enemy has hit your ship (atleast 1 cell is red - damaged) or not
-        public static int x = -1;
+        public static int x = -1; //A variable for direction of seeking for damaged ship used in AI
         public static int TurnBack = 0;
         public static int level = 0;
     }
