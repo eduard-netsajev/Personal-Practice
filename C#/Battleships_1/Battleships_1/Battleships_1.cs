@@ -80,7 +80,7 @@ namespace Battleships_1
         public static int DamageDone { get; set; } //Hold information whether enemy has hit your ship (atleast 1 cell is red - damaged) or not
         public static int x = -1; //A variable for direction of seeking for damaged ship used in AI
         public static int TurnBack = 0; //A variable which indicates the need to turn the direction of shootings back, when seeking damaged ship
-        public static int level = 0;
+        public static int level = 0; //Difficulty level: 1 - Normal, 2-4 - slight advantage to AI (10% - 20% - 30% chance for reroll on miss)
     }
 
     class Battleships_1
