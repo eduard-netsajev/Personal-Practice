@@ -208,7 +208,7 @@ namespace Battleships_1
                 {
                     if (j == 10)
                     {
-                        Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                        Console.ForegroundColor = ConsoleColor.DarkMagenta;//Writing the number of lanes to the right of the field
                         Console.Write("{0,-2}", i + 1);
                         Console.ResetColor();
                     }
