@@ -55,8 +55,37 @@ namespace Tunniplaan
             return TempData;
         }
 
-        static void ParseClasses(Array ChunkedData){
+        static void ParseClasses(string[,] ChunkedData){
 
+
+            string pattern = "/";
+            for (int d = 0; d < 5; d++)
+            {
+                for (int c = 0; c < 5; c++)
+                {
+                    string[] tunnidtekst = Regex.Split(ChunkedData[d,c], pattern);
+                    for (int i = 0; i < (tunnidtekst.Count()); i++)
+                    {
+                        tunnidtekst[i] = tunnidtekst[i].Replace("\n", "");
+                        if (tunnidtekst[i].Length > 0)
+                        {
+                            Console.WriteLine("Day {0} Paar {1}: {2}", d + 1, c + 1, tunnidtekst[i]);
+                        }
+                    }
+
+                }
+
+
+               
+            }
+            
+            
+            
+            
+            //foreach (string moment in ChunkedData)
+            //{
+
+            //}
         }
 
 
