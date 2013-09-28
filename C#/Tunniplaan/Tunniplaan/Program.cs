@@ -7,8 +7,29 @@ using System.Text.RegularExpressions;
 
 namespace Tunniplaan
 {
-    class Class
+    public class Class
     {
+        public Class(string Tund)
+        {
+
+            //Here we give Tunnid[a] it's parameters
+
+            string TunniNimetus = "";
+            foreach (char charN in Tund)
+            {
+                if (charN == 40)
+                {
+                    break;
+                }
+                else
+                {
+                    TunniNimetus += charN;
+                }
+            }
+            Console.WriteLine("Tunni nimetus: {0}", TunniNimetus);
+
+        }
+
         public static int Day { get; set; }
         public static int PaariNumber { get; set; }
         public static int ClassID { get; set; }
@@ -17,10 +38,10 @@ namespace Tunniplaan
         public static string[] Groups { get; set; }
     }
 
-    public class Tunniplaan
+    public static class Tunniplaan
     {
         public static int Amount = 0;// { get; set; }
-        public static Class[] Tunnid{ get; set; }
+        public static List<Class> Tunnid{ get; set; }
     }
 
     class Program
@@ -50,8 +71,8 @@ namespace Tunniplaan
             return TempData;
         }
 
-        static Class[] ParseClasses(string[,] ChunkedData){
-            Class[] tempTunnid = new Class[0];
+        static List<Class> ParseClasses(string[,] ChunkedData){
+            List<Class> tempTunnid = new List<Class>();
 
             string pattern = "/";
             for (int d = 0; d < 5; d++)
@@ -65,16 +86,7 @@ namespace Tunniplaan
                         if (tunnidtekst[i].Length > 0)
                         {
                             Console.WriteLine("Day {0} Paar {1}: {2}", d + 1, c + 1, tunnidtekst[i]);
-                            int a = Tunniplaan.Amount;
-                            Tunniplaan.Tunnid[a] = new Class();
-
-                            //Here we give Tunnid[a] it's parameters
-
-
-
-
-
-
+                            tempTunnid.Add(new Class(tunnidtekst[i]));
                             Tunniplaan.Amount++;
                         }
                     }
