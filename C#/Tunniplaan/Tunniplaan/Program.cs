@@ -15,11 +15,11 @@ namespace Tunniplaan
         public static string ClassName { get; set; }
         public static int Room { get; set; }
         public static string[] Groups { get; set; }
-
     }
 
     public class Tunniplaan
     {
+        public static int Amount = 0;// { get; set; }
         public static Class[] Tunnid{ get; set; }
     }
 
@@ -65,6 +65,17 @@ namespace Tunniplaan
                         if (tunnidtekst[i].Length > 0)
                         {
                             Console.WriteLine("Day {0} Paar {1}: {2}", d + 1, c + 1, tunnidtekst[i]);
+                            int a = Tunniplaan.Amount;
+                            Tunniplaan.Tunnid[a] = new Class();
+
+                            //Here we give Tunnid[a] it's parameters
+
+
+
+
+
+
+                            Tunniplaan.Amount++;
                         }
                     }
 
