@@ -15,7 +15,6 @@ namespace Tunniplaan
         public static string ClassName { get; set; }
         public static int Room { get; set; }
         public static string[] Groups { get; set; }
-        public static string Teacher { get; set; }
 
     }
     //class Tunniplaan
@@ -69,7 +68,7 @@ namespace Tunniplaan
 
 
             string [,] TimedData = SplitTime(tunniplaan);
-
+            Class[] tunnid = new Class[0]; //Array of Class (Class = Class)
             System.Console.ReadKey();
 
 
