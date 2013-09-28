@@ -55,7 +55,9 @@ namespace Tunniplaan
             return TempData;
         }
 
+        static void ParseClasses(Array ChunkedData){
 
+        }
 
 
         static void Main(string[] args)
@@ -69,6 +71,7 @@ namespace Tunniplaan
 
             string [,] TimedData = SplitTime(tunniplaan);
             Class[] tunnid = new Class[0]; //Array of Class (Class = Class)
+            ParseClasses(TimedData);
             System.Console.ReadKey();
 
 
