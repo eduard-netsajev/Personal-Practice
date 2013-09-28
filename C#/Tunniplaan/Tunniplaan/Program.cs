@@ -17,16 +17,12 @@ namespace Tunniplaan
         public static string[] Groups { get; set; }
 
     }
-    //class Tunniplaan
-    //{
-    //     public static string[,] TempData = new string[5, 5];//Array [Day, Class]
-    //    //public static Array Monday = new Array[5,0];
-    //    //public static Array Tuesday = new Array[5,0];
-    //    //public static Array Wednesday = new Array[5,0];
-    //    //public static Array Thursday = new Array[5,0];
-    //    //public static Array Friday = new Array[5,0];
-    //}
-    
+
+    public class Tunniplaan
+    {
+        public static Class[] Tunnid{ get; set; }
+    }
+
     class Program
     {
         static string[,] SplitTime(string TunniplaanTXT){
@@ -43,7 +39,6 @@ namespace Tunniplaan
             for (int i = 0; i < 25; i++)
             {
                 TempData[d, c] = substrings[i];
-            //    System.Console.WriteLine ("Day {0} Class {1} : {2}", d+1, c+1, TempData[d, c]);
                 if (c == 4)
                 {
                     d++;
@@ -55,8 +50,8 @@ namespace Tunniplaan
             return TempData;
         }
 
-        static void ParseClasses(string[,] ChunkedData){
-
+        static Class[] ParseClasses(string[,] ChunkedData){
+            Class[] tempTunnid = new Class[0];
 
             string pattern = "/";
             for (int d = 0; d < 5; d++)
@@ -78,14 +73,11 @@ namespace Tunniplaan
 
                
             }
-            
-            
-            
-            
-            //foreach (string moment in ChunkedData)
-            //{
 
-            //}
+
+
+
+            return tempTunnid;
         }
 
 
@@ -99,8 +91,7 @@ namespace Tunniplaan
 
 
             string [,] TimedData = SplitTime(tunniplaan);
-            Class[] tunnid = new Class[0]; //Array of Class (Class = Class)
-            ParseClasses(TimedData);
+            Tunniplaan.Tunnid = ParseClasses(TimedData);
             System.Console.ReadKey();
 
 
