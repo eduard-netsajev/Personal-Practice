@@ -9,12 +9,27 @@ namespace Tunniplaan
 {
     public class Class
     {
-        public Class(string Tund)
+        public Class(string Tund, int DayNumber, int NumberOfPair, int IDofClass)
         {
+        //Day = 0;
+        //PaariNumber = 0;
+        //ClassID = 0;
+        //ClassName = "";
+        //Room = 0;
+        //Groups = new List<string>(); //{ get; set; }
 
             //Here we give Tunnid[a] it's parameters
 
-            string TunniNimetus = "";
+            Day = DayNumber+1;
+            PaariNumber = NumberOfPair+1;
+            ClassID = IDofClass+1;
+            //if (ClassID == 2)
+            //{
+            //    int x = 5;
+            //}
+
+            string temp = "";
+
             foreach (char charN in Tund)
             {
                 if (charN == 40)
@@ -23,25 +38,67 @@ namespace Tunniplaan
                 }
                 else
                 {
-                    TunniNimetus += charN;
+                    ClassName += charN;
                 }
             }
-            Console.WriteLine("Tunni nimetus: {0}", TunniNimetus);
+
+            Tund = Tund.Replace(ClassName + "(", "");
+            
+            foreach (char charN in Tund)
+            {
+                if (charN == 58)
+                {
+                    break;
+                }
+                else
+                {
+                    temp += charN;
+                }
+            }
+
+            Tund = Tund.Replace(temp + ":", "");
+            Room = int.Parse(temp);
+            temp = "";
+
+            for (int charNum = 0; Tund[charNum] != 41; charNum++)
+            {
+                if (Tund[charNum] == 44)
+                {
+                    Groups.Add(temp);
+                    Tund = Tund.Replace(temp + ",", "");
+                    temp = "";
+                    charNum = 0;
+                }
+                else
+                {
+                    temp += Tund[charNum];
+                }
+            }
+            Groups.Add(temp);
+
+            Console.WriteLine("Day {0} Paar {1}: Aine {2} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room);
+            Groups.ForEach(delegate(String ruhm)
+            {
+                Console.Write(ruhm + " ");
+
+            });
+
+           
 
         }
 
-        public static int Day { get; set; }
-        public static int PaariNumber { get; set; }
-        public static int ClassID { get; set; }
-        public static string ClassName { get; set; }
-        public static int Room { get; set; }
-        public static string[] Groups { get; set; }
+        public int Day { get; set; }
+        public int PaariNumber { get; set; }
+        public int ClassID { get; set; }
+        public string ClassName { get; set; }
+        public int Room { get; set; }
+        public List<string> Groups = new List<string>(); //{ get; set; }
     }
 
-    public static class Tunniplaan
+    public class Tunniplaan
     {
         public static int Amount = 0;// { get; set; }
-        public static List<Class> Tunnid{ get; set; }
+        public static List<Class> Tunnid { get; set; } // = new List<Class>()
     }
 
     class Program
@@ -85,8 +142,10 @@ namespace Tunniplaan
                         tunnidtekst[i] = tunnidtekst[i].Replace("\n", "");
                         if (tunnidtekst[i].Length > 0)
                         {
-                            Console.WriteLine("Day {0} Paar {1}: {2}", d + 1, c + 1, tunnidtekst[i]);
-                            tempTunnid.Add(new Class(tunnidtekst[i]));
+                           // Console.WriteLine("Day {0} Paar {1}: {2}", d + 1, c + 1, tunnidtekst[i]);
+                            //Class classA = new Class(tunnidtekst[i], d, c, Tunniplaan.Amount);
+                            //tempTunnid.Add(classA);
+                            tempTunnid.Add(new Class(tunnidtekst[i], d, c, Tunniplaan.Amount));
                             Tunniplaan.Amount++;
                         }
                     }
@@ -114,6 +173,11 @@ namespace Tunniplaan
 
 
             string [,] TimedData = SplitTime(tunniplaan);
+
+            //Tunniplaan.Tunnid = ParseClasses(TimedData);
+            List<Class> x = new List<Class>();
+            //x = ParseClasses(TimedData);
+            //Tunniplaan.Tunnid = x;
             Tunniplaan.Tunnid = ParseClasses(TimedData);
             System.Console.ReadKey();
 
