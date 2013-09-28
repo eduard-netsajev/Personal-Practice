@@ -174,10 +174,7 @@ namespace Tunniplaan
 
             string [,] TimedData = SplitTime(tunniplaan);
 
-            //Tunniplaan.Tunnid = ParseClasses(TimedData);
             List<Class> x = new List<Class>();
-            //x = ParseClasses(TimedData);
-            //Tunniplaan.Tunnid = x;
             Tunniplaan.Tunnid = ParseClasses(TimedData);
             System.Console.ReadKey();
 
