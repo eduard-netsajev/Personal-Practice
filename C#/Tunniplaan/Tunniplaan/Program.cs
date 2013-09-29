@@ -48,6 +48,10 @@ namespace Tunniplaan
                 case '6':
                     PaarisPaaritu = 6;
                     break;
+                default:
+                    Console.WriteLine("Seems like some class lacks it's evenness!");
+                    Console.ReadKey();
+                    break;
             }
             Tund = Tund.Replace(Tund[0] + "?", "");
             foreach (char charN in Tund)
