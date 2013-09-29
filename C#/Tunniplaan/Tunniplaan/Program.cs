@@ -11,22 +11,13 @@ namespace Tunniplaan
     {
         public Class(string Tund, int DayNumber, int NumberOfPair, int IDofClass)
         {
-        //Day = 0;
-        //PaariNumber = 0;
-        //ClassID = 0;
-        //ClassName = "";
-        //Room = 0;
-        //Groups = new List<string>(); //{ get; set; }
-
-            //Here we give Tunnid[a] it's parameters
+        
+            //Here we give Class it's parameters upon creation
 
             Day = DayNumber+1;
             PaariNumber = NumberOfPair+1;
             ClassID = IDofClass+1;
-            //if (ClassID == 2)
-            //{
-            //    int x = 5;
-            //}
+          
 
             string temp = "";
 
@@ -43,7 +34,19 @@ namespace Tunniplaan
             }
 
             Tund = Tund.Replace(ClassName + "(", "");
-            
+            switch (Tund[0])
+            {
+                case '2':
+                    PaarisPaaritu = 2;
+                    break;
+                case '3':
+                    PaarisPaaritu = 3;
+                    break;
+                case '6':
+                    PaarisPaaritu = 6;
+                    break;
+            }
+            Tund = Tund.Replace(Tund[0] + "?", ""); //Check if it uses this only ONCE, without replacing anything other
             foreach (char charN in Tund)
             {
                 if (charN == 58)
@@ -76,7 +79,7 @@ namespace Tunniplaan
             }
             Groups.Add(temp);
 
-            Console.WriteLine("Day {0} Paar {1}: Aine {2} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room);
+            Console.WriteLine("Nadal {4} Day {0} Paar {1}: Aine {2} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room, PaarisPaaritu);
             Groups.ForEach(delegate(String ruhm)
             {
                 Console.Write(ruhm + " ");
@@ -87,6 +90,7 @@ namespace Tunniplaan
 
         }
 
+        public int PaarisPaaritu { get; set; }
         public int Day { get; set; }
         public int PaariNumber { get; set; }
         public int ClassID { get; set; }
@@ -98,7 +102,8 @@ namespace Tunniplaan
     public class Tunniplaan
     {
         public static int Amount = 0;// { get; set; }
-        public static List<Class> Tunnid { get; set; } // = new List<Class>()
+        public static List<Class> TunnidPaaritu { get; set; }
+        public static List<Class> TunnidPaaris { get; set; }
     }
 
     class Program
@@ -167,15 +172,10 @@ namespace Tunniplaan
         {
 
             System.Net.WebClient wc = new System.Net.WebClient();
-            string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan31.txt");
-
-
-
-
+            string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan41.txt");
             string [,] TimedData = SplitTime(tunniplaan);
-
-            List<Class> x = new List<Class>();
-            Tunniplaan.Tunnid = ParseClasses(TimedData);
+        //    List<Class> x = new List<Class>();
+            Tunniplaan.TunnidPaaritu = ParseClasses(TimedData);
             System.Console.ReadKey();
 
 
