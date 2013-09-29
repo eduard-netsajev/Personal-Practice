@@ -49,7 +49,7 @@ namespace Tunniplaan
                     PaarisPaaritu = 6;
                     break;
             }
-            Tund = Tund.Replace(Tund[0] + "?", ""); //Check if it uses this only ONCE, without replacing anything other
+            Tund = Tund.Replace(Tund[0] + "?", "");
             foreach (char charN in Tund)
             {
                 if (charN == 58)
@@ -83,19 +83,7 @@ namespace Tunniplaan
             }
             Groups.Add(temp);
             GroupsIDs.Add(Tunniplaan.getGroupID(temp));
-
-            //Console.WriteLine("Nadal {4} Day {0} Paar {1}: Aine {2} ID {5} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room, PaarisPaaritu, ClassID);
-            //Groups.ForEach(delegate(String ruhm)
-            //{
-            //    Console.Write(ruhm + " ");
-
-            //});
-
-           
-
         }
-
-        
 
         public int Day { get; set; }
         public int PaariNumber { get; set; }
@@ -120,7 +108,6 @@ namespace Tunniplaan
         public static List<string> ClassNames = new List<string>();
 
         public static List<string> GroupsNames = new List<string>();
-
 
         public static List<Class> GetClasses(int GroupNeeded, int DayNeeded, int EvennessNeeded)
         {
@@ -185,6 +172,60 @@ namespace Tunniplaan
 
     class Program
     {
+        public static void PrintoutClasses(List<Class> Tunnid, string MyGroup){
+            Console.WriteLine("   Today you have next classes:");
+            Console.WriteLine();
+            Console.WriteLine();
+
+
+            foreach (Class Tund in Tunnid)
+            {
+                int GroupsAmount = 0;
+                Console.Write(Tund.ClassName + " in room " + Tund.Room);
+                foreach (string Group in Tund.Groups)
+                {
+                    if (Group != MyGroup.ToUpper())
+                    {
+                        GroupsAmount++;
+                    }
+
+                }
+
+                switch (GroupsAmount)
+                {
+                    case 0:
+                        Console.Write(" with only your group.");
+                        break;
+                    case 1:
+                        if (Tund.Groups[0] == MyGroup.ToUpper())
+                        {
+                            Console.Write(" with group {0}.", Tund.Groups[1]);
+                        }
+                        else
+                        {
+                            Console.Write(" with group {0}.", Tund.Groups[0]);
+                        }
+                        break;
+                    default:
+                        Console.Write(" with groups ");
+                        foreach (string Group in Tund.Groups)
+                        {
+                            if (Group != MyGroup.ToUpper())
+                            {
+                                Console.Write(Group + ", ");
+                            }
+
+                        }
+                        Console.Write("\b\b.");
+                        break;
+                }
+                Console.WriteLine();
+            }
+
+
+
+        }
+
         static string[,] SplitTime(string TunniplaanTXT){
 
             string[,] TempData = new string[5, 5];//Array [Day, Class]
@@ -291,12 +332,12 @@ namespace Tunniplaan
                 Console.WriteLine("Week is uneven");
             }
 
-            List<Class> ThisDayClasses = new List<Class>();
+            PrintoutClasses(Tunniplaan.GetClasses(KasutajaGrupp, Day, PaarisPaaritu), MyGroup);
 
-            ThisDayClasses = Tunniplaan.GetClasses(KasutajaGrupp, Day, PaarisPaaritu);
-
-
+            Console.WriteLine("");
+            Console.Write("Press any key to exit..");
             System.Console.ReadKey();
+
 
         }
     }
