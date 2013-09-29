@@ -9,14 +9,14 @@ namespace Tunniplaan
 {
     public class Class
     {
-        public Class(string Tund, int DayNumber, int NumberOfPair, int IDofClass)
+        
+        public Class(string Tund, int DayNumber, int NumberOfPair)
         {
         
             //Here we give Class it's parameters upon creation
 
             Day = DayNumber+1;
             PaariNumber = NumberOfPair+1;
-            ClassID = IDofClass+1;
           
 
             string temp = "";
@@ -32,6 +32,9 @@ namespace Tunniplaan
                     ClassName += charN;
                 }
             }
+
+
+            ClassID = Tunniplaan.getClassID(ClassName);
 
             Tund = Tund.Replace(ClassName + "(", "");
             switch (Tund[0])
@@ -80,11 +83,11 @@ namespace Tunniplaan
             Groups.Add(temp);
 
             Console.WriteLine("Nadal {4} Day {0} Paar {1}: Aine {2} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room, PaarisPaaritu);
-            Groups.ForEach(delegate(String ruhm)
-            {
-                Console.Write(ruhm + " ");
+            //Groups.ForEach(delegate(String ruhm)
+            //{
+            //    Console.Write(ruhm + " ");
 
-            });
+            //});
 
            
 
@@ -101,9 +104,39 @@ namespace Tunniplaan
 
     public class Tunniplaan
     {
-        public static int Amount = 0;// { get; set; }
-        public static List<Class> TunnidPaaritu { get; set; }
-        public static List<Class> TunnidPaaris { get; set; }
+        public static int Amount = 0;
+        public static List<Class> Tunnid { get; set; }
+
+        public static List<string> ClassNames { get; set; }
+
+        public static int getClassID(string TundiNimi)
+        {
+            int id = 0;
+
+            try
+            {
+                foreach (string nimetus in ClassNames)
+                {
+                    if (TundiNimi == nimetus)
+                    {
+                        Console.WriteLine("This class has id = {0}", id);
+                        return id;
+                    }
+                    else id++;
+
+                }
+
+            }
+            catch
+            {
+                ClassNames.Add(TundiNimi);
+                Console.WriteLine("From now, id{0} - {1}", id, TundiNimi);
+                return id;
+            }
+            Console.WriteLine("something went wrong..");
+            return 535;
+        }
+
     }
 
     class Program
@@ -150,7 +183,7 @@ namespace Tunniplaan
                            // Console.WriteLine("Day {0} Paar {1}: {2}", d + 1, c + 1, tunnidtekst[i]);
                             //Class classA = new Class(tunnidtekst[i], d, c, Tunniplaan.Amount);
                             //tempTunnid.Add(classA);
-                            tempTunnid.Add(new Class(tunnidtekst[i], d, c, Tunniplaan.Amount));
+                            tempTunnid.Add(new Class(tunnidtekst[i], d, c));
                             Tunniplaan.Amount++;
                         }
                     }
@@ -174,8 +207,7 @@ namespace Tunniplaan
             System.Net.WebClient wc = new System.Net.WebClient();
             string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan41.txt");
             string [,] TimedData = SplitTime(tunniplaan);
-        //    List<Class> x = new List<Class>();
-            Tunniplaan.TunnidPaaritu = ParseClasses(TimedData);
+            Tunniplaan.Tunnid = ParseClasses(TimedData);
             System.Console.ReadKey();
 
 
