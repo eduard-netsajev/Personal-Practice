@@ -82,12 +82,12 @@ namespace Tunniplaan
             }
             Groups.Add(temp);
 
-            Console.WriteLine("Nadal {4} Day {0} Paar {1}: Aine {2} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room, PaarisPaaritu);
-            //Groups.ForEach(delegate(String ruhm)
-            //{
-            //    Console.Write(ruhm + " ");
+            Console.WriteLine("Nadal {4} Day {0} Paar {1}: Aine {2} ID {5} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room, PaarisPaaritu, ClassID);
+            Groups.ForEach(delegate(String ruhm)
+            {
+                Console.Write(ruhm + " ");
 
-            //});
+            });
 
            
 
@@ -107,36 +107,22 @@ namespace Tunniplaan
         public static int Amount = 0;
         public static List<Class> Tunnid { get; set; }
 
-        public static List<string> ClassNames { get; set; }
+        public static List<string> ClassNames = new List<string>();
 
         public static int getClassID(string TundiNimi)
         {
-            int id = 0;
-
-            try
+            int id = 1;
+            foreach (string nimetus in ClassNames)
             {
-                foreach (string nimetus in ClassNames)
+                if (TundiNimi == nimetus)
                 {
-                    if (TundiNimi == nimetus)
-                    {
-                        Console.WriteLine("This class has id = {0}", id);
-                        return id;
-                    }
-                    else id++;
-
+                    return id;
                 }
-
+                else id++;
             }
-            catch
-            {
-                ClassNames.Add(TundiNimi);
-                Console.WriteLine("From now, id{0} - {1}", id, TundiNimi);
-                return id;
-            }
-            Console.WriteLine("something went wrong..");
-            return 535;
+            ClassNames.Add(TundiNimi);
+            return id;
         }
-
     }
 
     class Program
