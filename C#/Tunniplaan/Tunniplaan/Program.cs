@@ -20,7 +20,7 @@ namespace Tunniplaan
           
 
             string temp = "";
-
+            //Foreach loop for getting ClassName from input string Tund
             foreach (char charN in Tund)
             {
                 if (charN == 40)
