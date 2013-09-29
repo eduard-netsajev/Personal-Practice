@@ -71,9 +71,10 @@ namespace Tunniplaan
                 if (Tund[charNum] == 44)
                 {
                     Groups.Add(temp);
+                    GroupsIDs.Add(Tunniplaan.getGroupID(temp));
                     Tund = Tund.Replace(temp + ",", "");
                     temp = "";
-                    charNum = 0;
+                    charNum = -1;
                 }
                 else
                 {
@@ -81,25 +82,34 @@ namespace Tunniplaan
                 }
             }
             Groups.Add(temp);
+            GroupsIDs.Add(Tunniplaan.getGroupID(temp));
 
-            Console.WriteLine("Nadal {4} Day {0} Paar {1}: Aine {2} ID {5} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room, PaarisPaaritu, ClassID);
-            Groups.ForEach(delegate(String ruhm)
-            {
-                Console.Write(ruhm + " ");
+            //Console.WriteLine("Nadal {4} Day {0} Paar {1}: Aine {2} ID {5} Ruumis {3} Gruppidega ", Day + 1, PaariNumber + 1, ClassName, Room, PaarisPaaritu, ClassID);
+            //Groups.ForEach(delegate(String ruhm)
+            //{
+            //    Console.Write(ruhm + " ");
 
-            });
+            //});
 
            
 
         }
 
-        public int PaarisPaaritu { get; set; }
+        
+
         public int Day { get; set; }
         public int PaariNumber { get; set; }
-        public int ClassID { get; set; }
+
         public string ClassName { get; set; }
+        public int ClassID { get; set; }
+
+        public int PaarisPaaritu { get; set; }
+
         public int Room { get; set; }
-        public List<string> Groups = new List<string>(); //{ get; set; }
+
+        public List<string> Groups = new List<string>();
+        public List<int> GroupsIDs = new List<int>();
+
     }
 
     public class Tunniplaan
@@ -108,6 +118,22 @@ namespace Tunniplaan
         public static List<Class> Tunnid { get; set; }
 
         public static List<string> ClassNames = new List<string>();
+
+        public static List<string> GroupsNames = new List<string>();
+
+        public static int getGroupID(string gruppiNimi){
+            int id = 1;
+            foreach (string gruppinimetus in GroupsNames)
+            {
+                if (gruppiNimi == gruppinimetus)
+                {
+                    return id;
+                }
+                else id++;
+            }
+            GroupsNames.Add(gruppiNimi);
+            return id;
+        }
 
         public static int getClassID(string TundiNimi)
         {
@@ -166,23 +192,13 @@ namespace Tunniplaan
                         tunnidtekst[i] = tunnidtekst[i].Replace("\n", "");
                         if (tunnidtekst[i].Length > 0)
                         {
-                           // Console.WriteLine("Day {0} Paar {1}: {2}", d + 1, c + 1, tunnidtekst[i]);
-                            //Class classA = new Class(tunnidtekst[i], d, c, Tunniplaan.Amount);
-                            //tempTunnid.Add(classA);
                             tempTunnid.Add(new Class(tunnidtekst[i], d, c));
                             Tunniplaan.Amount++;
                         }
                     }
 
                 }
-
-
-               
             }
-
-
-
-
             return tempTunnid;
         }
 
@@ -194,8 +210,9 @@ namespace Tunniplaan
             string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan41.txt");
             string [,] TimedData = SplitTime(tunniplaan);
             Tunniplaan.Tunnid = ParseClasses(TimedData);
+            Console.WriteLine("Programm is ready! In which group do you study?");
+            Console.ReadLine();
             System.Console.ReadKey();
-
 
         }
     }
