@@ -121,6 +121,38 @@ namespace Tunniplaan
 
         public static List<string> GroupsNames = new List<string>();
 
+
+        public static List<Class> GetClasses(int GroupNeeded, int DayNeeded, int EvennessNeeded)
+        {
+            List<Class> temporaryTunnid = new List<Class>();
+
+            foreach (Class Tund in Tunnid)
+            {
+                if (Tund.Day == DayNeeded && (Tund.PaarisPaaritu == 6 || Tund.PaarisPaaritu == EvennessNeeded) && Tund.GroupsIDs.Contains(GroupNeeded) )
+                {
+                    temporaryTunnid.Add(Tund);
+                }
+            }
+
+
+            return temporaryTunnid;
+        }
+
+        public static int groupExist(string gruppiNimi)
+        {
+            int id = 1;
+            foreach (string gruppinimetus in GroupsNames)
+            {
+                if (gruppiNimi == gruppinimetus)
+                {
+                    return id;
+                }
+                else id++;
+            }
+
+            return 0;
+        }
+
         public static int getGroupID(string gruppiNimi){
             int id = 1;
             foreach (string gruppinimetus in GroupsNames)
@@ -210,8 +242,60 @@ namespace Tunniplaan
             string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan41.txt");
             string [,] TimedData = SplitTime(tunniplaan);
             Tunniplaan.Tunnid = ParseClasses(TimedData);
-            Console.WriteLine("Programm is ready! In which group do you study?");
-            Console.ReadLine();
+
+            Console.WriteLine("Programm is ready!");
+
+            string MyGroup;
+
+            do
+            {
+                Console.WriteLine("In which group do you study?");
+                MyGroup = Console.ReadLine();
+                Console.Clear();
+
+            } while (Tunniplaan.groupExist(MyGroup.ToUpper()) == 0);
+
+            int KasutajaGrupp = Tunniplaan.getGroupID(MyGroup.ToUpper());
+            Console.WriteLine("Gruppi ID = {0}", KasutajaGrupp);
+
+            int Day;
+
+            do
+            {
+                Console.WriteLine("For what day you want to get classes?");
+                int.TryParse(Console.ReadLine(), out Day);
+                Console.Clear();
+
+            } while (Day != 1 && Day != 2 && Day != 3 && Day != 4 && Day != 5);
+
+            Console.WriteLine("Gruppi ID = {0}", KasutajaGrupp);
+            Console.WriteLine("Day = {0}", Day);
+
+            int PaarisPaaritu;
+
+            do
+            {
+                Console.WriteLine("Is it an even or uneven week? (2/3)");
+                int.TryParse(Console.ReadLine(), out PaarisPaaritu);
+                Console.Clear();
+
+            } while (PaarisPaaritu != 2 && PaarisPaaritu != 3);
+
+            Console.WriteLine("Gruppi ID = {0}", KasutajaGrupp);
+            Console.WriteLine("Day = {0}", Day);
+
+            if(PaarisPaaritu==2){
+                Console.WriteLine("Week is even");
+            }
+            else if(PaarisPaaritu==3){
+                Console.WriteLine("Week is uneven");
+            }
+
+            List<Class> ThisDayClasses = new List<Class>();
+
+            ThisDayClasses = Tunniplaan.GetClasses(KasutajaGrupp, Day, PaarisPaaritu);
+
+
             System.Console.ReadKey();
 
         }
