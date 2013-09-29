@@ -113,6 +113,7 @@ namespace Tunniplaan
 
         public static List<string> GroupsNames = new List<string>();
 
+        //function for sorting Classes out, using user input
         public static List<Class> GetClasses(int GroupNeeded, int DayNeeded, int EvennessNeeded)
         {
             List<Class> temporaryTunnid = new List<Class>();
