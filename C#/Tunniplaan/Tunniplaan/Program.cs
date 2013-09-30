@@ -16,6 +16,7 @@ namespace Tunniplaan
         {
         
             //Here we give Class it's parameters upon creation
+            //Basically just slicing the "Tund" string
 
             Day = DayNumber+1;
             PaariNumber = NumberOfPair+1;
