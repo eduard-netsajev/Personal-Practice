@@ -194,7 +194,7 @@ namespace Tunniplaan
             {
                 int GroupsAmount = 0;
                 Console.Write(Tund.ClassName + " in room " + Tund.Room);
-                foreach (string Group in Tund.Groups)
+                foreach (string Group in Tund.Groups)//this loop just looks at the amount of groups where the user doesn't belong
                 {
                     if (Group != MyGroup.ToUpper())
                     {
