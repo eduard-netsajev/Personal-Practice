@@ -7,6 +7,8 @@ using System.Text.RegularExpressions;
 
 namespace Tunniplaan
 {
+
+    //An object of Class, as a one 1.5 hour class in a week, going on in some room
     public class Class
     {
         
@@ -49,7 +51,7 @@ namespace Tunniplaan
                     PaarisPaaritu = 6;
                     break;
                 default:
-                    Console.WriteLine("Seems like some class lacks it's evenness!");
+                    Console.WriteLine("Seems like some class lacks it's evenness!");//Catching if some class lacks evenness
                     Console.ReadKey();
                     break;
             }
@@ -89,25 +91,26 @@ namespace Tunniplaan
             GroupsIDs.Add(Tunniplaan.getGroupID(temp));
         }
 
-        public int Day { get; set; }
-        public int PaariNumber { get; set; }
+        public int Day { get; set; } //Day when the class happens
+        public int PaariNumber { get; set; } //Number of the pair when the class happens
 
-        public string ClassName { get; set; }
-        public int ClassID { get; set; }
+        public string ClassName { get; set; } //The name of the class, for example "Lineaaralgebra"
+        public int ClassID { get; set; } //ID of the class, made to connect the same type of classes
 
-        public int PaarisPaaritu { get; set; }
+        public int PaarisPaaritu { get; set; } //2 - 2, 4 weeks. 3 - 1, 3 weeks. 6 - all weeks
 
-        public int Room { get; set; }
+        public int Room { get; set; } //In which room the class happens
 
-        public List<string> Groups = new List<string>();
-        public List<int> GroupsIDs = new List<int>();
+        public List<string> Groups = new List<string>(); //Groups which attend this particular class (strings like "RDIR11 or RDKR11")
+        public List<int> GroupsIDs = new List<int>(); //Groups which attend this class but not their names but IDs
 
     }
 
+    //A class-container, meaning it just contains parameters and data, not supposed to be "created"
     public class Tunniplaan
     {
-        public static int Amount = 0;
-        public static List<Class> Tunnid { get; set; }
+        public static int Amount = 0; //Amount of Classes it contains
+        public static List<Class> Tunnid { get; set; } //A list of Classes (array with of objects "Class")
 
         public static List<string> ClassNames = new List<string>();
 
