@@ -183,6 +183,7 @@ namespace Tunniplaan
 
     class Program
     {
+        //A function which takes as input suitable classes and prints them out
         public static void PrintoutClasses(List<Class> Tunnid, string MyGroup){
             Console.WriteLine("   Today you have next classes:");
             Console.WriteLine();
