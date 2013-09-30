@@ -112,14 +112,14 @@ namespace Tunniplaan
         public static int Amount = 0; //Amount of Classes it contains
         public static List<Class> Tunnid { get; set; } //A list of Classes (array with of objects "Class")
 
-        public static List<string> ClassNames = new List<string>();
+        public static List<string> ClassNames = new List<string>(); // A list of ClassNames (array of strings "ClassName")
 
-        public static List<string> GroupsNames = new List<string>();
+        public static List<string> GroupsNames = new List<string>(); // A list of GroupsNames (array of strings "GroupsName")
 
         //function for sorting Classes out, using user input
         public static List<Class> GetClasses(int GroupNeeded, int DayNeeded, int EvennessNeeded)
         {
-            List<Class> temporaryTunnid = new List<Class>();
+            List<Class> temporaryTunnid = new List<Class>();//Temporary array used to aquire all suitable Class objects
 
             foreach (Class Tund in Tunnid)
             {
