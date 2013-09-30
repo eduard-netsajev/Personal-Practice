@@ -133,6 +133,7 @@ namespace Tunniplaan
             return temporaryTunnid;
         }
 
+        //Function that checks if the group exist in the list
         public static int groupExist(string gruppiNimi)
         {
             int id = 1;
@@ -148,6 +149,7 @@ namespace Tunniplaan
             return 0;
         }
 
+        //Function that checks if the group exist in the list, if not - adds it
         public static int getGroupID(string gruppiNimi){
             int id = 1;
             foreach (string gruppinimetus in GroupsNames)
@@ -162,6 +164,7 @@ namespace Tunniplaan
             return id;
         }
 
+        //Function with input of string "ClassName" and output Class' ID
         public static int getClassID(string TundiNimi)
         {
             int id = 1;
