@@ -545,7 +545,6 @@ namespace Battleships_1
         }
 
         
-
         public static int DrawNearField(int X=55, int Y=7)
         {
             int oldX = Console.CursorLeft;
