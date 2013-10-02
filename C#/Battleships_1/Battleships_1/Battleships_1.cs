@@ -319,7 +319,6 @@ namespace Battleships_1
             int EndCheckPointY = 0;
             int EndCheckPointX = 0;
 
-
             CheckPointY = coord.ShipStartY - 1;
             CheckPointX = coord.ShipStartX - 1;
             EndCheckPointY = coord.ShipEndY + 1;
