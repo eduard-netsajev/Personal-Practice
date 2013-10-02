@@ -379,7 +379,6 @@ namespace Battleships_1
             }
         }
 
-
         public static void AddShipToField(int who)//Places ships on the field using coord.ShipStartX/Y and coord.ShipEndX/Y
         {
             int k = 0;
