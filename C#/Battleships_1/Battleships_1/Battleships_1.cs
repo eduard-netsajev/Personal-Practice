@@ -328,7 +328,6 @@ namespace Battleships_1
             {
                 for (int i = 0; CheckPointX + i <= EndCheckPointX; i++)
                 {
-
                     if (who == 1)
                     {
                         if (game.MyField[CheckPointY + k, CheckPointX + i] == 3)
