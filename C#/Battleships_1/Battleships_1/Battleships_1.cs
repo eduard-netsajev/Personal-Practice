@@ -325,7 +325,6 @@ namespace Battleships_1
             EndCheckPointY = coord.ShipEndY + 1;
             EndCheckPointX = coord.ShipEndX + 1;
 
-
             for (int k = 0; CheckPointY + k <= EndCheckPointY; k++)
             {
                 for (int i = 0; CheckPointX + i <= EndCheckPointX; i++)
