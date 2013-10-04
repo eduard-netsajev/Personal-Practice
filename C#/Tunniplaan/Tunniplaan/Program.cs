@@ -197,7 +197,6 @@ namespace Tunniplaan
                     {
                         GroupsAmount++;
                     }
-
                 }
 
                 switch (GroupsAmount)
