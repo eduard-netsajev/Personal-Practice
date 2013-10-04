@@ -21,7 +21,6 @@ namespace Tunniplaan
             Day = DayNumber+1;
             PaariNumber = NumberOfPair+1;
           
-
             string temp = "";
             //Foreach loop for getting ClassName from input string Tund
             foreach (char charN in Tund)
