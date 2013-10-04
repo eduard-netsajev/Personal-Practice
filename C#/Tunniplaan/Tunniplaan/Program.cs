@@ -231,7 +231,6 @@ namespace Tunniplaan
             }
 
 
-
         }
 
         static string[,] SplitTime(string TunniplaanTXT){
