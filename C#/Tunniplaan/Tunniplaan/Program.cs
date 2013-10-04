@@ -187,7 +187,6 @@ namespace Tunniplaan
             Console.WriteLine();
             Console.WriteLine();
 
-
             foreach (Class Tund in Tunnid)
             {
                 int GroupsAmount = 0;
