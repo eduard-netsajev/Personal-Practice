@@ -230,7 +230,6 @@ namespace Tunniplaan
                 Console.WriteLine();
             }
 
-
         }
 
         static string[,] SplitTime(string TunniplaanTXT){
