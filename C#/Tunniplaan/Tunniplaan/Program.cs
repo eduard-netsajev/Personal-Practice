@@ -291,6 +291,7 @@ namespace Tunniplaan
             TimedData = new string[0,0];
 
             Console.WriteLine("Programm is ready!");
+
             string MyGroup;
 
             do
@@ -305,7 +306,6 @@ namespace Tunniplaan
             Console.WriteLine("Gruppi ID = {0}", KasutajaGrupp);
 
             int Day;
-
             do
             {
                 Console.WriteLine("For what day you want to get classes?");
