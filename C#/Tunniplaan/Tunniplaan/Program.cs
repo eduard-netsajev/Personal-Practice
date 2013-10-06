@@ -291,7 +291,6 @@ namespace Tunniplaan
             TimedData = new string[0,0];
 
             Console.WriteLine("Programm is ready!");
-
             string MyGroup;
 
             do
