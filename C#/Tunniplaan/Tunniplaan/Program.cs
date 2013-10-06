@@ -293,7 +293,6 @@ namespace Tunniplaan
             Console.WriteLine("Programm is ready!");
 
             string MyGroup;
-
             do
             {
                 Console.WriteLine("In which group do you study?");
