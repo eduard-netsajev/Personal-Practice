@@ -337,7 +337,6 @@ namespace Tunniplaan
             }
 
             PrintoutClasses(Tunniplaan.GetClasses(KasutajaGrupp, Day, PaarisPaaritu), MyGroup);
-
             Console.WriteLine();
             Console.Write("Press any key to exit..");
             System.Console.ReadKey();
