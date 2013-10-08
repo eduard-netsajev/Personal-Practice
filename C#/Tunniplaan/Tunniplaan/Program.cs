@@ -37,7 +37,7 @@ namespace Tunniplaan
             ClassID = Tunniplaan.getClassID(ClassName);//Getting the ID of the class by using it's ClassName string 
 
             Tund = Tund.Replace(ClassName + "(", "");//Delete the part with ClassName plus "("
-            switch (Tund[0])
+            switch (Tund[0])//Choose, whether class happens on even or uneven week (or both)
             {
                 case '2':
                     PaarisPaaritu = 2;
