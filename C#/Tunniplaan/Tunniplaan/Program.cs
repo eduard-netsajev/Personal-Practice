@@ -17,7 +17,7 @@ namespace Tunniplaan
             //Here we give Class it's parameters upon creation
             //Basically just slicing the "Tund" string
 
-            Day = DayNumber+1;
+            Day = DayNumber+1; //Move the day counter from 0-4 to 1-5
             PaariNumber = NumberOfPair+1;
           
             string temp = "";
