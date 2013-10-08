@@ -36,7 +36,7 @@ namespace Tunniplaan
 
             ClassID = Tunniplaan.getClassID(ClassName);//Getting the ID of the class by using it's ClassName string 
 
-            Tund = Tund.Replace(ClassName + "(", "");
+            Tund = Tund.Replace(ClassName + "(", "");//Delete the part with ClassName plus "("
             switch (Tund[0])
             {
                 case '2':
