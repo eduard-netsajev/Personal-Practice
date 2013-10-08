@@ -34,7 +34,7 @@ namespace Tunniplaan
                 }
             }
 
-            ClassID = Tunniplaan.getClassID(ClassName);
+            ClassID = Tunniplaan.getClassID(ClassName);//Getting the ID of the class by using it's ClassName string 
 
             Tund = Tund.Replace(ClassName + "(", "");
             switch (Tund[0])
