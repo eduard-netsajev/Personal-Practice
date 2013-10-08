@@ -126,7 +126,6 @@ namespace Tunniplaan
 
             return temporaryTunnid;
         }
-
         //Function that checks if the group exist in the list
         public static int groupExist(string gruppiNimi)
         {
