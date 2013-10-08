@@ -14,7 +14,6 @@ namespace Tunniplaan
         
         public Class(string Tund, int DayNumber, int NumberOfPair)
         {
-        
             //Here we give Class it's parameters upon creation
             //Basically just slicing the "Tund" string
 
