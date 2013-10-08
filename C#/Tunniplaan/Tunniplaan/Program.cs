@@ -297,7 +297,6 @@ namespace Tunniplaan
                 Console.WriteLine("In which group do you study?");
                 MyGroup = Console.ReadLine();
                 Console.Clear();
-
             } while (Tunniplaan.groupExist(MyGroup.ToUpper()) == 0);
 
             int KasutajaGrupp = Tunniplaan.getGroupID(MyGroup.ToUpper());
