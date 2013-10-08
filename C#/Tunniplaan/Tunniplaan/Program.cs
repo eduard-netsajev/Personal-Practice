@@ -108,9 +108,13 @@ namespace Tunniplaan
     public class Tunniplaan
     {
         public static int Amount = 0; //Amount of Classes it contains
+
         public static List<Class> Tunnid { get; set; } //A list of Classes (array with of objects "Class")
+
         public static List<string> ClassNames = new List<string>(); // A list of ClassNames (array of strings "ClassName")
+
         public static List<string> GroupsNames = new List<string>(); // A list of GroupsNames (array of strings "GroupsName")
+
         //function for sorting Classes out, using user input
         public static List<Class> GetClasses(int GroupNeeded, int DayNeeded, int EvennessNeeded)
         {
@@ -126,6 +130,7 @@ namespace Tunniplaan
 
             return temporaryTunnid;
         }
+
         //Function that checks if the group exist in the list
         public static int groupExist(string gruppiNimi)
         {
