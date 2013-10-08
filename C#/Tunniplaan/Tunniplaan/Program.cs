@@ -18,7 +18,7 @@ namespace Tunniplaan
             //Basically just slicing the "Tund" string
 
             Day = DayNumber+1; //Move the day counter from 0-4 to 1-5
-            PaariNumber = NumberOfPair+1;
+            PaariNumber = NumberOfPair+1;//Move the pair counter from 0-4 to 1-5
           
             string temp = "";
             //Foreach loop for getting ClassName from input string Tund
