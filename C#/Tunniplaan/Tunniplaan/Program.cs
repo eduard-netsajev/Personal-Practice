@@ -284,6 +284,7 @@ namespace Tunniplaan
         {
 
             System.Net.WebClient wc = new System.Net.WebClient();
+            start:
             string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan52.txt");
             string [,] TimedData = SplitTime(tunniplaan);
             Tunniplaan.Tunnid = ParseClasses(TimedData);
