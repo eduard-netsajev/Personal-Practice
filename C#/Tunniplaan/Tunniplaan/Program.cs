@@ -340,6 +340,7 @@ namespace Tunniplaan
             Console.WriteLine();
             Console.Write("Press any key to restart programm");
             System.Console.ReadKey();
+            Console.Clear();
             goto start;
 
         }
