@@ -329,10 +329,12 @@ namespace Tunniplaan
             Console.WriteLine("Gruppi ID = {0}", KasutajaGrupp);
             Console.WriteLine("Day = {0}", Day);
 
-            if(PaarisPaaritu==2){
+            if(PaarisPaaritu==2)
+            {
                 Console.WriteLine("Week is even");
             }
-            else if(PaarisPaaritu==3){
+            else if(PaarisPaaritu==3)
+            {
                 Console.WriteLine("Week is uneven");
             }
 
