@@ -284,7 +284,7 @@ namespace Tunniplaan
         {
 
             System.Net.WebClient wc = new System.Net.WebClient();
-            string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan5.txt");
+            string tunniplaan = wc.DownloadString("http://money.vnet.ee/tunniplaan52.txt");
             string [,] TimedData = SplitTime(tunniplaan);
             Tunniplaan.Tunnid = ParseClasses(TimedData);
             tunniplaan = "";
@@ -337,7 +337,7 @@ namespace Tunniplaan
 
             PrintoutClasses(Tunniplaan.GetClasses(KasutajaGrupp, Day, PaarisPaaritu), MyGroup);
             Console.WriteLine();
-            Console.Write("Press any key to exit..");
+            Console.Write("Press any key to restart programm");
             System.Console.ReadKey();
 
 
