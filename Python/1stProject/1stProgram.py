@@ -15,7 +15,7 @@ def greetings(_name):
         print("Good day, %s!" % _name)
 
 
-print("Hello World!")
+print("Hello World!\n")
 my_bool = input("How much is 17+4?") == str(21)
 
 name = input("What is your name?")
