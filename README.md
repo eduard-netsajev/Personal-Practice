@@ -13,6 +13,8 @@ Done Projects
 
 Projects In Development
 
+0) Platformer game where you fight against time-wasting, enemies are Reddit, Facebook and alikes. Points for collecting money, books, etc.
+
 1) A programm for school classes checking, which would allow to see which groups are attendind the same classes as you
 
 2) Android application, choose study group in settings, when opened it shows today's classes, in which auditorium they happen and with who (professor + other groups). Bonus function - own schedule making. Bonus Plus function: ability to write down the homework which can be viewed manually or will be just shown whenever the day for this homework comes.
