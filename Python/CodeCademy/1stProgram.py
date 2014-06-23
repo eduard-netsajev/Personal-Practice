@@ -2,6 +2,8 @@ from datetime import datetime
 
 __author__ = 'Netšajev'
 
+def answer():
+    return 42
 
 def greetings(_name):
     hour = datetime.now().hour
@@ -52,6 +54,3 @@ def absolute(number):
         print(abs(float(number)))
     else:
         print("Entered not a valid number!")
-
-
-absolute(input())
