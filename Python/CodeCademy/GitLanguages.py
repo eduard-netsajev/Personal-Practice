@@ -10,18 +10,10 @@ if r.ok:
     print(repoItem['created_at'])
     l = requests.get(repoItem['languages_url'])
     if l.ok:
-        print("Used languages are:")
+        print("Languages used:")
+        totalbytes = 0
         langItem = json.loads(l.text or l.content)
-        print(langItem)
-        pyth = int(langItem['Python'])
-        php = int(langItem['PHP'])
-        css = int(langItem['CSS'])
-        java = int(langItem['Java'])
-        csharp = int(langItem['C#'])
-        codeTotal = pyth + php + css + java + csharp
-        python_part = pyth/codeTotal
-        print('%.2f percent is python' % (python_part*100))
-        java_part = java/codeTotal
-        print('%.2f percent is Java' % (java_part*100))
-        csharp_part = csharp/codeTotal
-        print('%.2f percent is C#' % (csharp_part*100))
+        for key, value in langItem.items():
+            totalbytes += value
+        for key, value in langItem.items():
+            print(key, value/totalbytes*100, "%")
