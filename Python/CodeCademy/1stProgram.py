@@ -2,8 +2,10 @@ from datetime import datetime
 
 __author__ = 'Netšajev'
 
+
 def answer():
     return 42
+
 
 def greetings(_name):
     hour = datetime.now().hour
