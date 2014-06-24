@@ -16,4 +16,4 @@ if r.ok:
         for key, value in langItem.items():
             totalbytes += value
         for key, value in langItem.items():
-            print(key, value/totalbytes*100, "%")
+            print("%s %d" % (key, value/totalbytes*100))
