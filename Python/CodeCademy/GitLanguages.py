@@ -10,18 +10,15 @@ if r.ok:
     print(repoItem['created_at'])
     l = requests.get(repoItem['languages_url'])
     if l.ok:
-        print("Languages used:")
+        print("\nLanguages used:")
         totalbytes = 0
         langItem = json.loads(l.text or l.content)
-
         sorted_list = [x for x in langItem.items()]
-        sorted_list.sort(key=lambda x: x[1]) # sort by value
-
+        sorted_list.sort(key=lambda x: x[1])  # sort by value
+        sorted_list.reverse()
         for key, value in langItem.items():
             totalbytes += value
-        for key, value in langItem.items():
-            print("%s %s" % (key, str(value/totalbytes*100)+"%"))
-
-        sorted_list.reverse()
         for key, value in sorted_list:
             print("{0} - {1:.2%}".format(key, value/totalbytes))
+else:
+    print("He he he. Probably request limit exceeded.")
