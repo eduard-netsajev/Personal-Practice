@@ -25,4 +25,4 @@ if r.ok:
         sorted_list.reverse()
         for key, value in sorted_list:
             percent = value/totalbytes*100
-            print("%s - %.2f" % (key, percent))
+            print("{0} - {1}%".format(key, percent))
