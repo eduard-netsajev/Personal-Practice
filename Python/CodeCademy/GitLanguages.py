@@ -13,7 +13,16 @@ if r.ok:
         print("Languages used:")
         totalbytes = 0
         langItem = json.loads(l.text or l.content)
+
+        sorted_list = [x for x in langItem.items()]
+        sorted_list.sort(key=lambda x: x[1]) # sort by value
+
         for key, value in langItem.items():
             totalbytes += value
         for key, value in langItem.items():
             print("%s %s" % (key, str(value/totalbytes*100)+"%"))
+
+        sorted_list.reverse()
+        for key, value in sorted_list:
+            percent = value/totalbytes*100
+            print("%s - %.2f" % (key, percent))
