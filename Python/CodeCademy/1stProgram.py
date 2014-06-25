@@ -56,3 +56,19 @@ def absolute(number):
         print(abs(float(number)))
     else:
         print("Entered not a valid number!")
+
+
+absolute(input("Write a number to make it absolute: "))
+
+suitcase = []
+
+suitcase.append("keys")
+suitcase.append("watches")
+suitcase.append("wallet")
+suitcase.append("condoms")
+
+list_length = len(suitcase)
+part_suitcase = suitcase[1:3]
+
+print("There are {} items in the suitcase.".format(list_length))
+print(suitcase)
