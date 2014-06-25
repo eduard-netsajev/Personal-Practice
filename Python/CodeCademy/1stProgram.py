@@ -67,8 +67,29 @@ suitcase.append("watches")
 suitcase.append("wallet")
 suitcase.append("condoms")
 
-list_length = len(suitcase)
 part_suitcase = suitcase[1:3]
+
+suitcase.insert(2, 'money')
+list_length = len(suitcase)
+
+print(suitcase.index("wallet"))
 
 print("There are {} items in the suitcase.".format(list_length))
 print(suitcase)
+suitcase.sort()
+suitcase.remove('keys')
+print(suitcase)
+
+zoo_animals = {'Unicorn': 'Cotton Candy House',
+               'Sloth': 'Rainforest Exhibit',
+               'Bengal Tiger': 'Jungle House',
+               'Atlantic Puffin': 'Arctic Exhibit',
+               'Rockhopper Penguin': 'Arctic Exhibit'}
+
+del zoo_animals['Sloth']
+
+zoo_animals['Cat'] = 'Frosja'
+
+print(zoo_animals)
+
+
