@@ -80,16 +80,24 @@ suitcase.sort()
 suitcase.remove('keys')
 print(suitcase)
 
-zoo_animals = {'Unicorn': 'Cotton Candy House',
-               'Sloth': 'Rainforest Exhibit',
-               'Bengal Tiger': 'Jungle House',
-               'Atlantic Puffin': 'Arctic Exhibit',
-               'Rockhopper Penguin': 'Arctic Exhibit'}
 
-del zoo_animals['Sloth']
+inventory = {
+    'gold': 500,
+    'junk': ['pen', 'textbook', 4, 7],
+    'pouch': ['flint', 'twine', 'gemstone'],
+    'backpack': ['xylophone', 'dagger', 'bedroll', 'bread loaf']
+}
 
-zoo_animals['Cat'] = 'Frosja'
+inventory.values()
+inventory['burlap bag'] = ['apple', 'small ruby', 'three-toed sloth']
 
-print(zoo_animals)
+inventory['pouch'].sort()
+inventory['pouch'].remove('gemstone')
 
+del inventory['junk']
 
+inventory['pocket'] = ['seashell', 'strange berry', 'lint']
+inventory['backpack'].sort()
+inventory['gold'] += 50
+
+print(inventory)
