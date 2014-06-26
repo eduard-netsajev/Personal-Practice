@@ -10,7 +10,7 @@ using System.Threading;
 ///////////////////////////////////////////////////////////////////////////////////////////
 //Field status:
 //0 - untouched free field Blue/DarkBlue
-//1 - used condom free field 
+//1 - used condom free field
 //2 - untouched field with a ship
 //3 - damaged ship field
 //4 - sunked shid field
@@ -34,7 +34,7 @@ using System.Threading;
 //3 - fighting
 //4 - end of the game
 
-namespace Battleships_1
+namespace Battleships
 {
 
     //This container class "coord" contains all temporary data according ships
@@ -71,7 +71,7 @@ namespace Battleships_1
     }
 
     //Container with the most important current game information
-    public static class game 
+    public static class game
     {
         public static int Phase { get; set; } //Phase of the game
         public static int[,] MyField = new int[12, 12];//2-rank array with player's field data
@@ -84,7 +84,7 @@ namespace Battleships_1
     }
 
     //Main class with the game
-    class Battleships_1
+    class Battleships
     {
         public static void DrawPlayerField() {
             //Writing a line of letters above of the field nr.1
@@ -305,7 +305,7 @@ namespace Battleships_1
             Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("  A B C D E F G H I J");
             Console.ResetColor();
-        
+
        }
 
 
@@ -414,8 +414,8 @@ namespace Battleships_1
                     k++;
                 }
             }
-            switch (coord.ShipSize) { 
-            
+            switch (coord.ShipSize) {
+
                 case 1:
                     shipsPlaced.Small++;
                     break;
@@ -469,7 +469,7 @@ namespace Battleships_1
             int EndCheckPointY = 0;
             int EndCheckPointX = 0;
 
-            
+
                 CheckPointY = coord.ShipStartY - 1;
                 CheckPointX = coord.ShipStartX - 1;
                 EndCheckPointY = coord.ShipEndY + 1;
@@ -544,7 +544,7 @@ namespace Battleships_1
             return 1;
         }
 
-        
+
         public static int DrawNearField(int X=55, int Y=7)
         {
             int oldX = Console.CursorLeft;
@@ -725,7 +725,7 @@ namespace Battleships_1
                                 coord.ShootEnemyX = key.KeyChar - 48;
                             }
                         }
-                      
+
                         else if (char.IsDigit(key.KeyChar) && key.KeyChar == 48 && TwoSized)
                         {
                             Console.Write(key.KeyChar);
@@ -789,7 +789,7 @@ namespace Battleships_1
             if (EnemyIsAlive == 0 || PlayerIsAlive == 0)
             {
                 game.Phase = 4;
-                
+
             }
             //Creating two fields, 1 for the player, 2nd for the opponent
             Console.Title = "Battleships!"; // When project is finished, add " by NS-Projects"
@@ -802,9 +802,9 @@ namespace Battleships_1
             DrawEnemyField();
 
             //The part where rendering is completed
-            
+
             //Starting to ask the user for ship placement settings
-            Console.SetCursorPosition(1, 17); 
+            Console.SetCursorPosition(1, 17);
             ClearCurrentConsoleLine();
 
             if (game.Phase > 1)
@@ -832,7 +832,7 @@ namespace Battleships_1
             }
             game.Phase = 1;
             //Ask for the size of the ship
-            
+
              if(DrawNearField()==1)goto start;
             Console.Write("\n Insert the size (1-4) of the ship you want to place on the field:\n");
             ClearCurrentConsoleLine();
@@ -1210,7 +1210,7 @@ namespace Battleships_1
 
             fight:
 
-            if (EnemyIsAlive == 0 || PlayerIsAlive == 0) { 
+            if (EnemyIsAlive == 0 || PlayerIsAlive == 0) {
                 game.Phase = 4;
             }
             if (game.Phase > 3)
@@ -1263,7 +1263,7 @@ namespace Battleships_1
                                         EnemyIsAlive = 1;
                                     }
                                 }
-                                
+
                             }
                             if (EnemyIsAlive == 0) { goto finish; }
                         }
@@ -1458,7 +1458,7 @@ namespace Battleships_1
 
                 //if the cell is not Clear / WithShip / Damaged Ship
                 while (game.MyField[coord.EnemyShootY, coord.EnemyShootX] != 0 && game.MyField[coord.EnemyShootY, coord.EnemyShootX] != 2 && game.MyField[coord.EnemyShootY, coord.EnemyShootX] !=3)
-                {   
+                {
                     RandomCell(3);
                 }
 

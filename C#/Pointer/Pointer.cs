@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Pointer_Eduard
+namespace Pointer
 {
-    class Pointer_Eduard
+    class Pointer
     {
         static void Main(string[] args)
         {
@@ -89,8 +89,8 @@ namespace Pointer_Eduard
                     Console.WriteLine("Pointer is currently out of reach");
                 }
                 Console.WriteLine("Place a mark on the field (example: C3; F7; etc.) :");
-                
-                
+
+
                 //This can be made much easier, more professional and better looking
                 //Although the document is quite well documented and easy to read
 

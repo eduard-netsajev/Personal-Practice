@@ -11,7 +11,7 @@ namespace Tunniplaan
     //An object of Class, as a one 1.5 hour class in a week, going on in some room
     public class Class
     {
-        
+
         public Class(string Tund, int DayNumber, int NumberOfPair)
         {
             //Here we give Class it's parameters upon creation
@@ -19,7 +19,7 @@ namespace Tunniplaan
 
             Day = DayNumber+1; //Move the day counter from 0-4 to 1-5
             PaariNumber = NumberOfPair+1;//Move the pair counter from 0-4 to 1-5
-          
+
             string temp = "";
             //Foreach loop for getting ClassName from input string Tund
             foreach (char charN in Tund)
@@ -34,7 +34,7 @@ namespace Tunniplaan
                 }
             }
 
-            ClassID = Tunniplaan.getClassID(ClassName);//Getting the ID of the class by using it's ClassName string 
+            ClassID = Tunniplaan.getClassID(ClassName);//Getting the ID of the class by using it's ClassName string
 
             Tund = Tund.Replace(ClassName + "(", "");//Delete the part with ClassName plus "("
             switch (Tund[0])//Choose, whether class happens on even or uneven week (or both)
@@ -179,7 +179,7 @@ namespace Tunniplaan
         }
     }
 
-    class Program
+    class Tunniplaan
     {
         //A function which takes as input suitable classes and prints them out
         public static void PrintoutClasses(List<Class> Tunnid, string MyGroup){
