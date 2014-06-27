@@ -1,4 +1,5 @@
 from datetime import datetime
+import random
 
 __author__ = 'Netšajev'
 
@@ -100,7 +101,9 @@ inventory['pocket'] = ['seashell', 'strange berry', 'lint']
 inventory['backpack'].sort()
 inventory['gold'] += 50
 
-print(inventory)
+print('Your inventory:')
+for index, item in enumerate(inventory):
+    print(index + 1, item)
 
 for i in range(1, 6, 3):
     print(i, sep='', end=' ')
@@ -112,4 +115,53 @@ def my_function(x):
     return x
 
 
-print(str(my_function(list(range(3)))))   # Add your range between the parentheses!)
+print(str(my_function(list(range(3)))))
+
+choice = input('Enjoying the course? (y/n)')
+
+while choice != "y" and choice != "n":
+    choice = input("Sorry, I didn't catch that. Enter again: ")
+
+
+random_number = random.randint(1, 10)
+
+guesses_left = 3
+
+while guesses_left > 0:
+    guess = input("Guess a number: ")
+    if guess == random_number:
+        print("You win!")
+        break
+    guesses_left -= 1
+else:
+    print("You lose.")
+
+
+hobbies = []
+for i in range(3):
+    hobby = input("Write your hobby: ")
+    hobbies.append(hobby)
+    hobby = hobby.lower()
+    if hobby == "games":
+        print("Games are bad for your success!")
+        break
+else:
+    print("Great choice of hobbies!")
+print(hobbies)
+
+phrase = "A bird in the hand..."
+
+# Add your for loop
+for char in phrase:
+    if char == 'A' or char == 'a':
+        print('X', end=' ')
+    else:
+        print(char, end=' ')
+print()
+
+list_a = [3, 9, 17, 15, 19]
+list_b = [2, 4, 8, 10, 30, 40, 50, 60, 70, 80, 90]
+list_c = [11, 13, 15, 12, 14, 16, 17, 21, 19, 44]
+
+for a, b, c in zip(list_a, list_b, list_c):
+    print(max(a, b, c))
