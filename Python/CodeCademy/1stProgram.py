@@ -101,3 +101,15 @@ inventory['backpack'].sort()
 inventory['gold'] += 50
 
 print(inventory)
+
+for i in range(1, 6, 3):
+    print(i, sep='', end=' ')
+
+
+def my_function(x):
+    for k in range(0, len(x)):
+        x[k] *= 2
+    return x
+
+
+print(str(my_function(list(range(3)))))   # Add your range between the parentheses!)
