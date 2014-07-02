@@ -164,3 +164,13 @@ list_c = [11, 13, 15, 12, 14, 16, 17, 21, 19, 44]
 
 for a, b, c in zip(list_a, list_b, list_c):
     print(max(a, b, c))
+
+#EXTERNAL. TAKES LIST OF NUMBERS AND RETURNS WHOLE STRING
+
+
+def with_format(nums):
+    return ('{}'*len(nums)).format(*nums)
+
+trial = [3, 2, 4, 6, 7]
+
+print(with_format(trial))
