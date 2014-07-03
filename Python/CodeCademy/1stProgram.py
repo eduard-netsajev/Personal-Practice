@@ -174,3 +174,5 @@ def with_format(nums):
 trial = [3, 2, 4, 6, 7]
 
 print(with_format(trial))
+
+print(bin(234)[2::])
