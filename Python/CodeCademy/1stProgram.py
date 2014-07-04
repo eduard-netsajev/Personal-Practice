@@ -176,3 +176,11 @@ trial = [3, 2, 4, 6, 7]
 print(with_format(trial))
 
 print(bin(234)[2::])
+
+#Essentially, shifting is multiplying or dividing by 2 (base of the number)
+
+shift_right = 0b1100
+shift_left = 0b1
+
+print(bin(shift_right))
+print(bin(shift_left))
