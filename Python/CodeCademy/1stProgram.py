@@ -184,3 +184,32 @@ shift_left = 0b1
 
 print(bin(shift_right))
 print(bin(shift_left))
+
+
+def check_bit4(inpt):
+    mask = 0b1000
+    if mask & inpt:
+        return "on"
+    else:
+        return "off"
+
+
+def turn_bit(inpt, bit):
+
+    mask = 2 ** (bit-1)
+    return bin(inpt | mask)
+
+
+print(turn_bit(3, 3))
+
+# Flip bits - XOR with 1
+
+a = 0b110
+msk = 0b111
+desired = a ^ msk
+
+
+def flip_bit(number, n):
+    mask = 0b1 << n-1
+    result = number ^ mask
+    return bin(result)
