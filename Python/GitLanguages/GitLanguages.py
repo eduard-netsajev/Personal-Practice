@@ -9,9 +9,13 @@ import os.path
 now = datetime.now()
 PATH = "git_lang_data/{:0>2}-{:0>2}-{} langs.txt".format(now.day, now.month, now.year)
 
+update = True
+
 if os.path.isfile(PATH) and os.access(PATH, os.R_OK):
     print("File {} exists and is readable".format(PATH))
-else:
+    if input("Enter 'y' to update it with the newest data: ") != 'y':
+        update = False
+if update:
     l = requests.get('https://api.github.com/repos/eduard-netsajev/Personal-Practice/languages')
     if l.ok:
         print("\nLanguages used in Eduard's repository:\n")
