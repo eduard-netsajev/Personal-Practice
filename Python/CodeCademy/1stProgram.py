@@ -213,3 +213,11 @@ def flip_bit(number, n):
     mask = 0b1 << n-1
     result = number ^ mask
     return bin(result)
+
+with open('varia.txt', 'w') as varia:
+    varia.write('I love you')
+
+if not varia.closed:
+    varia.close()
+
+print(varia.closed)
