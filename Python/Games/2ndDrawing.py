@@ -53,7 +53,7 @@ while not done:
     pygame.draw.arc(screen, GREEN, [100,200,250,100],  pi/2,     pi, 2)
     pygame.draw.arc(screen, WHITE, [100,200,250,100],     0,   pi/2, 2)
     pygame.draw.arc(screen, RED,   [100,200,250,100],3*pi/2,   2*pi, 2)
-    pygame.draw.arc(screen, BLUE,  [100,200,250,100],    pi, 3*pi/2, 2)
+    pygame.draw.arc(screen, BLUE,  [100,200,250,100],    pi, 3*pi/2, 50)
 
     # This draws a triangle using the polygon command
     pygame.draw.polygon(screen, WHITE, [[300,300], [200,400], [400,400]], 5)
