@@ -10,7 +10,7 @@ for i in range(100):
     divided_by5 = not num % 5
 
     if divided_by3 or divided_by5:
-        print(" - ", end = '')
+        print(" - ", end='')
     if divided_by3:
         print("Fizz", end='')
     if divided_by5:
