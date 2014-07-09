@@ -19,9 +19,42 @@ except TypeError:
 print(a, b)
 
 for num in b:
-        num = 7
+        num = num ** 2
 print(b)
 
 for i in range(len(b)):
-        b[i] = 7
+        b[i] = b[i] ** 2
 print(b)
+
+a = "Hi"
+b = "There"
+c = "!"
+print(a + b)
+print(a + b + c)
+print(3 * a)
+print(a * 3)
+print((a * 2) + (b * 2))
+
+months = "JanFebMarAprMayJunJulAugSepOctNovDec"
+
+n = int(input("Enter a month number: "))
+for i in range(len(months)):
+    if i == n:
+        print(months[(i-1)*3:i*3])
+
+plain_text = "This is a test. ABC abc"
+encrypted_text = ""
+for c in plain_text:
+    x = ord(c)
+    x = x + 1
+    c2 = chr(x)
+    encrypted_text = encrypted_text + c2
+print(encrypted_text)
+
+plain_text = ""
+for c in encrypted_text:
+    x = ord(c)
+    x = x - 1
+    c2 = chr(x)
+    plain_text = plain_text + c2
+print(plain_text)
