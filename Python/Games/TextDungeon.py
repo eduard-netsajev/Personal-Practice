@@ -1,5 +1,9 @@
 __author__ = 'Netšajev'
 
+import os
+
+clear = lambda: os.system('cls')
+
 # http://programarcadegames.com/labs/adventure/castle_map_02.png
 
 room_list = []
@@ -74,11 +78,10 @@ playing = True
 
 while playing:
     print(room_list[current_room][0])
-
     print_room(room_list[current_room])
 
     direction = input("Where you want to go? ")
-    print()
+    clear()
 
     if len(direction) < 1:
         pass
