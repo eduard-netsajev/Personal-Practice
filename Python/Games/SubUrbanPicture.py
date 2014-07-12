@@ -129,6 +129,8 @@ while not done:
     for i in range(5):
         draw_house(20+i*190, 150, 16)
 
+    draw_cloud_big(350, 150, 4)
+
     draw_sign(5, 318, 'Eduardville', 3)
 
     # --- Go ahead and update the screen with what we've drawn.
