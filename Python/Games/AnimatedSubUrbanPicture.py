@@ -192,18 +192,18 @@ class House(Picture):
         pygame.draw.ellipse(screen, YELLOW, [pnt_k[0], pnt_k[1] - doorh + self.size/3, self.size*2, self.size*2])
         #DRAW A DOOR
         pygame.draw.polygon(screen, BROWN, [pnt_k, [pnt_k[0], pnt_k[1] + self.size * 3 / 2 - doorh],
-                                          [pnt_n[0], pnt_n[1] + self.size * 3 / 2 - doorh], pnt_n])
+                                            [pnt_n[0], pnt_n[1] + self.size * 3 / 2 - doorh], pnt_n])
         #DRAW A ROAD IN FRONT OF THE HOUS
         pygame.draw.polygon(screen, SILVER, [pnt_k, [pnt_k[0] + self.size, pnt_k[1] + self.size * 3 / 2],
                                              [pnt_n[0] + self.size, pnt_n[1] + self.size * 3 / 2], pnt_n])
         #DRAW UPPER WINDOWS
         pygame.draw.rect(screen, win1color, [self.x + self.size/2, self.y + self.size * 9/2,
-                                         self.size * 4, self.size * 3])
+                                             self.size * 4, self.size * 3])
         pygame.draw.rect(screen, win2color, [self.x + self.size*11/2, self.y + self.size * 9/2,
-                                         self.size * 4, self.size * 3])
+                                             self.size * 4, self.size * 3])
         #DRAW LOWER WINDOW
         pygame.draw.rect(screen, win3color, [self.x + self.size*11/2, self.y + self.size * 19/2,
-                                          self.size * 4, self.size * 3])
+                                             self.size * 4, self.size * 3])
         #DRAW A DOORKNOB
         pygame.draw.ellipse(screen, BLACK, [pnt_k[0]+self.size/8, pnt_k[1]-self.size*5/2, self.size/4, self.size/4])
 
