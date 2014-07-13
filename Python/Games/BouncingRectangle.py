@@ -49,7 +49,7 @@ while not done:
     # above this, or they will be erased with this command.
     screen.fill(BLACK)
 
-    pygame.draw.rect(screen, WHITE, [rect_x, rect_y, 50, 50])
+    pygame.draw.rect(screen, BLACK, [rect_x, rect_y, 50, 50])
     pygame.draw.ellipse(screen, RED, [rect_x+10, rect_y+10, 30, 30])
 
     rect_x += rect_change_x

@@ -110,29 +110,35 @@ def median(numbers):
         return numbers[n // 2]
     else:
         return (numbers[n/2-1]+numbers[n/2])/2.0
-""" test """
 
-if is_even(int(input("Check for evenness number: "))):
-    print("Even")
-else:
-    print("Odd")
 
-if is_int(float(input("Check for int or float number: "))):
-    print("Int")
-else:
-    print("Float")
+def main():
+    """ test """
 
-print("The sum of your input is {}".format(digit_sum(int(input("Find the sum of numbers in: ")))))
+    if is_even(int(input("Check for evenness number: "))):
+        print("Even")
+    else:
+        print("Odd")
 
-print("Factorial of your number is {}".format(factorial(int(input("Find the factorial of number: ")))))
+    if is_int(float(input("Check for int or float number: "))):
+        print("Int")
+    else:
+        print("Float")
 
-if is_prime(int(input("Check for prime number: "))):
-    print("Prime")
-else:
-    print("Not prime")
+    print("The sum of your input is {}".format(digit_sum(int(input("Find the sum of numbers in: ")))))
 
-txt = input("Type a sentence: ")
-print("The reverse variant is: \n{}".format(reverse(txt)))
-print("The variant without vowels is: \n{}".format(anti_vowel(txt)))
+    print("Factorial of your number is {}".format(factorial(int(input("Find the factorial of number: ")))))
 
-print("The scrabble score of the word is {}".format(scrabble_score(txt)))
+    if is_prime(int(input("Check for prime number: "))):
+        print("Prime")
+    else:
+        print("Not prime")
+
+    txt = input("Type a sentence: ")
+    print("The reverse variant is: \n{}".format(reverse(txt)))
+    print("The variant without vowels is: \n{}".format(anti_vowel(txt)))
+
+    print("The scrabble score of the word is {}".format(scrabble_score(txt)))
+
+if __name__ == "__main__":
+    main()
