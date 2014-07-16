@@ -32,6 +32,8 @@ def main():
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
 
+    img_y = -480
+
     # -------- Main Program Loop -----------
     while not done:
         # ALL EVENT PROCESSING SHOULD GO BELOW THIS COMMENT
@@ -41,18 +43,20 @@ def main():
         # ALL EVENT PROCESSING SHOULD GO ABOVE THIS COMMENT
 
         # ALL GAME LOGIC SHOULD GO BELOW THIS COMMENT
-
+        img_y += 3
+        if img_y > 480:
+            img_y = -480
         # ALL GAME LOGIC SHOULD GO ABOVE THIS COMMENT
 
         # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
 
         # First, clear the screen to white. Don't put other drawing commands
         # above this, or they will be erased with this command.
-        screen.fill(WHITE)
+        screen.fill(BLACK)
 
         # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
 
-        screen.blit(background_image, [0, 0])
+        screen.blit(background_image, [0, img_y])
 
 
         # Go ahead and update the screen with what we've drawn.
