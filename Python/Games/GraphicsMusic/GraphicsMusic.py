@@ -19,12 +19,10 @@ def main():
     pygame.init()
 
     # Set the width and height of the screen [width,height]
-    size = [768, 480]
+    size = [700, 500]
     screen = pygame.display.set_mode(size)
 
-    pygame.display.set_caption("My Game")
-
-    background_image = pygame.image.load("768x480.png").convert()
+    pygame.display.set_caption("Graphics & Music")
 
     #Loop until the user clicks the close button.
     done = False
@@ -32,32 +30,44 @@ def main():
     # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
 
-    img_y = -500
+    player_image = pygame.image.load("player.png").convert()
+    player_image.set_colorkey(BLACK)
+
+    background_image = pygame.image.load("background.jpg").convert()
+
+    click_sound = pygame.mixer.Sound("laser.ogg")
 
     # -------- Main Program Loop -----------
     while not done:
         # ALL EVENT PROCESSING SHOULD GO BELOW THIS COMMENT
-        for event in pygame.event.get(): # User did something
-            if event.type == pygame.QUIT: # If user clicked close
-                done = True # Flag that we are done so we exit this loop
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                click_sound.play()
         # ALL EVENT PROCESSING SHOULD GO ABOVE THIS COMMENT
 
         # ALL GAME LOGIC SHOULD GO BELOW THIS COMMENT
-        img_y += 7
-        if img_y > 500:
-            img_y = -500
+
+        # Get the current mouse position. This returns the position
+        # as a list of two numbers.
+        player_position = pygame.mouse.get_pos()
+        x = player_position[0]
+        y = player_position[1]
+
         # ALL GAME LOGIC SHOULD GO ABOVE THIS COMMENT
 
         # ALL CODE TO DRAW SHOULD GO BELOW THIS COMMENT
 
         # First, clear the screen to white. Don't put other drawing commands
         # above this, or they will be erased with this command.
-        screen.fill(BLACK)
+        screen.fill(WHITE)
+        screen.blit(background_image, [0, 0])
+
+        # Copy image to screen:
+        screen.blit(player_image, [x, y])
 
         # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
-
-        screen.blit(background_image, [0, img_y])
-
 
         # Go ahead and update the screen with what we've drawn.
         pygame.display.flip()
