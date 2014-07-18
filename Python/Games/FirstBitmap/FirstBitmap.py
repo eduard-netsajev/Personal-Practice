@@ -43,7 +43,7 @@ def main():
         # ALL EVENT PROCESSING SHOULD GO ABOVE THIS COMMENT
 
         # ALL GAME LOGIC SHOULD GO BELOW THIS COMMENT
-        img_y += 7
+        img_y += 3
         if img_y > 500:
             img_y = -500
         # ALL GAME LOGIC SHOULD GO ABOVE THIS COMMENT
@@ -63,7 +63,7 @@ def main():
         pygame.display.flip()
 
         # Limit to 20 frames per second
-        clock.tick(20)
+        clock.tick(60)
 
     # Close the window and quit.
     # If you forget this line, the program will 'hang'
