@@ -1,16 +1,6 @@
-"""
-Show the proper way to organize a game using the a game class.
- 
-Sample Python/Pygame Programs
-Simpson College Computer Science
-http://programarcadegames.com/
-http://simpson.edu/computer-science/
- 
-Explanation video: http://youtu.be/O4Y5KrNgP_c
-"""
- 
 import pygame
 import random
+import json
 
 #--- Global constants ---
 BLACK = (0, 0, 0)
@@ -22,8 +12,11 @@ BLUE = (0, 0, 255)
 SCREEN_WIDTH = 700
 SCREEN_HEIGHT = 500
 
+RECORDS_PATH = 'records.json'
+
 # --- Classes ---
- 
+
+
 class Block(pygame.sprite.Sprite):
     """ This class represents a simple block the player collects. """
 
@@ -81,17 +74,28 @@ class BigBlock(Block):
 
 class Player(pygame.sprite.Sprite):
     """ This class represents the player. """
+    armor = 3
+
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface([10, 10])
+        self.image = pygame.Surface([self.armor*3, self.armor*3])
         self.image.fill(RED)
         self.rect = self.image.get_rect()
- 
+
     def update(self):
         """ Update the player location. """
         pos = pygame.mouse.get_pos()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+
+    def change_armor(self, amount):
+        self.armor += amount
+        if self.armor > 0:
+            self.image = pygame.Surface([self.armor*3+2, self.armor*3+2])
+        else:
+            self.image = pygame.Surface([2, 2])
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
 
 
 class Game(object):
@@ -110,9 +114,9 @@ class Game(object):
  
     # Other data
     game_over = False
-    lifes = 0
     score = 0
     level = 0
+    biggest_armor = 0
 
     #Music files
     crash_sound = None
@@ -121,20 +125,23 @@ class Game(object):
 
     time = 0
     frames = 0
+    shift = False
 
     # --- Class methods
     # Set up the game
     def __init__(self):
 
-        self.lifes = 3
         self.level = 1
         self.game_over = False
         self.frames = 0
-
+        self.player_name = ''
+        self.record = None
+        self.ask_name = False
 
         self.crash_sound = pygame.mixer.Sound("explosion.ogg")
         self.levelup_sound = pygame.mixer.Sound("levelup.ogg")
         self.background_sound = pygame.mixer.Sound("background.ogg")
+        self.background_image = pygame.image.load("asteroids.png").convert()
 
         self.background_sound.play()
 
@@ -167,7 +174,177 @@ class Game(object):
                 if self.game_over:
                     self.background_sound.stop()
                     self.__init__()
- 
+            # User pressed down on a key
+            if event.type == pygame.KEYDOWN and self.ask_name:
+
+                if event.key == pygame.K_BACKSPACE:
+                    self.player_name = self.player_name[:-1]
+                if event.key == pygame.K_RSHIFT or event.key == pygame.K_LSHIFT:
+                    self.shift = True
+
+                if event.key == pygame.K_q:
+                    if self.shift:
+                        self.player_name += 'Q'
+                    else:
+                        self.player_name += 'q'
+                if event.key == pygame.K_w:
+                    if self.shift:
+                        self.player_name += 'W'
+                    else:
+                        self.player_name += 'w'
+                if event.key == pygame.K_e:
+                    if self.shift:
+                        self.player_name += 'E'
+                    else:
+                        self.player_name += 'e'
+                if event.key == pygame.K_r:
+                    if self.shift:
+                        self.player_name += 'R'
+                    else:
+                        self.player_name += 'r'
+                if event.key == pygame.K_t:
+                    if self.shift:
+                        self.player_name += 'T'
+                    else:
+                        self.player_name += 't'
+                if event.key == pygame.K_y:
+                    if self.shift:
+                        self.player_name += 'Y'
+                    else:
+                        self.player_name += 'y'
+                if event.key == pygame.K_u:
+                    if self.shift:
+                        self.player_name += 'U'
+                    else:
+                        self.player_name += 'u'
+                if event.key == pygame.K_i:
+                    if self.shift:
+                        self.player_name += 'I'
+                    else:
+                        self.player_name += 'i'
+                if event.key == pygame.K_o:
+                    if self.shift:
+                        self.player_name += 'O'
+                    else:
+                        self.player_name += 'o'
+                if event.key == pygame.K_p:
+                    if self.shift:
+                        self.player_name += 'P'
+                    else:
+                        self.player_name += 'p'
+                if event.key == pygame.K_a:
+                    if self.shift:
+                        self.player_name += 'A'
+                    else:
+                        self.player_name += 'a'
+                if event.key == pygame.K_s:
+                    if self.shift:
+                        self.player_name += 'S'
+                    else:
+                        self.player_name += 's'
+                if event.key == pygame.K_d:
+                    if self.shift:
+                        self.player_name += 'D'
+                    else:
+                        self.player_name += 'd'
+                if event.key == pygame.K_f:
+                    if self.shift:
+                        self.player_name += 'F'
+                    else:
+                        self.player_name += 'f'
+                if event.key == pygame.K_g:
+                    if self.shift:
+                        self.player_name += 'G'
+                    else:
+                        self.player_name += 'g'
+                if event.key == pygame.K_h:
+                    if self.shift:
+                        self.player_name += 'H'
+                    else:
+                        self.player_name += 'h'
+                if event.key == pygame.K_j:
+                    if self.shift:
+                        self.player_name += 'J'
+                    else:
+                        self.player_name += 'j'
+                if event.key == pygame.K_k:
+                    if self.shift:
+                        self.player_name += 'K'
+                    else:
+                        self.player_name += 'k'
+                if event.key == pygame.K_l:
+                    if self.shift:
+                        self.player_name += 'L'
+                    else:
+                        self.player_name += 'l'
+                if event.key == pygame.K_z:
+                    if self.shift:
+                        self.player_name += 'Z'
+                    else:
+                        self.player_name += 'z'
+                if event.key == pygame.K_x:
+                    if self.shift:
+                        self.player_name += 'X'
+                    else:
+                        self.player_name += 'x'
+                if event.key == pygame.K_c:
+                    if self.shift:
+                        self.player_name += 'C'
+                    else:
+                        self.player_name += 'c'
+                if event.key == pygame.K_v:
+                    if self.shift:
+                        self.player_name += 'V'
+                    else:
+                        self.player_name += 'v'
+                if event.key == pygame.K_b:
+                    if self.shift:
+                        self.player_name += 'B'
+                    else:
+                        self.player_name += 'b'
+                if event.key == pygame.K_n:
+                    if self.shift:
+                        self.player_name += 'N'
+                    else:
+                        self.player_name += 'n'
+                if event.key == pygame.K_m:
+                    if self.shift:
+                        self.player_name += 'M'
+                    else:
+                        self.player_name += 'm'
+                if event.key == pygame.K_SPACE:
+                        self.player_name += ' '
+                if event.key == pygame.K_RETURN:
+
+                    score_list = [self.player_name, self.score]
+                    armor_list = [self.player_name, self.biggest_armor]
+
+                    try:
+                        json_data = open(RECORDS_PATH)
+                        self.record = json.load(json_data)
+                        json_data.close()
+
+                        record_score = self.record['score'][1]
+                        record_armor = self.record['armor'][1]
+                    except FileNotFoundError:
+                        record_score = 0
+                        record_armor = 0
+                    finally:
+                        if record_score >= self.score:
+                            score_list = [self.record['score'][0], self.record['score'][1]]
+                        if record_armor >= self.biggest_armor:
+                            armor_list = [self.record['armor'][0], self.record['armor'][1]]
+
+                    record_text = {'score': score_list,
+                                   'armor': armor_list}
+                    with open(RECORDS_PATH, 'w') as f:
+                        json.dump(record_text, f, ensure_ascii=False)
+                    self.ask_name = False
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_RSHIFT or event.key == pygame.K_LSHIFT:
+                    self.shift = False
+
         return False
  
     def run_logic(self):
@@ -192,34 +369,65 @@ class Game(object):
 
             for block in blocks_hit_list:
 
-                self.lifes -= block.size
+                self.player.change_armor(-block.size)
 
                 self.crash_sound.play()
                 block.reset_pos()
                 self.block_list.add(block)
 
-            if self.lifes < 0:
+            if self.player.armor < 0:
+
                 self.score = self.time
                 self.game_over = True
+                self.ask_name = True
 
     def display_frame(self, screen):
         """ Display everything to the screen for the game. """
         screen.fill(BLACK)
- 
+
+        screen.blit(self.background_image, [0, 0])
+
         if self.game_over:
-
-            screen.fill(BLACK)
             font = pygame.font.SysFont("serif", 25)
-            text = font.render("Game Over, click to restart", True, WHITE)
-            center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
-            center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
-            screen.blit(text, [center_x, center_y])
 
-            string = "Your score: {}".format(self.score)
-            text = font.render(string, True, WHITE)
-            center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
-            center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
-            screen.blit(text, [center_x, center_y-50])
+            if self.ask_name:
+                screen.fill(BLACK)
+                string = "Enter your name: {}".format(self.player_name)
+                text = font.render(string, True, WHITE)
+                center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
+                center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
+                screen.blit(text, [center_x, center_y])
+
+            else:
+                screen.fill(BLACK)
+                text = font.render("Game Over, click to restart", True, WHITE)
+                center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
+                center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
+                screen.blit(text, [center_x, center_y-50])
+
+                string = "{}, your score: {} and your biggest armor: {}".format(self.player_name,
+                                                                                self.score, self.biggest_armor)
+                text = font.render(string, True, WHITE)
+                center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
+                center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
+                screen.blit(text, [center_x, center_y])
+
+                if self.record is not None:
+                    string = "Best score: {} by {}".format(self.record['score'][1], self.record['score'][0])
+                else:
+                    string = "Your name will be here next time"
+
+                text = font.render(string, True, WHITE)
+                center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
+                center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
+                screen.blit(text, [center_x, center_y+50])
+
+                if self.record is not None:
+                    string = "Biggest armor: {} by {}".format(self.record['armor'][1], self.record['armor'][0])
+                    text = font.render(string, True, WHITE)
+                    center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
+                    center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
+                    screen.blit(text, [center_x, center_y+100])
 
             pygame.display.flip()
  
@@ -231,14 +439,7 @@ class Game(object):
             text = font.render(string, True, GREEN)
             screen.blit(text, [15, 15])
 
-            self.lifes *= 10
-            self.lifes //= 1
-            self.lifes /= 10
-
-            life = self.lifes / 1
-            life = int(self.lifes)
-
-            string = "Armor: {}".format(life)
+            string = "Armor: {}".format(self.player.armor)
             text = font.render(string, True, GREEN)
             screen.blit(text, [15, 45])
 
@@ -246,9 +447,12 @@ class Game(object):
 
     def check_level(self):
 
+        if self.player.armor > self.biggest_armor:
+            self.biggest_armor = self.player.armor
+
         new_level = int(1+self.time//10)
         if new_level > self.level:
-            self.lifes += 1
+            self.player.change_armor(1)
             self.levelup_sound.play()
             self.level = new_level
             if self.level % 2 == 0:
@@ -269,7 +473,7 @@ def main():
  
     pygame.display.set_caption("My Game")
     pygame.mouse.set_visible(False)
- 
+
     # Create our objects and set the data
     done = False
     clock = pygame.time.Clock()
