@@ -369,7 +369,8 @@ class Game(object):
 
             for block in blocks_hit_list:
 
-                self.player.change_armor(-block.size)
+                if self.time > 3:
+                    self.player.change_armor(-block.size)
 
                 self.crash_sound.play()
                 block.reset_pos()
