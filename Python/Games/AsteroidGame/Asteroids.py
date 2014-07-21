@@ -48,6 +48,7 @@ class BigBlock(Block):
 
     direction = 0
     size = 2
+    move = True
 
     def __init__(self):
         """ Constructor, create the image of the block. """
@@ -60,14 +61,18 @@ class BigBlock(Block):
         """ Called when the block is 'collected' or falls off
             the screen. """
 
-        self.direction = random.randint(-2, 2)
+        self.direction = random.randint(-1, 1)
         self.rect.y = random.randrange(-300, -20)
         self.rect.x = random.randrange(-SCREEN_WIDTH, 2*SCREEN_WIDTH)
 
     def update(self):
         """ Automatically called when we need to move the block. """
-        self.rect.y += 2
-        self.rect.x += self.direction
+        if self.move == 4:
+            self.rect.y += 2
+            self.rect.x += self.direction
+            self.move = 1
+        else:
+            self.move += 1
         if self.rect.y > SCREEN_HEIGHT + self.rect.height:
             self.reset_pos()
 
@@ -459,7 +464,7 @@ class Game(object):
             if self.level % 2 == 0:
                     block = BigBlock()
                     block.rect.x = random.randrange(SCREEN_WIDTH)
-                    block.rect.y = random.randrange(-300, SCREEN_HEIGHT)
+                    block.rect.y = random.randrange(-300, -20)
                     self.block_list.add(block)
                     self.all_sprites_list.add(block)
 
@@ -472,7 +477,7 @@ def main():
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
  
-    pygame.display.set_caption("My Game")
+    pygame.display.set_caption("Asteroid Field by Eduard Netsajev")
     pygame.mouse.set_visible(False)
 
     # Create our objects and set the data
