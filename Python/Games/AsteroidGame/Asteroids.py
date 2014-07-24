@@ -142,6 +142,7 @@ class Game(object):
         self.player_name = ''
         self.record = None
         self.ask_name = False
+        self.score = 0
 
         self.crash_sound = pygame.mixer.Sound("explosion.ogg")
         self.levelup_sound = pygame.mixer.Sound("levelup.ogg")
@@ -353,9 +354,9 @@ class Game(object):
         return False
  
     def run_logic(self):
-
         self.frames += 1
         self.time = self.frames//6/10
+
         """
         This method is run each time through the frame. It
         updates positions and checks for collisions.
@@ -364,10 +365,10 @@ class Game(object):
 
             #Check for levelling up
             self.check_level()
-
             # Move all the sprites
             for i in range(self.level):
                 self.all_sprites_list.update()
+                self.score += 1
  
             # See if the player block has collided with anything.
             blocks_hit_list = pygame.sprite.spritecollide(self.player, self.block_list, False)
@@ -383,7 +384,6 @@ class Game(object):
 
             if self.player.armor < 0:
 
-                self.score = self.time
                 self.game_over = True
                 self.ask_name = True
 
@@ -409,31 +409,37 @@ class Game(object):
                 text = font.render("Game Over, click to restart", True, WHITE)
                 center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
                 center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
-                screen.blit(text, [center_x, center_y-50])
+                screen.blit(text, [center_x, center_y-150])
 
                 string = "{}, your score: {} and your biggest armor: {}".format(self.player_name,
                                                                                 self.score, self.biggest_armor)
                 text = font.render(string, True, WHITE)
                 center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
                 center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
-                screen.blit(text, [center_x, center_y])
+                screen.blit(text, [center_x, center_y-100])
 
                 if self.record is not None:
-                    string = "Best score: {} by {}".format(self.record['score'][1], self.record['score'][0])
+                    string = "Best score:     {} by {}".format(self.record['score'][1], self.record['score'][0])
                 else:
                     string = "Your name will be here next time"
 
                 text = font.render(string, True, WHITE)
                 center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
                 center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
-                screen.blit(text, [center_x, center_y+50])
+                screen.blit(text, [center_x, center_y])
 
                 if self.record is not None:
-                    string = "Biggest armor: {} by {}".format(self.record['armor'][1], self.record['armor'][0])
+                    string = "Biggest armor:     {} by {}".format(self.record['armor'][1], self.record['armor'][0])
                     text = font.render(string, True, WHITE)
                     center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
                     center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
-                    screen.blit(text, [center_x, center_y+100])
+                    screen.blit(text, [center_x, center_y+50])
+
+                string = "Level reached: {}".format(self.level)
+                text = font.render(string, True, WHITE)
+                center_x = (SCREEN_WIDTH // 2) - (text.get_width() // 2)
+                center_y = (SCREEN_HEIGHT // 2) - (text.get_height() // 2)
+                screen.blit(text, [center_x, center_y-50])
 
             pygame.display.flip()
  
@@ -441,7 +447,7 @@ class Game(object):
             self.all_sprites_list.draw(screen)
 
             font = pygame.font.SysFont("serif", 25)
-            string = "Score: {}".format(self.time)
+            string = "Score: {}".format(self.score)
             text = font.render(string, True, GREEN)
             screen.blit(text, [15, 15])
 
