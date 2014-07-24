@@ -77,25 +77,42 @@ for i in range(6):
                 tund['weeks'] = 2
             else:
                 tund['weeks'] = 0
-                print('THIS SHOULD NEVER HAPPEN!\n'*40)
+                print('Week not recognized!\n'*40)
+                input()
 
         tund['groups'] = group
+
+        temp_string = tund_data.find('td', style="border:0;text-align:right")
+        if temp_string is None:
+            tund['room'] = ''
+            input('No room found at group {} tund {}'.format(group, tund['name']))
+        else:
+            temp_string = temp_string.string
+            temp_string = temp_string.replace(u'\xa0', u' ')
+            temp_string = temp_string.replace('\n', '')
+            temp_string = temp_string.strip()
+            tund['room'] = temp_string
+        try:
+            temp_soup = tund_data.find_all('b')[-1]
+            if temp_soup.string.strip() == 'kommentaar:':
+                temp_soup = temp_soup.next_sibling
+                tund['comments'] = temp_soup.string.strip()
+            else:
+                tund['comments'] = ''
+        except IndexError:
+            tund['comments'] = ''
 
         for key in tund:
             print("{} - {}".format(key, tund[key]))
 
-        with open('tund.html', 'w') as f:
-            f.write(tund_data.prettify())
-        break
-    break
+        json_data[i].append(tund)
+
 
 ### WRITE DOWN THE JSON FILE
-group_data = gsoup.prettify()
+path = "{}.json".format(group)
+with open(path, 'w') as f:
+    json.dump(json_data, f, ensure_ascii=False)
 
-path = "{}.html".format(group)
-#with open(path, 'w') as f:
-#json.dump(group_data, f, ensure_ascii=False)
-#f.write(days[2])
 
 """
 JSON REQUIREMENTS:
