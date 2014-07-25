@@ -56,11 +56,7 @@ for group in links:
     counter += 1
 print("Total groups to scrape: {}".format(counter))
 
-test = False
 for group in links:
-    if test:
-        break
-    os_stirng = "start GroupScraper.py {}".format(group)
-    os.system(os_stirng)
-
+    os_string = "start GroupScraper.py {}".format(group)
+    os.system(os_string)
 input("Press enter to finish..")
