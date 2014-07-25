@@ -3,14 +3,35 @@ __author__ = 'Netšajev'
 from bs4 import BeautifulSoup
 import requests
 import json
+import sys
+import random
 
-my_url3 = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=33772'
-my_url2 = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=33941'
-my_url1 = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=32597'
-my_url = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=32547'
+print("This is the name of the script: ", sys.argv[0])
+print("Number of arguments: ", len(sys.argv))
+print("The arguments are: ", str(sys.argv))
 
+if len(sys.argv) > 1:
+    json_data = open('links.json')
+    links = json.load(json_data)
+    json_data.close()
+    url = links[sys.argv[1]]
+    test = False
+else:
+    input("No group was passed as argument. One of test urls will be used. Continue?")
 
-g = requests.get(my_url)
+    # TEST URLS:
+    my_url4 = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=33772'
+    my_url3 = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=33941'
+    my_url2 = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=32597'
+    my_url1 = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=32547'
+
+    test_urls = [my_url1, my_url2, my_url3, my_url4]
+    url = test_urls[random.randint(0, 3)]
+    test = True
+
+print(url)
+
+g = requests.get(url)
 gsoup = BeautifulSoup(g.text, 'lxml')
 print(g.text)
 gsoup = gsoup.find('table')
@@ -21,6 +42,10 @@ gsoup = gsoup.find('tr', align="LEFT")
 gsoup = gsoup.find('table', style="width:400px")
 gsoup.find('span').decompose()
 group = gsoup.find('td').text
+
+if not test:
+    if group != sys.argv[1]:
+        input("Group in the link is not the passed as argument group. Continue?")
 
 gsoup.find('tr').decompose()
 gsoup.find('tr').decompose()
@@ -109,10 +134,9 @@ for i in range(6):
 
 
 ### WRITE DOWN THE JSON FILE
-path = "{}.json".format(group)
+path = "groups/{}.json".format(group)
 with open(path, 'w') as f:
-    json.dump(json_data, f, ensure_ascii=False)
-
+    json.dump(json_data, f, ensure_ascii=False, indent=4, sort_keys=True)
 
 """
 JSON REQUIREMENTS:

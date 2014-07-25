@@ -28,13 +28,9 @@ f = open('table.html', 'w')
 f.write(string)
 f.close()
 
-f = open('links.txt', 'w')
-json.dump(links, f, ensure_ascii=False)
+f = open('links.json', 'w')
+json.dump(links, f, ensure_ascii=False, indent=4, sort_keys=True)
 f.close()
-
-
-#os.system("start links.txt")
-
 
 print("List of all programms: ")
 kavad = []
@@ -52,23 +48,20 @@ for i in range(len(kavad)):
         print(kavad[i])
 
 
-print("Finished.")
+print("Starting scraping groups..")
 
-test = True
+counter = 0
+
+for group in links:
+    counter += 1
+print("Total groups to scrape: {}".format(counter))
+
+test = False
 for group in links:
     if test:
         break
-    g = requests.get(links[group])
-    gsoup = BeautifulSoup(g.text, 'lxml')
-    print(group)
-    ### WRITE DOWN THE JSON FILE
-    group_data = g.text
-    path = "groups/{}.json".format(group)
-    with open(path, 'w') as f:
-            #json.dump(group_data, f, ensure_ascii=False)
-            f.write(group_data)
+    os_stirng = "start GroupScraper.py {}".format(group)
+    print(os_stirng)
+    os.system(os_stirng)
 
-my_url = 'http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&i=1&a=1&q=1&b=1&c=-1&d=-1&e=-1&e_sem=141&g=32597'
-
-
-input("Press to finish..")
+input("Press enter to finish..")
