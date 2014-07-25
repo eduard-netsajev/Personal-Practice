@@ -61,7 +61,6 @@ for group in links:
     if test:
         break
     os_stirng = "start GroupScraper.py {}".format(group)
-    print(os_stirng)
     os.system(os_stirng)
 
 input("Press enter to finish..")

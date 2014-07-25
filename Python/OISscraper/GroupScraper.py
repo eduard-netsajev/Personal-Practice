@@ -6,9 +6,9 @@ import json
 import sys
 import random
 
-print("This is the name of the script: ", sys.argv[0])
-print("Number of arguments: ", len(sys.argv))
-print("The arguments are: ", str(sys.argv))
+#print("This is the name of the script: ", sys.argv[0])
+#print("Number of arguments: ", len(sys.argv))
+#print("The arguments are: ", str(sys.argv))
 
 if len(sys.argv) > 1:
     json_data = open('links.json')
@@ -29,11 +29,11 @@ else:
     url = test_urls[random.randint(0, 3)]
     test = True
 
-print(url)
+#print(url)
 
 g = requests.get(url)
 gsoup = BeautifulSoup(g.text, 'lxml')
-print(g.text)
+#print(g.text)
 gsoup = gsoup.find('table')
 [x.decompose() for x in gsoup.findAll('script')]
 [x.decompose() for x in gsoup.findAll('span', style="font-style:italic;")]
@@ -58,7 +58,7 @@ json_data = [[], [], [], [], [], []]
 for i in range(6):
     day_soup = BeautifulSoup(days[i + 1])
     for tund_data in day_soup.find_all(class_='ttmain_tund'):
-        print(tund_data.prettify())
+        #print(tund_data.prettify())
         ###GET THE INFO OF EVERY SINGLE CLASS
         tund = {'day': i}
 
@@ -126,10 +126,12 @@ for i in range(6):
                 tund['comments'] = ''
         except IndexError:
             tund['comments'] = ''
-
+        entries = 0
         for key in tund:
-            print("{} - {}".format(key, tund[key]))
-
+            #print("{} - {}".format(key, tund[key]))
+            entries += 1
+        if entries != 12:
+            input("Amount of entries is not {}. Continue? ".format(entries))
         json_data[i].append(tund)
 
 
