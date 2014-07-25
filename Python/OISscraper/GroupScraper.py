@@ -1,5 +1,9 @@
 __author__ = 'Netšajev'
 
+"""
+This file takes 1 group program page, scrapes all the classes on it and stores them into json file
+"""
+
 from bs4 import BeautifulSoup
 import requests
 import json
@@ -54,7 +58,7 @@ all_text = gsoup.prettify()
 days = all_text.split("<td class=\"pais border_top\" colspan=\"2\">")
 
 # ##CREATE JSON FILE
-json_data = [[], [], [], [], [], []]
+json_data = []
 for i in range(6):
     day_soup = BeautifulSoup(days[i + 1])
     for tund_data in day_soup.find_all(class_='ttmain_tund'):
@@ -105,7 +109,7 @@ for i in range(6):
                 print('Week not recognized!\n'*40)
                 input()
 
-        tund['groups'] = group
+        tund['groups'] = [group]
 
         temp_string = tund_data.find('td', style="border:0;text-align:right")
         if temp_string is None:
@@ -132,7 +136,7 @@ for i in range(6):
             entries += 1
         if entries != 12:
             input("Amount of entries is not {}. Continue? ".format(entries))
-        json_data[i].append(tund)
+        json_data.append(tund)
 
 
 ### WRITE DOWN THE JSON FILE
@@ -145,7 +149,7 @@ JSON REQUIREMENTS:
 
 GROUP_FILE:
 
-[[tund1, tund2 ],[tund3, tund4],[],[],[],[]]
+[tund1, tund2, tund3, tund4]
 
 TUND:
 

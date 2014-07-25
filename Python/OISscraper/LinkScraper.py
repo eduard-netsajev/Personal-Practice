@@ -1,5 +1,10 @@
 __author__ = 'Netšajev'
 
+"""
+This file gets all the links to group programs and stores them into json file
+After that it uses GroupScraper script to parse and gather data of every group
+"""
+
 from bs4 import BeautifulSoup
 import requests
 import json
