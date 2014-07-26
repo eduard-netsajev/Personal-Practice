@@ -2,6 +2,31 @@ __author__ = 'Netšajev'
 
 """
 This file takes 1 group program page, scrapes all the classes on it and stores them into json file
+
+JSON REQUIREMENTS:
+
+    GROUP_FILE:
+
+        [tund1, tund2, tund3, tund4]
+
+    TUND:
+
+        {
+        day : DAY,                     #int: 0-5   MON=0
+        weeks: WEEKS                   #int: 1-3
+        start_time: START_TIME         #String
+        end_time: END_TIME	       #String
+        name : TUND_NAME,              #String
+        room : ROOM,                   #String
+        groups : GROUPS,               #List (String)
+        comments : COMMENTS            #String
+
+        teacher : TEACHER,             #List (String)
+        type : TYPE,                   #String
+        ainekood : AINEKOOD,           #String
+        lasts : LASTS_WEEKS,           #String
+        }
+
 """
 
 from bs4 import BeautifulSoup
@@ -57,7 +82,7 @@ gsoup.find('tr').decompose()
 all_text = gsoup.prettify()
 days = all_text.split("<td class=\"pais border_top\" colspan=\"2\">")
 
-# ##CREATE JSON FILE
+###CREATE JSON FILE
 json_data = []
 for i in range(6):
     day_soup = BeautifulSoup(days[i + 1])
@@ -143,30 +168,3 @@ for i in range(6):
 path = "groups/{}.json".format(group)
 with open(path, 'w') as f:
     json.dump(json_data, f, ensure_ascii=False, indent=4, sort_keys=True)
-
-"""
-JSON REQUIREMENTS:
-
-GROUP_FILE:
-
-[tund1, tund2, tund3, tund4]
-
-TUND:
-
-{
-day : DAY,                     #int: 0-5   MON=0
-weeks: WEEKS                   #int: 1-3
-start_time: START_TIME         #String
-end_time: END_TIME	       #String
-name : TUND_NAME,              #String
-room : ROOM,                   #String
-groups : GROUPS,               #List (String)
-comments : COMMENTS            #String
-
-teacher : TEACHER,             #List (String)
-type : TYPE,                   #String
-ainekood : AINEKOOD,           #String
-lasts : LASTS_WEEKS,           #String
-}
-
-"""

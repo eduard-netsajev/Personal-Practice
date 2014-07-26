@@ -3,6 +3,12 @@ __author__ = 'Netšajev'
 """
 This file gets all the links to group programs and stores them into json file
 After that it uses GroupScraper script to parse and gather data of every group
+
+links.json:
+    GROUP1 : LINK1,
+    GROUP2 : LINK2,
+    GROUP3 : LINK3,
+    ...
 """
 
 from bs4 import BeautifulSoup
@@ -64,4 +70,13 @@ print("Total groups to scrape: {}".format(counter))
 for group in links:
     os_string = "start GroupScraper.py {}".format(group)
     os.system(os_string)
-input("Press enter to finish..")
+
+input("Press enter to start compiling the main file..")
+
+os.system("start MainFileCreator.py")
+
+input("Press enter to start compiling GroupsMap file..")
+
+os.system("start GroupMapCreator.py")
+
+input("Finished. Press enter to exit..")
