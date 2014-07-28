@@ -38,9 +38,7 @@ print((a * 2) + (b * 2))
 months = "JanFebMarAprMayJunJulAugSepOctNovDec"
 
 n = int(input("Enter a month number: "))
-for i in range(len(months)):
-    if i == n:
-        print(months[(i-1)*3:i*3])
+print(months[(n-1)*3:n*3])
 
 plain_text = "This is a test. ABC abc"
 encrypted_text = ""
