@@ -177,7 +177,7 @@ class Game(object):
             if event.type == pygame.QUIT:
                 return True
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.game_over:
+                if self.game_over and not self.ask_name:
                     self.background_sound.stop()
                     self.__init__()
             # User pressed down on a key
