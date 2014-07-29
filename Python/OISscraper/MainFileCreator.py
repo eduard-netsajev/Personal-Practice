@@ -9,6 +9,7 @@ import os
 import json
 import hashlib
 
+print("Started MainFileCreator.py ..")
 
 def is_one_class(class1, class2):
     """
@@ -68,5 +69,4 @@ path = "ClassData.json"
 with open(path, 'w') as f:
     json.dump(ClassData, f, ensure_ascii=False, indent=4, sort_keys=True)
 
-print("Finished. {} classes compiled from {} original classes".format(len(ClassData), classes_count))
-input()
+print("Finished. {} classes compiled from {} original classes\n".format(len(ClassData), classes_count))

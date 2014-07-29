@@ -15,6 +15,7 @@ Hash Map:
 import json
 import os
 
+print("Started GroupMapCreator.py ..")
 
 file_list = os.listdir("groups")
 
@@ -45,5 +46,12 @@ path = "GroupsMap.json"
 with open(path, 'w') as f:
     json.dump(hash_map, f, ensure_ascii=False, indent=4, sort_keys=True)
 
-print(len(hash_map), "groups mapped")
-input("Press enter to finish")
+print("Groups Map was created")
+print(len(hash_map), "groups mapped\nThe groups' files are being deleted")
+
+os.chdir('groups')
+groups_file_list = [f for f in os.listdir(".") if f.endswith(".json")]
+for f in groups_file_list:
+    os.remove(f)
+
+

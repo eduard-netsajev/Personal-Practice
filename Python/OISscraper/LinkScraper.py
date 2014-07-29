@@ -15,6 +15,10 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import os
+import time
+import timeit
+
+print("Started LinkScraper.py ..")
 
 r = requests.get('http://ois.ttu.ee/portal/page?_pageid=35,435155&_dad=portal&_schema=PORTAL&k=&a=1&b=1&c=-1&d=-1&e=-1&e_sem=141&i=1&q=neto&g=-1')
 
@@ -67,16 +71,16 @@ for group in links:
     counter += 1
 print("Total groups to scrape: {}".format(counter))
 
+t0 = time.time()
 for group in links:
     os_string = "start GroupScraper.py {}".format(group)
     os.system(os_string)
 
-input("Press enter to start compiling the main file..")
+while len(os.listdir("groups")) != counter:
+    time.sleep(1)
 
-os.system("start MainFileCreator.py")
+t1 = time.time()
+exec_time = (t1-t0)*100//1/100
 
-input("Press enter to start compiling GroupsMap file..")
-
-os.system("start GroupMapCreator.py")
-
-input("Finished. Press enter to exit..")
+print("It took {:.2} seconds or {} min {} sec to scrape all the groups".format(exec_time, int(exec_time//60),
+                                                                            int(exec_time%60//1)))
