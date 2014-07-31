@@ -32,13 +32,20 @@ json_data = open("ClassData.json")
 Classes = json.load(json_data)
 json_data.close()
 
-hash_map = {}
 
+def sort_by_time(inputhash):
+    return 60*(24*Classes[inputhash]['day'] + int(Classes[inputhash]['start_time'][0, 2]))\
+            + int(Classes[inputhash]['start_time'][3, 5])
+
+
+
+hash_map = {}
 for group in groups:
     hash_list = []
     for Class in Classes:
         if group in Classes[Class]['groups']:
             hash_list.append(Class)
+    hash_list.sort(key=sort_by_time)
     hash_map[group] = hash_list
 
 

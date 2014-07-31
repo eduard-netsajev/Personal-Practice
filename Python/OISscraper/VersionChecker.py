@@ -72,7 +72,7 @@ else:
     old_map_data = json.load(open(old_map_path))
     new_map_data = json.load(open(new_map_path))
 
-    for group in old_map_data:
+    for group in new_map_data:
         try:
             if sorted(old_map_data[group]) != sorted(new_map_data[group]):
                 version_json_data['changedGroups'][0].append(group)
@@ -81,11 +81,12 @@ else:
 
     changed = len(version_json_data['changedGroups'][0])
     if changed > 0:
-        version = version_json_data['version'] + 1
-        version_json_data['version'] = version
+        version = version_json_data['version']
 
         open("oldClassData/"+str(version)+" class_data.json", "w").write(open(old_data_path, "r").read())
         open("oldVersions/"+str(version)+" ver.json", "w").write(open(version_file_path, "r").read())
+
+        version_json_data['version'] = version + 1
 
         print("The file was updated. Changes in {} groups".format(changed))
     else:

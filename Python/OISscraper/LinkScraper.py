@@ -82,5 +82,5 @@ while len(os.listdir("groups")) != counter:
 t1 = time.time()
 exec_time = (t1-t0)*100//1/100
 
-print("It took {:.2} seconds or {} min {} sec to scrape all the groups".format(exec_time, int(exec_time//60),
+print("It took {} seconds or {} min {} sec to scrape all the groups".format(exec_time, int(exec_time//60),
                                                                             int(exec_time%60//1)))
