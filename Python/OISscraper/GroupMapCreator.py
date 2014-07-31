@@ -34,10 +34,8 @@ json_data.close()
 
 
 def sort_by_time(inputhash):
-    return 60*(24*Classes[inputhash]['day'] + int(Classes[inputhash]['start_time'][0, 2]))\
-            + int(Classes[inputhash]['start_time'][3, 5])
-
-
+    return 60*(24*Classes[inputhash]['day'] + int(Classes[inputhash]['start_time'][0: 2]))\
+            + int(Classes[inputhash]['start_time'][3: 5])
 
 hash_map = {}
 for group in groups:
