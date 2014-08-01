@@ -105,9 +105,13 @@ for i in range(6):
 
         for span in temp_soup.find('span'):
             temp_list = span.string.split('-')
-            if len(temp_list) > 1:
+            l = len(temp_list)
+            if l > 1:
                 tund['ainekood'] = temp_list[0].strip()
-                tund['name'] = temp_list[1].strip()
+                name = ''
+                for j in range(1, l):
+                    name += temp_list[j]
+                tund['name'] = name.strip()
 
         temp_soup = BeautifulSoup(tund_data.find('td', style="border:0;text-align:left").prettify())
         temp_string = temp_soup.find_all('span')
