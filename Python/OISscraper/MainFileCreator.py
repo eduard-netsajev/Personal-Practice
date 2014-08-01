@@ -66,7 +66,7 @@ for filename in file_list:
                 else:
                     ClassData[get_const_hash(tund)] = tund
 path = "ClassData.json"
-with open(path, 'w') as f:
+with open(path, 'w', encoding='utf8') as f:
     json.dump(ClassData, f, ensure_ascii=False, indent=4, sort_keys=True)
 
 print("Finished. {} classes compiled from {} original classes\n".format(len(ClassData), classes_count))
