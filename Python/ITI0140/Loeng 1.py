@@ -11,4 +11,4 @@ for kraad in range(-30, 101):
     if kraad % 10 == 0:
         print("*", end='')
     far = celsius_to_f(kraad)*10//1/10
-    print(" = {:}F".format(far))
+    print(" = {}F".format(far))
