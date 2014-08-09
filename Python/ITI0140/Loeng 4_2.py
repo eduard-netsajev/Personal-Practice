@@ -1,5 +1,6 @@
 __author__ = 'Netšajev'
 
+import time
 
 def add(a, b):
     #Make sure the arguments are string type
@@ -32,26 +33,53 @@ def add(a, b):
     return out
 
 
-highest = 0
-#TODO Make a dict of calculated fibonacci and try to look from there
-#Compare calculation times after it
 fibonacci = {"0": "0",
              "1": "1"}
+fibonacci_digits = {0: "0",
+                    1: "1"}
 
 
 def get_f(a):
-    global highest
+    """
+    This function hits recursion limit at a > 997
+    """
     global fibonacci
 
-    if a == "0":
-        return "0"
-    elif a == "1":
-        return "1"
+    if a in fibonacci:
+        return fibonacci[a]
     else:
         result = add(get_f(str(int(a)-1)), str(get_f(str(int(a)-2))))
-        if int(a) > highest:
-            print("Fibonacci", a, "= ", result)
-            highest = int(a)
+        fibonacci[a] = result
         return result
 
-print(get_f('123'))
+
+def get_fibonacci(a):
+    """
+    This one works fine with whichever given argument a
+    Took less than 30 sec to calculate with argument 13245
+    a  time
+    777     0.09
+    7777    10
+    13245   <30
+    25000   111
+
+    """
+    a = int(a)
+    global fibonacci_digits
+
+    if a not in fibonacci_digits:
+        for i in range(2, a+1):
+            fibonacci_digits[i] = add(fibonacci_digits[i-1], fibonacci_digits[i-2])
+    print("Fibonacci", a, " =", fibonacci_digits[a])
+    return fibonacci_digits[a]
+
+fib_1 = '77'
+
+t0 = time.time()
+
+get_fibonacci(fib_1)
+t1 = time.time()
+exec_time = (t1-t0)*1000//1/1000
+
+
+print("It took {} seconds to calculate the Fibonacci number {}".format(exec_time, fib_1))
