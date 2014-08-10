@@ -62,7 +62,6 @@ def get_fibonacci(a):
     7777    10
     13245   <30
     25000   111
-
     """
     a = int(a)
     global fibonacci_digits
@@ -73,7 +72,7 @@ def get_fibonacci(a):
     print("Fibonacci", a, " =", fibonacci_digits[a])
     return fibonacci_digits[a]
 
-fib_1 = '77'
+fib_1 = '777'
 
 t0 = time.time()
 
