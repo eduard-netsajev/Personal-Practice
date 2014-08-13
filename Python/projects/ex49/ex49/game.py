@@ -1,6 +1,5 @@
 __author__ = 'Netšajev'
 
-
 class Room(object):
     def __init__(self, name, description):
         self.name = name

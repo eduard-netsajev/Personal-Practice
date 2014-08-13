@@ -3,7 +3,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-config = [
+config = {
     'description': 'My Project',
     'author': 'Eduard Netsajev',
     'url': 'http://github.com/eduard-netsajev',
@@ -14,6 +14,6 @@ config = [
     'packages': ['NAME'],
     'scripts': [],
     'name': 'projectname'
-]
+}
 
 setup(**config)
