@@ -79,9 +79,11 @@ def wave_length_to_rgb(wave_length):
 
 def generate_fractal():
 
-    # on my laptop, generating this fractal took 7280 seconds in the background
-    # result was a 17.5 MB png picture
-    size = 5000
+    # on my laptop:
+    # s5000 max_iter35 = 7280 sec, 17.3 MB
+    # s10000 max_iter35 = 27350 sec, 47.8 MB
+
+    size = 10000
     max_iteration = 35
     aliasing = True
 
