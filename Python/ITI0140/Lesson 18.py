@@ -37,5 +37,5 @@ nx.draw_networkx_edges(G, pos, edge_color='red', alpha=0.5, width=3)
 
 
 plt.axis('off')
-plt.savefig("house_with_colors.png") # save as png
-plt.show() # display
+plt.savefig("4 to 6 graph.png")
+plt.show()

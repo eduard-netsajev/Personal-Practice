@@ -83,15 +83,15 @@ def generate_fractal():
     # s5000 max_iter35 = 7280 sec, 17.3 MB
     # s10000 max_iter35 = 27350 sec, 47.8 MB
 
-    size = 10000
+    size = 450000
     max_iteration = 35
     aliasing = True
 
-    min_x = -2
-    max_x = 1.0
+    min_x = -0.31
+    max_x = -0.25
 
-    min_y = -1.25
-    max_y = 1.25
+    min_y = -0.86
+    max_y = -0.825
 
     x_size = (max_x - min_x) * size
     y_size = (max_y - min_y) * size
