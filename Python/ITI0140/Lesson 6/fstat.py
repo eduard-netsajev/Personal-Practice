@@ -99,7 +99,7 @@ def analyze(target):
     else:
         source = open_file(target)
     text = process_file(source)
-    return count_words(text)
+    return count_frequency(text)
 
 
 def print_stats(freq_dict, num):
