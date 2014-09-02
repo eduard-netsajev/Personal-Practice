@@ -9,6 +9,8 @@ public class TicTacToe {
         int[] board = {0, 1, 0, -1, 0, 1, 0, -1, 0};
         printBoard(board);
         checkWin(board);
+
+        int move = readInput();
     }
 
     /**
@@ -56,13 +58,22 @@ public class TicTacToe {
      * @return Number read from the input
      */
     public static int readInput() {
+        final String errorMessage = "Invalid input. Please try again. Only "
+                + "digits 1-9 are allowed.\n\n";
+
         Scanner scanner = new Scanner(System.in);
-        if (scanner.hasNextInt()) {
-            int nr = scanner.nextInt();
-            return nr;
+        while (true) {
+            System.out.print("Input the cell number > ");
+            if (scanner.hasNextInt()) {
+                int cellIndex = scanner.nextInt();
+                if (cellIndex > 0 && cellIndex <= CELL_COUNT) {
+                    scanner.close();
+                    return cellIndex;
+                }
+            }
+            System.out.print(errorMessage);
+            scanner.nextLine(); // Skip fault line, go to next
         }
-        scanner.close();
-        return 0;
     }
 
     /**
