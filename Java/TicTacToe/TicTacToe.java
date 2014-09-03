@@ -2,15 +2,41 @@ import java.util.Scanner;
 
 public class TicTacToe {
 
-    private static final int BOARD_SIDE = 3;
+    private static final int LINE_SIZE = 3;
     private static final int CELL_COUNT = 9;
 
     public static void main(String[] args) {
         int[] board = {0, 1, 0, -1, 0, 1, 0, -1, 0};
-        printBoard(board);
-        checkWin(board);
+        while (checkWin(board) == 0) {
+            printBoard(board);
+            nextMove(board, 1);
+            nextMove(board, -1);
+        }
+    }
 
-        int move = readInput();
+    /**
+     * This function is for both sides to make their moves.
+     * For the player side, it checks whether the chosen cell
+     * is empty. If it is not, display an error message and ask
+     * again. Checking the AI move is not needed, it is smart.
+     *
+     * @param board Current state of the board
+     * @param player Who is making the move. 1 for the player
+     */
+    public static void nextMove(int[] board, int player) {
+        if (player == 1) {
+            while (true) {
+                int move = readInput() - 1;
+                if (board[move] != 0) {
+                    System.out.println("Sorry, this cell is already marked.");
+                } else {
+                    board[move] = 1;
+                    return;
+                }
+            }
+        } else {
+            board[makeMove(board)] = -1;
+        }
     }
 
     /**
@@ -49,7 +75,7 @@ public class TicTacToe {
      */
     public static int makeMove(int[] board) {
 
-        return (int) (Math.random() * CELL_COUNT);
+        return (int) (Math.random() * board.length);
     }
 
     /**
@@ -60,26 +86,31 @@ public class TicTacToe {
     public static int readInput() {
         final String errorMessage = "Invalid input. Please try again. Only "
                 + "digits 1-9 are allowed.\n\n";
+        final String inputMessage = "Input the cell number > ";
 
         Scanner scanner = new Scanner(System.in);
+
+        int cellNumber;
+        System.out.print(inputMessage);
+
         while (true) {
-            System.out.print("Input the cell number > ");
-            if (scanner.hasNextInt()) {
-                int cellIndex = scanner.nextInt();
-                if (cellIndex > 0 && cellIndex <= CELL_COUNT) {
-                    scanner.close();
-                    return cellIndex;
-                }
+            while (!scanner.hasNextInt()) {
+                System.out.print(errorMessage + inputMessage);
+                scanner.nextLine();
             }
-            System.out.print(errorMessage);
-            scanner.nextLine(); // Skip fault line, go to next
+            cellNumber = scanner.nextInt();
+            if (cellNumber < 1 || cellNumber > CELL_COUNT) {
+                System.out.print(errorMessage + inputMessage);
+            } else {
+                return cellNumber;
+            }
         }
     }
 
     /**
      * Checks the board and returns which player
      * has winning combination.
-     * @param board The current state of the board
+     * @param board Current state of the board
      * @return The indicator of the player who has winning combination.
      * If there are no winning combinations, 0 is returned.
      */
@@ -109,10 +140,10 @@ public class TicTacToe {
             }
         }
         System.out.println("+---+---+---+");
-        for (int i = 0; i < BOARD_SIDE; i++) {
+        for (int i = 0; i < LINE_SIZE; i++) {
             System.out.print("|");
-            for (int j = 0; j < BOARD_SIDE; j++) {
-                System.out.printf(" %c |", boardMarks[i * BOARD_SIDE + j]);
+            for (int j = 0; j < LINE_SIZE; j++) {
+                System.out.printf(" %c |", boardMarks[i * LINE_SIZE + j]);
             }
             System.out.print("\n+---+---+---+\n");
         }
@@ -152,13 +183,12 @@ public class TicTacToe {
                     sum += board[cellIndex];
                 }
 
-                if (sum == BOARD_SIDE) {
+                if (sum == LINE_SIZE) {
                     return 1;
-                } else if (sum == -BOARD_SIDE) {
+                } else if (sum == -LINE_SIZE) {
                     return -1;
                 }
             }
-
             return 0;
         }
 
