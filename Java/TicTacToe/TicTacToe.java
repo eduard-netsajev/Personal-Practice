@@ -1,14 +1,59 @@
 import java.util.Scanner;
 
+/**
+ * Tic-Tac-Toe game.
+ *
+ * The one-dimensional board is indexed as follows:
+ *
+ * +---+---+---+
+ * | 0 | 1 | 2 |
+ * +---+---+---+
+ * | 3 | 4 | 5 |
+ * +---+---+---+
+ * | 6 | 7 | 8 |
+ * +---+---+---+
+ *
+ * So, the following state:
+ *
+ * +---+---+---+
+ * | X |   |   |
+ * +---+---+---+
+ * |   | O | X |
+ * +---+---+---+
+ * |   |   |   |
+ * +---+---+---+
+ *
+ * is given as an array:
+ * {1, 0, 0, 0, -1, 1, 0, 0, 0}
+ * where 1 indicates a player stone ("X") and
+ * -1 indicates a computer stone ("O")
+ */
 public class TicTacToe {
 
+    /**
+     * Length of one line.
+     * Or one side of the board.
+     * Or whatever it is when we need to use number 3
+     * but dumb CheckStyle plugin doesn't let us.
+     */
     private static final int LINE_SIZE = 3;
+
+    /**
+     * Number of cells in the board.
+     *
+     *@see TicTacToe#LINE_SIZE
+     */
     private static final int CELL_COUNT = 9;
 
+    /**
+     * Game starting point.
+     *
+     * @param args console arguments.
+     */
     public static void main(String[] args) {
         int[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0};
-
         boolean playingGame = true;
+
         int playerTurn = (int) Math.round(Math.random());
         if (playerTurn == 0) {
             playerTurn--;
@@ -29,7 +74,7 @@ public class TicTacToe {
                     break;
                 default:
                     if (boardFilled(board)) {
-                        System.out.println("Draw. Can't win this?");
+                        System.out.println("Draw. Can't win this, huh?");
                         playingGame = false;
                     } else {
                         if (playerTurn == 1) {
@@ -40,10 +85,8 @@ public class TicTacToe {
                         playerTurn = -playerTurn;
                         printBoard(board);
                     }
-
             }
         }
-
     }
 
     /**
@@ -78,33 +121,7 @@ public class TicTacToe {
      * and returns the cell index where computer
      * makes its move.
      *
-     * The one-dimensional board is indexed as follows:
-     *
-     * +---+---+---+
-     * | 0 | 1 | 2 |
-     * +---+---+---+
-     * | 3 | 4 | 5 |
-     * +---+---+---+
-     * | 6 | 7 | 8 |
-     * +---+---+---+
-     *
-     * So, the following state:
-     *
-     * +---+---+---+
-     * | X |   |   |
-     * +---+---+---+
-     * |   | O | X |
-     * +---+---+---+
-     * |   |   |   |
-     * +---+---+---+
-     *
-     * is given as an array:
-     * {1, 0, 0, 0, -1, 1, 0, 0, 0}
-     * where 1 indicates a player stone ("X") and
-     * -1 indicates a computer stone ("O")
-     *
      * @param board Current state of the board.
-     * See the description of the method for more information.
      * @return Cell index where the computer makes its move.
      */
     public static int makeMove(int[] board) {
@@ -136,7 +153,9 @@ public class TicTacToe {
 
     /**
      * Reads a number from the standard input and returns it.
-     * Beware: this method needs some improvements!
+     * If the input is not appropriate to our desires then inform the user
+     * about it. Ask again and again until we get what we want.
+     *
      * @return Number read from the input
      */
     public static int readInput() {
@@ -180,7 +199,6 @@ public class TicTacToe {
      * @param board Current state of the board
      */
     public static void printBoard(int[] board) {
-
         char[] boardMarks = new char[CELL_COUNT];
 
         for (int i = 0; i < CELL_COUNT; i++) {
@@ -198,6 +216,12 @@ public class TicTacToe {
         printBoard(boardMarks);
     }
 
+    /**
+     * Prints out the board.
+     *
+     * @param board Current state of the board
+     * @param showNumbers if set, show the cell numbers inside them
+     */
     public static void printBoard(int[] board, int showNumbers) {
         if (showNumbers == 1) {
             char[] boardMarks = new char[CELL_COUNT];
@@ -210,8 +234,14 @@ public class TicTacToe {
         }
     }
 
+    /**
+     * Prints out the board in a user-friendly format.
+     *
+     * @param boardMarks Current content of the board
+     */
     public static void printBoard(char[] boardMarks) {
         System.out.println("+---+---+---+");
+
         for (int i = 0; i < LINE_SIZE; i++) {
             System.out.print("|");
             for (int j = 0; j < LINE_SIZE; j++) {
@@ -220,7 +250,6 @@ public class TicTacToe {
             System.out.print("\n+---+---+---+\n");
         }
     }
-
 
     /**
      * Container of all possible lines.
@@ -237,6 +266,12 @@ public class TicTacToe {
             {2, 4, 6}
     };
 
+    /**
+     * Key-points on the board in the order from
+     * most important to least important. Center
+     * is the most important, while corners are
+     * equally less important.
+     */
     private static final int[] IMPORTANT_POINTS = {4, 0, 2, 6, 8 };
 
     /**
@@ -248,10 +283,7 @@ public class TicTacToe {
      */
     public static int getWinner(int[] board) {
         for (int[] line: LINES) {
-            int sum = 0;
-            for (int cellIndex : line) {
-                sum += board[cellIndex];
-            }
+            int sum = lineSum(board, line);
 
             if (sum == LINE_SIZE) {
                 return 1;
@@ -262,6 +294,12 @@ public class TicTacToe {
         return 0;
     }
 
+    /**
+     * Returns a game winning move, given the opportunity.
+     *
+     * @param board Current state of the board
+     * @return Game winning move or -1 if it doesn't exist
+     */
     public static int findWinningMove(int[] board) {
         for (int[] line: LINES) {
             int sum = lineSum(board, line);
@@ -276,6 +314,12 @@ public class TicTacToe {
         return -1;
     }
 
+    /**
+     * Returns a defensive move, if AI life is in danger.
+     *
+     * @param board Current state of the board
+     * @return Move that will not let enemy win
+     */
     public static int findSurvivingMove(int[] board) {
         for (int[] line: LINES) {
             int sum = lineSum(board, line);
@@ -306,6 +350,13 @@ public class TicTacToe {
         return sum;
     }
 
+    /**
+     * Given a line of cells, returns the first empty one.
+     *
+     * @param board Current state of the board
+     * @param line Array of line cells' indexes
+     * @return Index of first empty cell in a line
+     */
     private static int getLineEmptyCell(int[] board, int[] line) {
         for (int cellIndex : line) {
             if (board[cellIndex] == 0) {
@@ -315,7 +366,14 @@ public class TicTacToe {
         return -1;
     }
 
-
+    /**
+     * Function used by game AI. Checks all
+     * important points given by array
+     * IMPORTANT_POINTS in their appropriate order.
+     *
+     * @param board Current state of the board
+     * @return the most important free cell
+     */
     public static int findImportantPoint(int[] board) {
         for (int point: IMPORTANT_POINTS) {
             if (board[point] == 0) {
@@ -325,6 +383,12 @@ public class TicTacToe {
         return -1;
     }
 
+    /**
+     * Function for checking whether there
+     * is any free cell on the game board.
+     * @param board Current state of the board
+     * @return true if there is no free cells
+     */
     public static boolean boardFilled(int[] board) {
         for (int cellStatus: board) {
             if (cellStatus == 0) {
@@ -333,5 +397,4 @@ public class TicTacToe {
         }
         return true;
     }
-
 }
