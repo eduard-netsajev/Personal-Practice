@@ -6,12 +6,44 @@ public class TicTacToe {
     private static final int CELL_COUNT = 9;
 
     public static void main(String[] args) {
-        int[] board = {0, 1, 0, -1, 0, 1, 0, -1, 0};
-        while (checkWin(board) == 0) {
-            printBoard(board);
-            nextMove(board, 1);
-            nextMove(board, -1);
+        int[] board = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        boolean playingGame = true;
+        int playerTurn = (int) Math.round(Math.random());
+        if (playerTurn == 0) {
+            playerTurn--;
         }
+
+        printBoard(board, 1);
+
+        while (playingGame) {
+            switch (checkWin(board)) {
+                case -1:
+                    System.out.println("Lost to a dumb machine, smart kid");
+                    playingGame = false;
+                    break;
+                case 1:
+                    System.out.println("Won a dumb machine, "
+                           + "what an accomplishment /s");
+                    playingGame = false;
+                    break;
+                default:
+                    if (boardFilled(board)) {
+                        System.out.println("Draw. Can't win this?");
+                        playingGame = false;
+                    } else {
+                        if (playerTurn == 1) {
+                            nextMove(board, 1);
+                        } else {
+                            nextMove(board, -1);
+                        }
+                        playerTurn = -playerTurn;
+                        printBoard(board);
+                    }
+
+            }
+        }
+
     }
 
     /**
@@ -35,7 +67,9 @@ public class TicTacToe {
                 }
             }
         } else {
-            board[makeMove(board)] = -1;
+            int move = makeMove(board);
+            board[move] = -1;
+            System.out.println("Machine: " + ++move);
         }
     }
 
@@ -75,7 +109,29 @@ public class TicTacToe {
      */
     public static int makeMove(int[] board) {
 
-        return (int) (Math.random() * board.length);
+        int winningMove = findWinningMove(board);
+        if (winningMove > -1) {
+            System.out.println("Machine: you dun goofed.");
+            return winningMove;
+        }
+
+        int survivingMove = findSurvivingMove(board);
+        if (survivingMove > -1) {
+            System.out.println("Machine: you won't win this");
+            return survivingMove;
+        }
+
+        int importantPoint = findImportantPoint(board);
+        if (importantPoint > -1) {
+            return importantPoint;
+        }
+
+        int randomEmptyCell;
+        do {
+            randomEmptyCell = (int) (Math.random() * board.length);
+        } while (board[randomEmptyCell] != 0);
+
+        return randomEmptyCell;
     }
 
     /**
@@ -115,7 +171,7 @@ public class TicTacToe {
      * If there are no winning combinations, 0 is returned.
      */
     public static int checkWin(int[] board) {
-        return LinesHandler.getWinner(board);
+        return getWinner(board);
     }
 
     /**
@@ -139,6 +195,22 @@ public class TicTacToe {
                     boardMarks[i] = ' ';
             }
         }
+        printBoard(boardMarks);
+    }
+
+    public static void printBoard(int[] board, int showNumbers) {
+        if (showNumbers == 1) {
+            char[] boardMarks = new char[CELL_COUNT];
+            for (int i = 0; i < CELL_COUNT;) {
+                boardMarks[i] = (char) ('0' + ++i);
+            }
+            printBoard(boardMarks);
+        } else {
+            printBoard(board);
+        }
+    }
+
+    public static void printBoard(char[] boardMarks) {
         System.out.println("+---+---+---+");
         for (int i = 0; i < LINE_SIZE; i++) {
             System.out.print("|");
@@ -149,52 +221,117 @@ public class TicTacToe {
         }
     }
 
+
     /**
-     * Static class for handling the board for Tic-Tac-Toe game.
+     * Container of all possible lines.
+     * 3 horizontal, 3 vertical, 2 diagonal lines
      */
-    public static class LinesHandler {
+    private static final int[][] LINES = {
+            {0, 1, 2},
+            {3, 4, 5},
+            {6, 7, 8},
+            {0, 3, 6},
+            {1, 4, 7},
+            {2, 5, 8},
+            {0, 4, 8},
+            {2, 4, 6}
+    };
 
-        /**
-         * Container of all possible lines.
-         * 3 horizontal, 3 vertical, 2 diagonal lines
-         */
-        private static final int[][] LINES = {
-                {0, 1, 2},
-                {3, 4, 5},
-                {6, 7, 8},
-                {0, 3, 6},
-                {1, 4, 7},
-                {2, 5, 8},
-                {0, 4, 8},
-                {2, 4, 6}
-        };
+    private static final int[] IMPORTANT_POINTS = {4, 0, 2, 6, 8 };
 
-        /**
-         * Function checks every line whether
-         * it's sum is either 3 or -3.
-         *
-         * @param board Current state of the board
-         * @return -1 if AI won, 1 if Player won, 0 if no winner yet
-         */
-        public static int getWinner(int[] board) {
-            for (int[] line: LINES) {
-                int sum = 0;
-                for (int cellIndex : line) {
-                    sum += board[cellIndex];
-                }
+    /**
+     * Function checks every line whether
+     * it's sum is either 3 or -3.
+     *
+     * @param board Current state of the board
+     * @return -1 if AI won, 1 if Player won, 0 if no winner yet
+     */
+    public static int getWinner(int[] board) {
+        for (int[] line: LINES) {
+            int sum = 0;
+            for (int cellIndex : line) {
+                sum += board[cellIndex];
+            }
 
-                if (sum == LINE_SIZE) {
-                    return 1;
-                } else if (sum == -LINE_SIZE) {
-                    return -1;
+            if (sum == LINE_SIZE) {
+                return 1;
+            } else if (sum == -LINE_SIZE) {
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+    public static int findWinningMove(int[] board) {
+        for (int[] line: LINES) {
+            int sum = lineSum(board, line);
+
+            if (sum == 1 - LINE_SIZE) {
+                int emptyCell = getLineEmptyCell(board, line);
+                if (emptyCell != -1) {
+                    return emptyCell;
                 }
             }
-            return 0;
         }
+        return -1;
+    }
+
+    public static int findSurvivingMove(int[] board) {
+        for (int[] line: LINES) {
+            int sum = lineSum(board, line);
+
+            if (sum == LINE_SIZE - 1) {
+                int emptyCell = getLineEmptyCell(board, line);
+                if (emptyCell != -1) {
+                    return emptyCell;
+                }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Return sum of statuses given
+     * particular line and board status.
+     *
+     * @param board Current state of the board
+     * @param line One of 8 lines in the array
+     * @return Sum of statuses from -3 to 3
+     */
+    public static int lineSum(int[] board, int[] line) {
+        int sum = 0;
+        for (int cellIndex : line) {
+            sum += board[cellIndex];
+        }
+        return sum;
+    }
+
+    private static int getLineEmptyCell(int[] board, int[] line) {
+        for (int cellIndex : line) {
+            if (board[cellIndex] == 0) {
+                return cellIndex;
+            }
+        }
+        return -1;
+    }
 
 
+    public static int findImportantPoint(int[] board) {
+        for (int point: IMPORTANT_POINTS) {
+            if (board[point] == 0) {
+                return point;
+            }
+        }
+        return -1;
+    }
 
-
+    public static boolean boardFilled(int[] board) {
+        for (int cellStatus: board) {
+            if (cellStatus == 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }
