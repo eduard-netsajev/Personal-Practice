@@ -138,9 +138,13 @@ public class TicTacToe {
             return survivingMove;
         }
 
-        int importantPoint = findImportantPoint(board);
-        if (importantPoint > -1) {
-            return importantPoint;
+        if (board[CENTER_POINT] == 0) {
+            return CENTER_POINT;
+        }
+
+        int cornerPoint = findCornerPoint(board);
+        if (cornerPoint > -1) {
+            return cornerPoint;
         }
 
         int randomEmptyCell;
@@ -267,12 +271,14 @@ public class TicTacToe {
     };
 
     /**
-     * Key-points on the board in the order from
-     * most important to least important. Center
-     * is the most important, while corners are
-     * equally less important.
+     * Corner points of the board.
      */
-    private static final int[] IMPORTANT_POINTS = {4, 0, 2, 6, 8 };
+    private static final int[] CORNER_POINTS = {0, 2, 6, 8 };
+
+    /**
+     * Center point on the board.
+     */
+    private static final int CENTER_POINT = 4;
 
     /**
      * Function checks every line whether
@@ -368,19 +374,37 @@ public class TicTacToe {
 
     /**
      * Function used by game AI. Checks all
-     * important points given by array
-     * IMPORTANT_POINTS in their appropriate order.
+     * corners given by array
+     * CORNER_POINTS. The array is shuffled
+     * in random order beforehand.
      *
      * @param board Current state of the board
      * @return the most important free cell
      */
-    public static int findImportantPoint(int[] board) {
-        for (int point: IMPORTANT_POINTS) {
+    public static int findCornerPoint(int[] board) {
+        int[] shuffledCorners = CORNER_POINTS.clone();
+        shuffleArray(shuffledCorners);
+
+        for (int point: shuffledCorners) {
             if (board[point] == 0) {
                 return point;
             }
         }
         return -1;
+    }
+
+    /**
+     * Shuffles given array.
+     * @param numbers arrays of integers to shuffle
+     */
+    public static void shuffleArray(int[] numbers) {
+        int len = numbers.length;
+        for (int i = 0; i < len; i++) {
+            int j = (int) (Math.random() * len);
+            int temp = numbers[i];
+            numbers[i] = numbers[j];
+            numbers[j] = temp;
+        }
     }
 
     /**
