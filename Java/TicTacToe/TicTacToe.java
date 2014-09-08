@@ -98,7 +98,7 @@ public class TicTacToe {
      * @param board Current state of the board
      * @param player Who is making the move. 1 for the player
      */
-    public static void nextMove(int[] board, int player) {
+    private static void nextMove(int[] board, int player) {
         if (player == 1) {
             while (true) {
                 int move = readInput() - 1;
@@ -125,28 +125,28 @@ public class TicTacToe {
      * @return Cell index where the computer makes its move.
      */
     public static int makeMove(int[] board) {
+        if (board.length == CELL_COUNT) {
+            int winningMove = findImportantMove(board, -1);
+            if (winningMove > -1) {
+                System.out.println("Machine: you dun goofed.");
+                return winningMove;
+            }
 
-        int winningMove = findWinningMove(board);
-        if (winningMove > -1) {
-            System.out.println("Machine: you dun goofed.");
-            return winningMove;
+            int survivingMove = findImportantMove(board, 1);
+            if (survivingMove > -1) {
+                System.out.println("Machine: you won't win this");
+                return survivingMove;
+            }
+
+            if (board[CENTER_POINT] == 0) {
+                return CENTER_POINT;
+            }
+
+            int cornerPoint = findCornerPoint(board);
+            if (cornerPoint > -1) {
+                return cornerPoint;
+            }
         }
-
-        int survivingMove = findSurvivingMove(board);
-        if (survivingMove > -1) {
-            System.out.println("Machine: you won't win this");
-            return survivingMove;
-        }
-
-        if (board[CENTER_POINT] == 0) {
-            return CENTER_POINT;
-        }
-
-        int cornerPoint = findCornerPoint(board);
-        if (cornerPoint > -1) {
-            return cornerPoint;
-        }
-
         int randomEmptyCell;
         do {
             randomEmptyCell = (int) (Math.random() * board.length);
@@ -226,7 +226,7 @@ public class TicTacToe {
      * @param board Current state of the board
      * @param showNumbers if set, show the cell numbers inside them
      */
-    public static void printBoard(int[] board, int showNumbers) {
+    private static void printBoard(int[] board, int showNumbers) {
         if (showNumbers == 1) {
             char[] boardMarks = new char[CELL_COUNT];
             for (int i = 0; i < CELL_COUNT;) {
@@ -243,7 +243,7 @@ public class TicTacToe {
      *
      * @param boardMarks Current content of the board
      */
-    public static void printBoard(char[] boardMarks) {
+    private static void printBoard(char[] boardMarks) {
         System.out.println("+---+---+---+");
 
         for (int i = 0; i < LINE_SIZE; i++) {
@@ -287,7 +287,7 @@ public class TicTacToe {
      * @param board Current state of the board
      * @return -1 if AI won, 1 if Player won, 0 if no winner yet
      */
-    public static int getWinner(int[] board) {
+    private static int getWinner(int[] board) {
         for (int[] line: LINES) {
             int sum = lineSum(board, line);
 
@@ -301,42 +301,24 @@ public class TicTacToe {
     }
 
     /**
-     * Returns a game winning move, given the opportunity.
+     * Depending on given param action returns winning or surviving move.
      *
-     * @param board Current state of the board
-     * @return Game winning move or -1 if it doesn't exist
-     */
-    public static int findWinningMove(int[] board) {
-        for (int[] line: LINES) {
-            int sum = lineSum(board, line);
-
-            if (sum == 1 - LINE_SIZE) {
-                int emptyCell = getLineEmptyCell(board, line);
-                if (emptyCell != -1) {
-                    return emptyCell;
-                }
-            }
-        }
-        return -1;
-    }
-
-    /**
+     * Returns a game winning move, given the opportunity.
      * Returns a defensive move, if AI life is in danger.
      *
      * @param board Current state of the board
-     * @return Move that will not let enemy win
+     * @param action What action are we looking for: 1 for def, -1 for attack
+     * @return important move or -1 if it doesn't exist
      */
-    public static int findSurvivingMove(int[] board) {
+    private static int findImportantMove(int[] board, int action) {
         for (int[] line: LINES) {
             int sum = lineSum(board, line);
 
-            if (sum == LINE_SIZE - 1) {
-                int emptyCell = getLineEmptyCell(board, line);
-                if (emptyCell != -1) {
-                    return emptyCell;
+            if (sum == (LINE_SIZE - 1) * action) {
+                return getLineEmptyCell(board, line);
                 }
-            }
         }
+
         return -1;
     }
 
@@ -348,7 +330,7 @@ public class TicTacToe {
      * @param line One of 8 lines in the array
      * @return Sum of statuses from -3 to 3
      */
-    public static int lineSum(int[] board, int[] line) {
+    private static int lineSum(int[] board, int[] line) {
         int sum = 0;
         for (int cellIndex : line) {
             sum += board[cellIndex];
@@ -381,7 +363,7 @@ public class TicTacToe {
      * @param board Current state of the board
      * @return the most important free cell
      */
-    public static int findCornerPoint(int[] board) {
+    private static int findCornerPoint(int[] board) {
         int[] shuffledCorners = CORNER_POINTS.clone();
         shuffleArray(shuffledCorners);
 
@@ -397,7 +379,7 @@ public class TicTacToe {
      * Shuffles given array.
      * @param numbers arrays of integers to shuffle
      */
-    public static void shuffleArray(int[] numbers) {
+    private static void shuffleArray(int[] numbers) {
         int len = numbers.length;
         for (int i = 0; i < len; i++) {
             int j = (int) (Math.random() * len);
@@ -413,7 +395,7 @@ public class TicTacToe {
      * @param board Current state of the board
      * @return true if there is no free cells
      */
-    public static boolean boardFilled(int[] board) {
+    private static boolean boardFilled(int[] board) {
         for (int cellStatus: board) {
             if (cellStatus == 0) {
                 return false;
