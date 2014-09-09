@@ -59,7 +59,7 @@ public class TicTacToe {
             playerTurn--;
         }
 
-        printBoard(board, 1);
+        printBoardLegend();
 
         while (playingGame) {
             switch (checkWin(board)) {
@@ -221,21 +221,16 @@ public class TicTacToe {
     }
 
     /**
-     * Prints out the board.
-     *
-     * @param board Current state of the board
-     * @param showNumbers if set, show the cell numbers inside them
+     * Prints out the board's legend,
+     * where cell are filled with their
+     * corresponding number for user to input.
      */
-    private static void printBoard(int[] board, int showNumbers) {
-        if (showNumbers == 1) {
-            char[] boardMarks = new char[CELL_COUNT];
-            for (int i = 0; i < CELL_COUNT;) {
-                boardMarks[i] = (char) ('0' + ++i);
-            }
-            printBoard(boardMarks);
-        } else {
-            printBoard(board);
+    private static void printBoardLegend() {
+        char[] boardMarks = new char[CELL_COUNT];
+        for (int i = 0; i < CELL_COUNT;) {
+            boardMarks[i] = (char) ('0' + ++i);
         }
+        printBoard(boardMarks);
     }
 
     /**
