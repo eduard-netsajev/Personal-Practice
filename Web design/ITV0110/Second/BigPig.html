@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Big Pig</title>
+
+</head>
+<body>
+<div>Your score:</div>
+<span id="player_score" style="font-weight: bold">
+    0
+</span>
+
+<div>Pig score:</div>
+<span id="pig_score" style="font-weight: bold">
+    0
+</span>
+<br>
+
+<div>Current score:</div>
+<span id="current_score">0</span>
+
+
+<p>
+    <button id="roll" onclick="roll()">Roll!</button>
+</p>
+<p id="dices"> 0 and 0 </p>
+<button id="take" onclick="take()">Take</button>
+</body>
+
+<script>
+
+    var intervalVar; // variable used for timing roll() for Pig player
+    var buttonsDisabled = false;
+
+    var playerScore = 0;
+    var pigScore = 0;
+
+    var playerTurn = true;
+
+    function roll() {
+        var firstDice = Math.floor((Math.random() * 6) + 1);
+        var secondDice = Math.floor((Math.random() * 6) + 1);
+        document.getElementById("dices").innerText = String(firstDice) + " and " + String(secondDice);
+
+        var points;
+
+            console.log(playerTurn);
+
+            console.log(firstDice);
+            console.log(secondDice);
+
+        if((firstDice == 1 || secondDice == 1) && (firstDice != 1 || secondDice != 1)) {
+            playerTurn = !playerTurn;
+
+            if(!playerTurn) {
+                console.log("Now Pig move!");
+                document.getElementById("current_score").innerText = String(0);
+                take();
+            }
+            else {
+                console.log("Now Player move!");
+                clearInterval(intervalVar);
+                toggleButtons();
+            }
+
+        }
+        else {
+        points = Number(document.getElementById("current_score").innerText) + firstDice + secondDice;
+                document.getElementById("current_score").innerText = String(points);
+        }
+
+
+        return points || 0;
+
+    }
+
+
+    function take() {
+        var points = Number(document.getElementById("current_score").innerText);
+        var score = Number(document.getElementById("player_score").innerText);
+
+        playerScore = points + score;
+        document.getElementById("player_score").innerText = String(playerScore);
+        document.getElementById("current_score").innerText = String(0);
+        toggleButtons();
+        playerTurn = false;
+        intervalVar = setInterval(pig_move, 1000);
+    }
+
+    function pig_move() {
+        var points = Number(document.getElementById("current_score").innerText);
+        var score = Number(document.getElementById("pig_score").innerText);
+        if (points < 20 && points + pigScore < 100) {
+            points = roll();
+            document.getElementById("current_score").innerText = String(points);
+        } else {
+            pigScore = points + score;
+            document.getElementById("pig_score").innerText = String(pigScore);
+            document.getElementById("current_score").innerText = String(0);
+            toggleButtons();
+            clearInterval(intervalVar);
+            playerTurn = true;
+        }
+    }
+
+    function toggleButtons() {
+        if (buttonsDisabled) {
+            document.getElementById("take").disabled = false;
+            document.getElementById("roll").disabled = false;
+            buttonsDisabled = false;
+        } else {
+            document.getElementById("take").disabled = true;
+            document.getElementById("roll").disabled = true;
+            buttonsDisabled = true;
+
+        }
+    }
+</script>
+</html>
