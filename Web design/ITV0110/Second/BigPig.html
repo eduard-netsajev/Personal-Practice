@@ -26,17 +26,63 @@
 </p>
 <p id="dices"> 0 and 0 </p>
 <button id="take" onclick="take()">Take</button>
+
+<form onsubmit="return setThreshold(this);">
+    <label>
+    Pig threshold (above zero):
+        <input type="number" id="setX" name="threshold" min="1" max=100 required value="20"></label>
+    <input type = submit value="Set">
+</form>
+
+<p>
+    <button id="restart" onclick="restart()">Restart</button>
+</p>
+<p id="messages"></p>
+
 </body>
 
 <script>
 
+    var pigThreshold = 20;
+    var playerTurn = true;
+
     var intervalVar; // variable used for timing roll() for Pig player
-    var buttonsDisabled = false;
 
     var playerScore = 0;
     var pigScore = 0;
 
-    var playerTurn = true;
+    function checkWin() {
+        if (playerScore >= 100) {
+            stopGame();
+            setMessage("Player won!");
+            return 1;
+        }
+        else if (pigScore >= 100) {
+            stopGame();
+            setMessage("Pig won!");
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    function stopGame() {
+        toggleButtons(false);
+        clearInterval(intervalVar);
+    }
+
+    function restart() {
+        playerTurn = true;
+        toggleButtons(true);
+        setCurrentPoints(0);
+        pigScore = 0;
+        playerScore = 0;
+        setPigScore(0);
+        setPlayerScore(0);
+        clearInterval(intervalVar);
+        setMessage("");
+    }
 
     function roll() {
         var firstDice = Math.floor((Math.random() * 6) + 1);
@@ -45,76 +91,99 @@
 
         var points;
 
-            console.log(playerTurn);
-
-            console.log(firstDice);
-            console.log(secondDice);
-
         if((firstDice == 1 || secondDice == 1) && (firstDice != 1 || secondDice != 1)) {
+            points = 0;
             playerTurn = !playerTurn;
-
-            if(!playerTurn) {
-                console.log("Now Pig move!");
-                document.getElementById("current_score").innerText = String(0);
+            if (playerTurn) {
+                clearInterval(intervalVar);
+                toggleButtons(true);
+            } else {
+                setCurrentPoints(0);
                 take();
             }
-            else {
-                console.log("Now Player move!");
-                clearInterval(intervalVar);
-                toggleButtons();
+        }
+        else if (firstDice == secondDice) {
+            if (firstDice == 1) {
+                points = getCurrentPoints() + 25;
+            } else {
+                points = getCurrentPoints() + firstDice * 4;
             }
-
         }
         else {
-        points = Number(document.getElementById("current_score").innerText) + firstDice + secondDice;
-                document.getElementById("current_score").innerText = String(points);
+            points = getCurrentPoints() + firstDice + secondDice;
         }
-
-
-        return points || 0;
-
+        setCurrentPoints(points);
+        return points;
     }
 
 
     function take() {
-        var points = Number(document.getElementById("current_score").innerText);
-        var score = Number(document.getElementById("player_score").innerText);
-
-        playerScore = points + score;
-        document.getElementById("player_score").innerText = String(playerScore);
-        document.getElementById("current_score").innerText = String(0);
-        toggleButtons();
-        playerTurn = false;
-        intervalVar = setInterval(pig_move, 1000);
+        playerScore += getCurrentPoints();
+        setPlayerScore(playerScore);
+        setCurrentPoints(0);
+        if (checkWin() == 0) {
+            toggleButtons(false);
+            playerTurn = false;
+            intervalVar = setInterval(pig_move, 1000);
+        }
     }
 
     function pig_move() {
-        var points = Number(document.getElementById("current_score").innerText);
-        var score = Number(document.getElementById("pig_score").innerText);
-        if (points < 20 && points + pigScore < 100) {
+        var points = getCurrentPoints();
+
+        if (points < pigThreshold && points + pigScore < 100) {
             points = roll();
-            document.getElementById("current_score").innerText = String(points);
+            setCurrentPoints(points);
         } else {
-            pigScore = points + score;
-            document.getElementById("pig_score").innerText = String(pigScore);
-            document.getElementById("current_score").innerText = String(0);
-            toggleButtons();
+            pigScore += points;
+            setPigScore(pigScore);
+            setCurrentPoints(0);
+
+            if (checkWin() == 0) {
+                toggleButtons(true);
+                playerTurn = true;
+            }
             clearInterval(intervalVar);
-            playerTurn = true;
         }
     }
 
-    function toggleButtons() {
-        if (buttonsDisabled) {
+    function toggleButtons(toBool) {
+        if (toBool) {
             document.getElementById("take").disabled = false;
             document.getElementById("roll").disabled = false;
-            buttonsDisabled = false;
         } else {
             document.getElementById("take").disabled = true;
             document.getElementById("roll").disabled = true;
-            buttonsDisabled = true;
-
         }
     }
+
+    function getCurrentPoints() {
+        return Number(document.getElementById("current_score").innerText);
+    }
+    function setCurrentPoints(points) {
+        document.getElementById("current_score").innerText = String(points);
+    }
+    function getPigThreshold() {
+        return String(pigThreshold);
+    }
+
+    function setMessage(message) {
+        document.getElementById("messages").innerText = message;
+    }
+
+    function setThreshold(form) {
+        pigThreshold = form.threshold.value;
+        return false;
+    }
+
+    function setPlayerScore(points) {
+        document.getElementById("player_score").innerText = String(points);
+    }
+
+    function setPigScore(points) {
+        document.getElementById("pig_score").innerText = String(points);
+    }
+
 </script>
+
 </html>
