@@ -87,7 +87,7 @@
     function roll() {
         var firstDice = Math.floor((Math.random() * 6) + 1);
         var secondDice = Math.floor((Math.random() * 6) + 1);
-        document.getElementById("dices").innerText = String(firstDice) + " and " + String(secondDice);
+        gid("dices").innerText = String(firstDice) + " and " + String(secondDice);
 
         var points;
 
@@ -149,26 +149,26 @@
 
     function toggleButtons(toBool) {
         if (toBool) {
-            document.getElementById("take").disabled = false;
-            document.getElementById("roll").disabled = false;
+            gid("take").disabled = false;
+            gid("roll").disabled = false;
         } else {
-            document.getElementById("take").disabled = true;
-            document.getElementById("roll").disabled = true;
+            gid("take").disabled = true;
+            gid("roll").disabled = true;
         }
     }
 
     function getCurrentPoints() {
-        return Number(document.getElementById("current_score").innerText);
+        return Number(gid("current_score").innerText);
     }
     function setCurrentPoints(points) {
-        document.getElementById("current_score").innerText = String(points);
+        gid("current_score").innerText = String(points);
     }
     function getPigThreshold() {
         return String(pigThreshold);
     }
 
     function setMessage(message) {
-        document.getElementById("messages").innerText = message;
+        gid("messages").innerText = message;
     }
 
     function setThreshold(form) {
@@ -177,11 +177,15 @@
     }
 
     function setPlayerScore(points) {
-        document.getElementById("player_score").innerText = String(points);
+        gid("player_score").innerText = String(points);
     }
 
     function setPigScore(points) {
-        document.getElementById("pig_score").innerText = String(points);
+        gid("pig_score").innerText = String(points);
+    }
+
+    function gid(x) {
+        return document.getElementById(x);
     }
 
 </script>

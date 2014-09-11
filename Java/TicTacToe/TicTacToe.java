@@ -156,6 +156,13 @@ public class TicTacToe {
     }
 
     /**
+     * Text scanner which is used in readInput().
+     * We declare it here as a separate variable
+     * in order to avoid warnings about not closing it.
+     */
+    private static Scanner scanner = new Scanner(System.in);
+
+    /**
      * Reads a number from the standard input and returns it.
      * If the input is not appropriate to our desires then inform the user
      * about it. Ask again and again until we get what we want.
@@ -167,9 +174,6 @@ public class TicTacToe {
                 + "digits 1-9 are allowed.\n\n";
         final String inputMessage = "Input the cell number > ";
 
-        Scanner scanner = new Scanner(System.in);
-
-        int cellNumber;
         System.out.print(inputMessage);
 
         while (true) {
@@ -177,7 +181,7 @@ public class TicTacToe {
                 System.out.print(errorMessage + inputMessage);
                 scanner.nextLine();
             }
-            cellNumber = scanner.nextInt();
+            int cellNumber = scanner.nextInt();
             if (cellNumber < 1 || cellNumber > CELL_COUNT) {
                 System.out.print(errorMessage + inputMessage);
             } else {
