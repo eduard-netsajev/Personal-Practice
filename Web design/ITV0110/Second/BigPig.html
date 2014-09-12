@@ -1,44 +1,140 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link href="bootstrap.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Big Pig</title>
+    <style>
+        .dot {
+            display: inline-block;
+            padding: 3px 3px;
+            font-size: 3px;
+            line-height: 1;
+            background-color: #000;
+            border-radius: 5px;
+        }
 
+        .dot.clean {
+            background-color: #56BAEC;
+        }
+
+        .dice {
+            display: inline-block;
+            padding: 3px 3px 3px 5px;
+            font-size: 12px;
+            line-height: 1;
+            background-color: #56BAEC;
+            border-radius: 10px;
+        }
+
+        button:enabled {
+            background-color: #B0E57C;
+        }
+
+        button:disabled {
+            background-color: #FFAEAE;
+        }
+
+        .bubble {
+            position: relative;
+            width: 150px;
+            height: 30px;
+            padding: 0;
+            background: #FFF8DC;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+        }
+
+        .bubble:after {
+            content: '';
+            position: absolute;
+            border-style: solid;
+            border-width: 15px 20px 0;
+            border-color: #FFF8DC transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+            margin-left: -20px;
+            bottom: -15px;
+            left: 70%;
+        }
+
+    </style>
 </head>
-<body>
-<div>Your score:</div>
+<body style="background-color: #FFF0AA; margin-top: 100px; color: saddlebrown">
+<div class="container" style="max-width: 300px; margin: auto">
+
+    <div style="float: left">Your score:
 <span id="player_score" style="font-weight: bold">
     0
-</span>
-
-<div>Pig score:</div>
+</span></div>
+    <div style="float: right">Pig score:
 <span id="pig_score" style="font-weight: bold">
-    0
-</span>
-<br>
+0
+</span></div>
+    <br>
 
-<div>Current score:</div>
-<span id="current_score">0</span>
+    <div style="text-align: center">Current score:<br>
+        <span id="current_score">0</span>
+    </div>
+    <div class="bubble" style="float: right">
+        <p style="text-align: center" id="messages">Let's play!</p>
+    </div>
 
+    <div style="text-align: center">
+        <button id="roll" onclick="roll()">Roll!</button>
+    </div>
+    <p style="text-align: center" id="dices"> 2 and 5 </p>
 
-<p>
-    <button id="roll" onclick="roll()">Roll!</button>
-</p>
-<p id="dices"> 0 and 0 </p>
-<button id="take" onclick="take()">Take</button>
+    <div style="text-align: center">
+        <div class="dice">
+            <span id="11" class="dot"></span>
+            <span id="12" class="dot clean"></span>
+            <span id="13" class="dot clean"></span>
+            <br>
+            <span id="14" class="dot clean"></span>
+            <span id="15" class="dot clean"></span>
+            <span id="16" class="dot clean"></span>
+            <br>
+            <span id="17" class="dot clean"></span>
+            <span id="18" class="dot clean"></span>
+            <span id="19" class="dot"></span>
+            <br>
+        </div>
 
-<form onsubmit="return setThreshold(this);">
-    <label>
-    Pig threshold (above zero):
-        <input type="number" id="setX" name="threshold" min="1" max=100 required value="20"></label>
-    <input type = submit value="Set">
-</form>
+        <div class="dice">
+            <span id="21" class="dot"></span>
+            <span id="22" class="dot clean"></span>
+            <span id="23" class="dot"></span>
+            <br>
+            <span id="24" class="dot clean"></span>
+            <span id="25" class="dot"></span>
+            <span id="26" class="dot clean"></span>
+            <br>
+            <span id="27" class="dot"></span>
+            <span id="28" class="dot clean"></span>
+            <span id="29" class="dot"></span>
+            <br>
+        </div>
+    </div>
+    <br>
 
-<p>
-    <button id="restart" onclick="restart()">Restart</button>
-</p>
-<p id="messages"></p>
+    <div style="text-align: center">
+        <button id="take" onclick="take()">Take</button>
 
+        <form onsubmit="return setThreshold(this);">
+            <label style="font-weight: normal">
+                Pig threshold (above zero):
+                <input style="background-color: #FFF8DC" type="number" id="setX" name="threshold" min="1" max=100
+                       required value="20"></label>
+            <input style="background-color: #B0E57C" type=submit value="Set">
+        </form>
+    </div>
+    <p style="text-align: center">
+        <button id="restart" onclick="restart()">Restart</button>
+    </p>
+</div>
 </body>
 
 <script>
@@ -54,12 +150,12 @@
     function checkWin() {
         if (playerScore >= 100) {
             stopGame();
-            setMessage("Player won!");
+            setMessage("Ok, you won.");
             return 1;
         }
         else if (pigScore >= 100) {
             stopGame();
-            setMessage("Pig won!");
+            setMessage("You loser!");
             return -1;
         }
         else {
@@ -89,17 +185,24 @@
         var secondDice = Math.floor((Math.random() * 6) + 1);
         gid("dices").innerText = String(firstDice) + " and " + String(secondDice);
 
+
+        setDice(1, firstDice);
+
+        setDice(2, secondDice);
         var points;
 
-        if((firstDice == 1 || secondDice == 1) && (firstDice != 1 || secondDice != 1)) {
+        if ((firstDice == 1 || secondDice == 1) && (firstDice != 1 || secondDice != 1)) {
             points = 0;
             playerTurn = !playerTurn;
             if (playerTurn) {
+
+                setMessage("Bad luck..");
                 clearInterval(intervalVar);
                 toggleButtons(true);
             } else {
                 setCurrentPoints(0);
                 take();
+                setMessage("Unlucky fool!");
             }
         }
         else if (firstDice == secondDice) {
@@ -107,6 +210,11 @@
                 points = getCurrentPoints() + 25;
             } else {
                 points = getCurrentPoints() + firstDice * 4;
+            }
+            if (playerTurn) {
+                setMessage("...");
+            } else {
+                setMessage("He-he-he");
             }
         }
         else {
@@ -122,6 +230,7 @@
         setPlayerScore(playerScore);
         setCurrentPoints(0);
         if (checkWin() == 0) {
+            setMessage("My turn now..");
             toggleButtons(false);
             playerTurn = false;
             intervalVar = setInterval(pig_move, 1000);
@@ -135,6 +244,7 @@
             points = roll();
             setCurrentPoints(points);
         } else {
+            setMessage("Enough for me..");
             pigScore += points;
             setPigScore(pigScore);
             setCurrentPoints(0);
@@ -187,6 +297,68 @@
     function gid(x) {
         return document.getElementById(x);
     }
+
+</script>
+
+
+<script>
+    // Here will be a load of bad code to maipulate dices
+
+    function unsetDots() {
+        for (var i = 0; i < arguments[0].length; i++) {
+            document.getElementById(arguments[0][i]).setAttribute("class", "dot clean");
+        }
+    }
+    function setDots() {
+        for (var i = 0; i < arguments[0].length; i++) {
+            document.getElementById(arguments[0][i]).setAttribute("class", "dot");
+        }
+    }
+
+    function setDice(dice, num) {
+        var dotsToSet;
+        var dotsToUnset;
+
+        switch (num) {
+            case 1:
+                dotsToUnset = [1, 2, 3, 4, 6, 7, 8, 9];
+                dotsToSet = [5];
+                break;
+            case 2:
+                //[1, 2, 3, 4, 5, 6, 7, 8, 9]
+                dotsToUnset = [2, 3, 4, 5, 6, 7, 8];
+                dotsToSet = [1, 9];
+                break;
+            case 3:
+                dotsToUnset = [2, 3, 4, 6, 7, 8];
+                dotsToSet = [1, 5, 9];
+                break;
+            case 4:
+                dotsToUnset = [2, 4, 5, 6, 8];
+                dotsToSet = [1, 3, 7, 9];
+                break;
+            case 5:
+                dotsToUnset = [2, 4, 6, 8];
+                dotsToSet = [1, 3, 5, 7, 9];
+                break;
+            case 6:
+                dotsToUnset = [2, 5, 8];
+                dotsToSet = [1, 3, 4, 6, 7, 9];
+                break;
+        }
+
+        for (var i = 0; i < dotsToSet.length; i++) {
+            dotsToSet[i] += dice * 10;
+        }
+        for (var j = 0; j < dotsToUnset.length; j++) {
+            dotsToUnset[j] += dice * 10;
+        }
+
+        setDots(dotsToSet);
+        unsetDots(dotsToUnset);
+
+    }
+
 
 </script>
 
