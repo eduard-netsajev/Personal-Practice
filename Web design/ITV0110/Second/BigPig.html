@@ -60,6 +60,29 @@
             left: 70%;
         }
 
+        .pig {
+            display: inline-block;
+            padding: 3px 3px 3px 5px;
+            font-size: 12px;
+            line-height: 1;
+            border-radius: 40px;
+            background-color: #DEADEC;
+
+        }
+        .pig > .dot.eye {
+            padding: 2px 2px 2px 2px;
+            background-color: #000;
+
+        }
+        .pig > .dot {
+            background-color: #e277ec;
+            padding: 5px 5px 5px 8px;
+            margin-right: 5px;
+            border-radius: 20px;
+        }
+        .pig > .dot.clean {
+            padding: 0 0 0 0;
+        }
     </style>
 </head>
 <body style="background-color: #FFF0AA; margin-top: 100px; color: saddlebrown">
@@ -80,6 +103,20 @@
     </div>
     <div class="bubble" style="float: right">
         <p style="text-align: center" id="messages">Let's play!</p>
+
+
+    <div class="pig" style="float: right; margin-right: 20px">
+<br>
+            <span class="dot eye"></span>
+            <span class="dot clean"></span>
+            <span class="dot eye"></span>
+            <br>
+            <span class="dot clean"></span>
+            <span class="dot"></span>
+            <span class="dot clean"></span>
+            <br>
+        </div>
+
     </div>
 
     <div style="text-align: center">
@@ -118,6 +155,7 @@
             <br>
         </div>
     </div>
+
     <br>
 
     <div style="text-align: center">
@@ -185,17 +223,14 @@
         var secondDice = Math.floor((Math.random() * 6) + 1);
         gid("dices").innerText = String(firstDice) + " and " + String(secondDice);
 
-
         setDice(1, firstDice);
-
         setDice(2, secondDice);
-        var points;
 
+        var points;
         if ((firstDice == 1 || secondDice == 1) && (firstDice != 1 || secondDice != 1)) {
             points = 0;
             playerTurn = !playerTurn;
             if (playerTurn) {
-
                 setMessage("Bad luck..");
                 clearInterval(intervalVar);
                 toggleButtons(true);
@@ -224,7 +259,6 @@
         return points;
     }
 
-
     function take() {
         playerScore += getCurrentPoints();
         setPlayerScore(playerScore);
@@ -248,7 +282,6 @@
             pigScore += points;
             setPigScore(pigScore);
             setCurrentPoints(0);
-
             if (checkWin() == 0) {
                 toggleButtons(true);
                 playerTurn = true;
@@ -299,11 +332,7 @@
     }
 
 </script>
-
-
 <script>
-    // Here will be a load of bad code to maipulate dices
-
     function unsetDots() {
         for (var i = 0; i < arguments[0].length; i++) {
             document.getElementById(arguments[0][i]).setAttribute("class", "dot clean");
@@ -314,7 +343,6 @@
             document.getElementById(arguments[0][i]).setAttribute("class", "dot");
         }
     }
-
     function setDice(dice, num) {
         var dotsToSet;
         var dotsToUnset;
@@ -325,7 +353,6 @@
                 dotsToSet = [5];
                 break;
             case 2:
-                //[1, 2, 3, 4, 5, 6, 7, 8, 9]
                 dotsToUnset = [2, 3, 4, 5, 6, 7, 8];
                 dotsToSet = [1, 9];
                 break;
@@ -356,10 +383,6 @@
 
         setDots(dotsToSet);
         unsetDots(dotsToUnset);
-
     }
-
-
 </script>
-
 </html>
