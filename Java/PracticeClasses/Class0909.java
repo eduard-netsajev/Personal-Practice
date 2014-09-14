@@ -1,34 +1,22 @@
 public class Class0909 {
+    // Completed the assigned task first in the class
+    // The function returns how you need to use your paper bills in order to
+    // have exact sum of money. Given bills are 10, 5 and 1.
     public static void main(String[] args) {
         fill(8, 1, 5, 2);
         System.out.println();
         fill(7, 1, 5, 2);
-
+        System.out.println();
+        fill(37, 2, 2, 8);
     }
 
     public static boolean fill(int amount, int dec, int fives, int ones) {
-        // 10 5 1
-        int mDecimals = 0;
-        int mFives = 0;
-        int mOnes = 0;
-
-        do {
-            if(amount > 10 && dec > 0) {
-                amount -= 10;
-                dec--;
-                mDecimals++;
-            } else if (amount > 5 && fives > 0) {
-                amount -= 5;
-                fives--;
-                mFives++;
-            } else if (amount > 0 && ones > 0) {
-                amount--;
-                ones--;
-                mOnes++;
-            } else {
-                break;
-            }
-        } while(true);
+        int mDecimals = min(amount / 10, dec);
+        amount -= mDecimals * 10;
+        int mFives = min(amount / 5, fives);
+        amount -= mFives * 5;
+        int mOnes = min(amount, ones);
+        amount -= mOnes;
 
         if(amount == 0) {
             System.out.println("You have exact cash.");
@@ -40,5 +28,9 @@ public class Class0909 {
             System.out.println("You don't have exact cash.");
             return false;
         }
+    }
+
+    public static int min(int a, int b){
+        return (a < b) ? a : b;
     }
 }
