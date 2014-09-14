@@ -164,7 +164,7 @@
         <form onsubmit="return setThreshold(this);">
             <label style="font-weight: normal">
                 Pig threshold (above zero):
-                <input style="background-color: #FFF8DC" type="number" id="setX" name="threshold" min="1" max=100
+                <input style="background-color: #FFF8DC; max-width: 50px" type="number" id="setX" name="threshold" min="1" max=100
                        required value="20"></label>
             <input style="background-color: #B0E57C" type=submit value="Set">
         </form>
@@ -215,7 +215,7 @@
         setPigScore(0);
         setPlayerScore(0);
         clearInterval(intervalVar);
-        setMessage("");
+        setMessage("Let's roll!");
     }
 
     function roll() {
