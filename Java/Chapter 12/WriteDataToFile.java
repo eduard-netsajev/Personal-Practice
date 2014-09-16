@@ -1,4 +1,7 @@
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 public class WriteDataToFile {
     public static void main(String[] args) throws IOException {
         java.io.File file = new java.io.File("text.txt");
@@ -14,7 +17,8 @@ public class WriteDataToFile {
         output.print("Eduard was born in ");
         output.println(1993);
         output.print("Now is year ");
-        output.println(2014);
+        GregorianCalendar today = new GregorianCalendar();
+        output.println(today.get(Calendar.YEAR));
 
         // Close the file
         output.close();
@@ -33,7 +37,8 @@ class TryWithResources{
             output.print("Eduard was born in ");
             output.println(1993);
             output.print("Now is year ");
-            output.println(2014);
+            GregorianCalendar today = new GregorianCalendar();
+            output.println(today.get(Calendar.YEAR));
         }
     }
 }
