@@ -41,6 +41,11 @@ class Person implements Comparable<Person>, Scream {
     public void calmDown(Person p){
         System.out.printf("Hey, %s, calm down please\n", p.name);
     }
+
+    @Override
+    public void greet(Person p) {
+        System.out.printf("%s greets %s!\n", this.name, p.name);
+    }
 }
 
 class PersonComparator implements Comparator<Person> {
@@ -55,5 +60,7 @@ interface Scream {
         System.out.println("AAAAAaaaaaaaaaaaaaaaaa!");
     }
 
-    void calmDown(Person v);
+    void calmDown(Person o);
+
+    void greet(Person o);
 }
