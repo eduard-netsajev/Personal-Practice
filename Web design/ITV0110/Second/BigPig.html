@@ -180,7 +180,7 @@
     var pigThreshold = 20;
     var playerTurn = true;
 
-    var intervalVar; // variable used for timing roll() for Pig player
+    var timeoutVar; // variable used for timing roll() for Pig player
 
     var playerScore = 0;
     var pigScore = 0;
@@ -203,7 +203,7 @@
 
     function stopGame() {
         toggleButtons(false);
-        clearInterval(intervalVar);
+        clearTimeout(timeoutVar);
     }
 
     function restart() {
@@ -214,7 +214,7 @@
         playerScore = 0;
         setPigScore(0);
         setPlayerScore(0);
-        clearInterval(intervalVar);
+        clearTimeout(timeoutVar);
         setMessage("Let's roll!");
     }
 
@@ -232,7 +232,7 @@
             playerTurn = !playerTurn;
             if (playerTurn) {
                 setMessage("Bad luck..");
-                clearInterval(intervalVar);
+                clearTimeout(timeoutVar);
                 toggleButtons(true);
             } else {
                 setCurrentPoints(0);
@@ -267,14 +267,27 @@
             setMessage("My turn now..");
             toggleButtons(false);
             playerTurn = false;
-            intervalVar = setInterval(pig_move, 1000);
+            timeoutVar = setTimeout(pig_move, 1000);
+            intervalFakeRoll = setInterval(fake_roll, 100);
         }
     }
 
+    var intervalFakeRoll;
+    function fake_roll() {
+        var firstDice = Math.floor((Math.random() * 6) + 1);
+        var secondDice = Math.floor((Math.random() * 6) + 1);
+
+        setDice(1, firstDice);
+        setDice(2, secondDice);
+    }
+
     function pig_move() {
+        clearInterval(fake_roll());
         var points = getCurrentPoints();
 
         if (points < pigThreshold && points + pigScore < 100) {
+            timeoutVar = setTimeout(pig_move, 1000);
+            intervalFakeRoll = setInterval(fake_roll, 100);
             points = roll();
             setCurrentPoints(points);
         } else {
@@ -286,7 +299,7 @@
                 toggleButtons(true);
                 playerTurn = true;
             }
-            clearInterval(intervalVar);
+            clearTimeout(timeoutVar);
         }
     }
 

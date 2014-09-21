@@ -1,28 +1,16 @@
+import java.util.HashMap;
 import java.util.Scanner;
 
 class Main {
     public static void main (String[] args) {
         // UVa Online Judge problem nr. 100
+        // Run time: 0.569
         Scanner in = new Scanner(System.in);
-
-        boolean first = false;
-        while (in.hasNext()) {
-            int i = 0;
-            int j = 0;
-            if (in.hasNextInt()) {
-                i = in.nextInt();
-            } else {
-                in.next();
-                continue;
-            }
-            if (in.hasNextInt()) {
-                j = in.nextInt();
-            } else {
-                in.next();
-                continue;
-            }
-            int a1 = i;
-            int a2 = j;
+        HashMap<Integer, Integer> stats = new HashMap<>();
+        while (in.hasNextInt()) {
+            int i = in.nextInt();
+            int j = in.nextInt();
+            System.out.print(i + " " + j + " ");
             if (j < i) {
                 int temp = i;
                 i = j;
@@ -31,16 +19,25 @@ class Main {
             j++;
             int l = 0;
             while (i < j) {
-                int n = i;
                 int k = 1;
-                while (n > 1) {
-                    n = (n % 2 == 0) ? (n / 2) : (n * 3 + 1);
-                    k++;
+                if (stats.containsKey(i)) {
+                    k = stats.get(i);
+                } else {
+                    int n = i;
+                    while (n > 1) {
+                        if (n % 2 > 0){
+                            n = n * 3 + 1;
+                        } else {
+                            n /= 2;
+                        }
+                        k++;
+                    }
+                    stats.put(i, k);
                 }
                 l = (k > l) ? k : l;
                 i++;
             }
-            System.out.printf("%d %d %d\n", a1, a2, l);
+            System.out.println(l);
         }
     }
 }
