@@ -295,9 +295,10 @@ class Main {
         in.nextLine();
         String line;
         int slen;
+        boolean wasEmpty = true;
 
         while (i > 0) {
-            char[] alphas = new char[20];
+            char[] alphas = new char[15];
             while (true) {
                 int n = 0;
                 line = in.nextLine();
@@ -307,19 +308,31 @@ class Main {
                 }
                 slen = line.length();
                 if (slen == 0) {
-                break;
+                    if(!wasEmpty) {
+                        wasEmpty = true;
+                        out.println();
+                    } else {
+                        i++;
+                    }
+                        break;
                 }
+                wasEmpty = false;
                 loop:
                 {
                     while (n < slen && line.charAt(n) == alphas[n]) {
                         out.print(' ');
                         n++;
                         if (slen < n + 1) {
-                            alphas[n] = '-';
+                            for (int k = n; k < 15; k++){
+                                alphas[k] = '-';
+                            }
                             break loop;
                         }
                     }
                     alphas[n] = line.charAt(n);
+                    while(++n < 15){
+                        alphas[n] = '-';
+                    }
                 }
                 out.println(line);
             }
@@ -327,7 +340,6 @@ class Main {
             if(i == 0) {
                 break;
             }
-            out.println();
         }
         out.close();
     }
