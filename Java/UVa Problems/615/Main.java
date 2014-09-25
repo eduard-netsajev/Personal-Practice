@@ -1,54 +1,61 @@
 import java.util.*;
+import java.io.*;
 
 class Main {
     // UVa Online Judge problem nr. 615
-    // Ranking: 1901    Run time:  0.216
+    // Ranking: 1821    Run time:  0.129
+
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-
+        Reader.init(System.in);
         // ID - ParentID pair
-        HashMap<Integer, Integer> nodes = new HashMap<>();
-
+        int NODES_RANGE = 51000;
+        int[] nodes = new int[NODES_RANGE];
         // Number of every test case
         int testCase = 1;
 
         // Set of all nodes
-        HashSet<Integer> allNodes = new HashSet<>();
+        int ALL_SIZE = 1000;
+        int[] allNodes = new int[ALL_SIZE];
+        int k = 0; //node count (real number is up to 2 times smaller)
+
         boolean tree = true;
 
         while(true) {
-            if (in.hasNextInt()) {
-                int n1 = in.nextInt();
-                int n2 = in.nextInt();
-
+            try {
+                int n1 = Reader.nextInt();
+                int n2 = Reader.nextInt();
                 if (n1 == 0 && n2 == 0) {
-                    // Variable for holding the root key
-                    int root = -1;
-                    if(tree) {
-                        // Check roots count (node without a parent)
-                        int roots = 0;
-                        for (int key: allNodes) {
-                            if (!nodes.containsKey(key)){
-                                roots++;
-                                root = key;
+                    if (k > 0) {
+                        // Variable for holding the root key
+                        int root = -1;
+                        if (tree) {
+                            // Check roots count (node without a parent)
+                            int roots = 0;
+                            for(int i = 0; allNodes[i] != 0; i++ ){
+                                if (nodes[allNodes[i]] == 0 && root
+                                        != allNodes[i]) {
+                                    roots++;
+                                    root = allNodes[i];
+                                }
+                            }
+                            if (roots != 1) {
+                                tree = false;
                             }
                         }
-                        if (roots != 1 && nodes.size() > 0) {
-                            tree = false;
-                        }
-                    }
-                    // Check if you can go to root from each node
-                    if(tree && root > 0) {
-                        mainloop:
-                        for (int key: nodes.keySet()){
-                            HashSet<Integer> visitedNodes = new HashSet<>();
-                            while (key != root) {
-                                if (visitedNodes.contains(key)){
-                                    tree = false;
-                                    break mainloop;
-                                } else {
-                                    visitedNodes.add(key);
-                                    key = nodes.get(key);
+                        // Check if you can go to root from each node
+                        if (tree) {
+                            int travels;
+                            loop:
+                            for(int i = 0; allNodes[i] != 0; i++ ){
+                                travels = 0;
+                                int node = allNodes[i];
+                                while (node != root) {
+                                    node = nodes[node];
+                                    travels++;
+                                    if (travels > 15) {
+                                        tree = false;
+                                        break loop;
+                                    }
                                 }
                             }
                         }
@@ -63,22 +70,58 @@ class Main {
                     // Start with new test case
                     testCase++;
                     tree = true;
-                    nodes.clear();
-                    allNodes.clear();
+                    // maybe replace with nodes[k--] = 0
+                    k=0;
+                    nodes = new int[NODES_RANGE];
+                    allNodes = new int[ALL_SIZE];
+
                 } else if (n1 == -1 && n2 == -1) {
                     break;
                 } else if (tree) {
-                    if (nodes.containsKey(n2)){
+                    if (nodes[n2] != 0){
                         tree = false;
                     } else {
-                        allNodes.add(n1);
-                        allNodes.add(n2);
-                        nodes.put(n2, n1);
+                        allNodes[k] = n1;
+                        k++;
+                        allNodes[k] = n2;
+                        k++;
+                        nodes[n2] = n1;
                     }
                 }
-            } else {
-                in.next();
+            } catch (IOException e) {
+                break;
             }
         }
+    }
+}
+
+
+// Class for buffered reading int and double values
+
+class Reader {
+    static BufferedReader reader;
+    static StringTokenizer tokenizer;
+
+// call this method to initialize reader for InputStream
+
+    static void init(InputStream input) {
+        reader = new BufferedReader(
+                new InputStreamReader(input) );
+        tokenizer = new StringTokenizer("");
+    }
+
+// get next word
+
+    static String next() throws IOException {
+        while ( ! tokenizer.hasMoreTokens() ) {
+            //TODO add check for eof if necessary
+            tokenizer = new StringTokenizer(
+                    reader.readLine() );
+        }
+        return tokenizer.nextToken();
+    }
+
+    static int nextInt() throws IOException {
+        return Integer.parseInt( next() );
     }
 }

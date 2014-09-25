@@ -6,33 +6,6 @@ class Main {
     //-----------PrintWriter for faster output---------------------------------
     public static PrintWriter out;
 
-    //-----------MyScanner class for faster input----------
-    public static class MyScanner {
-        BufferedReader br;
-        public MyScanner() {
-            br = new BufferedReader(new InputStreamReader(System.in));
-        }
-
-        String next() {
-            try {
-                return new StringTokenizer(br.readLine()).nextToken();
-            } catch (IOException e) {
-                return "";
-            }}
-
-        int nextInt() {
-            return Integer.parseInt(next());
-        }
-
-        String nextLine(){
-            try {
-                return br.readLine();
-            } catch (IOException e) {
-                return "";
-            }
-        }
-    }
-
     public static void main(String[] args) {
         // UVa Online Judge problem nr. 11059 Run time: 0.135
         Reader.init(System.in);
@@ -64,7 +37,6 @@ class Main {
 
                     for (int i; size > 0; size--) {
                         i = Reader.nextInt();
-
                         if (i > 0) { // i > 0 i < 0 i == 0
                             current *= i;
                             noPositive = false;
@@ -129,14 +101,11 @@ class Main {
                 k++;
                 out.println();
             } catch (NullPointerException e) {
-                //out.println("NULL!");
                 break;
             } catch (IOException e) {
-                //out.println("IO!");
                 break;
             }
         }
-
         out.close();
     }
 }
