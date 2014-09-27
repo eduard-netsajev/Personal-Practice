@@ -12,18 +12,17 @@ class Main {
                 int y = Reader.nextInt();
 
                 if(x > y) {
-                    out.println(">");
+                    out.println('>');
                 } else if(x < y) {
-                    out.println("<");
+                    out.println('<');
                 } else {
-                    out.println("=");
+                    out.println('=');
                 }
             }
         } catch (Exception e) {}
         out.close();
     }
 }
-
 
 // Class for buffered reading int and double values
 
