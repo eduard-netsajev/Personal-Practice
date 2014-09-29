@@ -64,18 +64,21 @@ p {
     margin-left: auto;
     font-size: 1.5em;
     text-align: center;
-    color: saddlebrown
+    color: saddlebrown;
+    display: table-cell;
+}
+td {
+    padding: 10px 10px 10px 10px;
 }
 
-#scores {
-    height: 100%;
-    font-size: 1em;
-    margin-left: 200px;
-    position: absolute;
-    display: inline-block;
-    visibility: visible;
-    min-width: 100px;
-    float: right;
+
+.scores {
+    display: table-cell;
+}
+
+/*target mobile devices*/
+@media screen and (min-width: 300px) and (max-width: 720px) {
+    .scores { display: none; }
 }
 
 .dot {
@@ -153,4 +156,10 @@ p {
 }
 .pig > .dot.clean {
     padding: 0 0 0 0;
+}
+
+#you, #pig {
+    display: table-cell;
+    visibility: hidden;
+    padding: 20px 20px 20px 20px;
 }

@@ -8,94 +8,97 @@
     <script src="pigscript.js"></script>
 </head>
 <body>
-<div class="container">
-    <div  class="score">Your score:
+<div style="display: table; margin-left: auto; margin-right: auto">
+    <div class="container scores" id="youscore">
+        <div id="you">You</div>
+    </div>
+    <div class="container">
+        <div  class="score">Your score:
 <span id="player_score">
     0
 </span></div>
 
-    <div class="container" id="scores">
-
-</div>
-
-    <div class="score">Pig score:
+        <div class="score">Pig score:
 <span id="pig_score">
 0
 </span></div>
-    <div>
-        <button id="roll" onclick="fake_rolling(10)">Roll!</button>
-    </div>
-    <p id="dices"> 2 and 5 </p>
-
-    <div>
-        <div class="dice">
-            <span id="11" class="dot"></span>
-            <span id="12" class="dot clean"></span>
-            <span id="13" class="dot clean"></span>
-            <br>
-            <span id="14" class="dot clean"></span>
-            <span id="15" class="dot clean"></span>
-            <span id="16" class="dot clean"></span>
-            <br>
-            <span id="17" class="dot clean"></span>
-            <span id="18" class="dot clean"></span>
-            <span id="19" class="dot"></span>
-            <br>
+        <div>
+            <button id="roll" onclick="toggleButtons(false); fake_rolling(10);">Roll!</button>
         </div>
+        <p id="dices"> 2 and 5 </p>
 
-        <div class="dice">
-            <span id="21" class="dot"></span>
-            <span id="22" class="dot clean"></span>
-            <span id="23" class="dot"></span>
-            <br>
-            <span id="24" class="dot clean"></span>
-            <span id="25" class="dot"></span>
-            <span id="26" class="dot clean"></span>
-            <br>
-            <span id="27" class="dot"></span>
-            <span id="28" class="dot clean"></span>
-            <span id="29" class="dot"></span>
-            <br>
-        </div>
-
-        <div class="bubble">
-            <p id="messages">Let's play!</p>
-            <div class="pig">
+        <div>
+            <div class="dice">
+                <span id="11" class="dot"></span>
+                <span id="12" class="dot clean"></span>
+                <span id="13" class="dot clean"></span>
                 <br>
-                <span class="dot eye"></span>
-                <span class="dot clean"></span>
-                <span class="dot eye"></span>
+                <span id="14" class="dot clean"></span>
+                <span id="15" class="dot clean"></span>
+                <span id="16" class="dot clean"></span>
                 <br>
-                <span class="dot clean"></span>
-                <span class="dot"></span>
-                <span class="dot clean"></span>
+                <span id="17" class="dot clean"></span>
+                <span id="18" class="dot clean"></span>
+                <span id="19" class="dot"></span>
                 <br>
             </div>
+
+            <div class="dice">
+                <span id="21" class="dot"></span>
+                <span id="22" class="dot clean"></span>
+                <span id="23" class="dot"></span>
+                <br>
+                <span id="24" class="dot clean"></span>
+                <span id="25" class="dot"></span>
+                <span id="26" class="dot clean"></span>
+                <br>
+                <span id="27" class="dot"></span>
+                <span id="28" class="dot clean"></span>
+                <span id="29" class="dot"></span>
+                <br>
+            </div>
+
+            <div class="bubble">
+                <p id="messages">Let's play!</p>
+                <div class="pig">
+                    <br>
+                    <span class="dot eye"></span>
+                    <span class="dot clean"></span>
+                    <span class="dot eye"></span>
+                    <br>
+                    <span class="dot clean"></span>
+                    <span class="dot"></span>
+                    <span class="dot clean"></span>
+                    <br>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="margin-right: 120px">Current score:
+            <span id="current_score">0</span>
+        </div>
+
+        <div>
+            <button id="take" onclick="take()">Take</button>
+
+            <p>
+                <button id="restart" onclick="restart()">Restart</button>
+            </p>
+
+            <form onsubmit="return setThreshold(this);">
+                <label style="font-weight: normal">
+                    Pig threshold (above zero):
+                    <input style="background-color: #FFF8DC; max-width: 50px" type="number" id="setX" name="threshold" min="1" max=100
+                           required value="20"></label>
+                <input class="butt" type=submit value="Set">
+            </form>
         </div>
 
     </div>
-
-    <div style="margin-right: 120px">Current score:
-        <span id="current_score">0</span>
+    <div class="container scores" id="pigscore">
+        <div id="pig">Pig</div>
     </div>
-
-    <div>
-        <button id="take" onclick="take()">Take</button>
-
-        <p>
-            <button id="restart" onclick="restart()">Restart</button>
-        </p>
-
-        <form onsubmit="return setThreshold(this);">
-            <label style="font-weight: normal">
-                Pig threshold (above zero):
-                <input style="background-color: #FFF8DC; max-width: 50px" type="number" id="setX" name="threshold" min="1" max=100
-                       required value="20"></label>
-            <input class="butt" type=submit value="Set">
-        </form>
-    </div>
-
 </div>
-
 </body>
 </html>

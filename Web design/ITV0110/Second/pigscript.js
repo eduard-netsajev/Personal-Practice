@@ -1,7 +1,5 @@
-var timeoutFakeRoll; // variable used for timing fake_roll()
-
+var timeoutFakeRoll;
 var timeouts = [];
-
 
 var pigThreshold = 20;
 var playerTurn = true;
@@ -17,17 +15,14 @@ function fake_rolling(times) {
     setDice(1, firstDice);
     setDice(2, secondDice);
     if (times > 0) {
-        // executes too fast without the anonymous function
         timeoutFakeRoll = setTimeout(function() {fake_rolling(times-1);}, 100);
         timeouts.push(timeoutFakeRoll);
     } else {
-        console.log("Go roll!");
         timeouts.push(setTimeout(roll(), 500));
     }
 }
 
 function roll() {
-    console.log("Player rolls!" + playerTurn);
     var firstDice = Math.floor((Math.random() * 6) + 1);
     var secondDice = Math.floor((Math.random() * 6) + 1);
     gid("dices").innerText = String(firstDice) + " and " + String(secondDice);
@@ -40,13 +35,10 @@ function roll() {
         if (playerTurn) {
             setMessage("Unlucky fool!");
         } else {
-            for (var i=0; i<timeouts.length; i++) {
-                clearTimeout(timeouts[i]);
-            }
+            clearTimers();
             setMessage("No luck..");
         }
-        console.log("not lucky");
-        wait_then_take(5);
+        timeouts.push(setTimeout(function() {wait_then_take(5);}, 100));
     }
     else if (firstDice == secondDice) {
         if (firstDice == 1) {
@@ -56,12 +48,18 @@ function roll() {
         }
         if (playerTurn) {
             setMessage("...");
+            toggleButtons(true);
         } else {
             setMessage("He-he-he");
         }
     }
     else {
         currentPoints += firstDice + secondDice;
+        setCurrentPoints(currentPoints);
+        if (playerTurn) {
+            toggleButtons(true);
+        }
+        return currentPoints;
     }
     setCurrentPoints(currentPoints);
     return currentPoints;
@@ -70,37 +68,35 @@ function roll() {
 
 function wait_then_take(times) {
     if (times > 0) {
-        // executes too fast without the anonymous function
         timeouts.push(setTimeout(function() {wait_then_take(times-1);}, 200));
     } else {
-        console.log("Go take!");
         timeouts.push(setTimeout(take(), 500));
     }
 }
 
 
 function take() {
-    console.log("Player takes!" + playerTurn);
     if(playerTurn) {
+        addPlayerScore(currentPoints);
         if (currentPoints > 0) {
             playerScore += currentPoints;
             setPlayerScore(playerScore);
             setMessage("My turn now..");
         }
-        //setCurrentPoints(0);
         if (checkWin() == 0) {
             toggleButtons(false);
             playerTurn = false;
+        } else {
+            return;
         }
         pig_move(3);
     } else {
-
+        addPigScore(currentPoints);
         if (currentPoints > 0) {
             pigScore += currentPoints;
             setPigScore(pigScore);
             setMessage("Enough for me..");
         }
-        //setCurrentPoints(0);
         if (checkWin() == 0) {
             toggleButtons(true);
             playerTurn = true;
@@ -123,15 +119,6 @@ function pig_move(times) {
         }
     }
 }
-
-/*
-        @media screen and (min-width: 768px) {
-            .container {
-                padding-right: 60px;
-                padding-left: 60px;
-            }
-        }*/
-
 
 function checkWin() {
     if (playerScore >= 100) {
@@ -158,10 +145,9 @@ function restart() {
     playerScore = 0;
     setPigScore(pigScore);
     setPlayerScore(playerScore);
+    clearTable();
+    clearTimers();
     setMessage("Let's roll!");
-    for (var i=0; i<timeouts.length; i++) {
-        clearTimeout(timeouts[i]);
-    }
 }
 
 function toggleButtons(toBool) {
@@ -178,14 +164,21 @@ function stopGame() {
     toggleButtons(false);
 }
 
-function getCurrentPoints() {
-    return Number(gid("current_score").innerText);
+function clearTimers() {
+    for (var i=0; i<timeouts.length; i++) {
+        clearTimeout(timeouts[i]);
+    }
 }
+
+function clearTable() {
+    gid("youscore").innerHTML = "<div id='you'>You</div>";
+    gid("pigscore").innerHTML = "<div id='pig'>Pig</div>";
+    gid("you").style.visibility = "hidden";
+    gid("pig").style.visibility = "hidden";
+}
+
 function setCurrentPoints(points) {
     gid("current_score").innerText = String(points);
-}
-function getPigThreshold() {
-    return String(pigThreshold);
 }
 
 function setMessage(message) {
@@ -201,6 +194,16 @@ function setPlayerScore(points) {
     gid("player_score").innerText = String(points);
 }
 
+function addPlayerScore() {
+    gid("you").innerHTML += "<br>"+ currentPoints;
+    gid("you").style.visibility = "visible";
+}
+
+function addPigScore() {
+    gid("pig").style.visibility = "visible";
+    gid("pig").innerHTML += "<br>"+ currentPoints;
+}
+
 function setPigScore(points) {
     gid("pig_score").innerText = String(points);
 }
@@ -208,7 +211,6 @@ function setPigScore(points) {
 function gid(x) {
     return document.getElementById(x);
 }
-
 
 function unsetDots() {
     for (var i = 0; i < arguments[0].length; i++) {
