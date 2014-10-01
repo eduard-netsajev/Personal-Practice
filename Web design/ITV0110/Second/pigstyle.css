@@ -76,7 +76,7 @@ td {
     display: table-cell;
 }
 
-/*target mobile devices*/
+/*for mobile devices*/
 @media screen and (min-width: 300px) and (max-width: 720px) {
     .scores { display: none; }
 }
@@ -125,7 +125,6 @@ td {
     border-width: 15px 20px 0;
     border-color: #FFF8DC transparent;
     width: 0;
-    z-index: 1;
     margin-left: -20px;
     bottom: -15px;
     left: 70%;
