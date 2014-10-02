@@ -55,11 +55,13 @@ button:disabled {
 p {
     margin: 0 0 10px;
 }
+
+body {
+    margin: 0 0 0 0;
+}
 .container {
     max-width: 100%;
     border-radius: 6px;
-    padding-right: 15px;
-    padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
     font-size: 1.5em;
@@ -67,18 +69,16 @@ p {
     color: saddlebrown;
     display: table-cell;
 }
-td {
-    padding: 10px 10px 10px 10px;
-}
-
 
 .scores {
     display: table-cell;
 }
 
 /*for mobile devices*/
-@media screen and (min-width: 300px) and (max-width: 720px) {
-    .scores { display: none; }
+@media (max-width: 720px) {
+    .scores {
+        display: none;
+    }
 }
 
 .dot {
@@ -140,8 +140,8 @@ td {
     line-height: 1;
     border-radius: 40px;
     background-color: #DEADEC;
-
 }
+
 .pig > .dot.eye {
     padding: 2px 2px 2px 2px;
     background-color: #000;
@@ -161,4 +161,61 @@ td {
     display: table-cell;
     visibility: hidden;
     padding: 20px 20px 20px 20px;
+}
+
+
+@media (min-width: 721px) {
+
+    .butt {
+        width: 105px;
+    }
+    .dot {
+        padding: 11px 11px 11px 11px;
+        border-radius: 40px;
+    }
+    .dice {
+        padding: 14px 11px 11px 14px;
+        font-size: 18px;
+        line-height: 1;
+        background-color: #56BAEC;
+        border-radius: 15px;
+    }
+
+    button {
+        width: 400px;
+        margin: 8px;
+        height: auto;
+        position: inherit;
+        font-size: 2.5em;
+        border-radius: 23px;
+    }
+
+    .pig {
+
+        margin-left: 45px;
+        margin-right: 20px;
+        padding: 3px 3px 3px 5px;
+        font-size: 18px;
+        line-height: 1;
+        border-radius: 40px;
+        background-color: #DEADEC;
+    }
+
+    .pig > .dot.eye {
+        padding: 4px 4px 4px 4px;
+        background-color: #000;
+        border-radius: 30px;
+    }
+
+    .pig > .dot {
+        background-color: #e277ec;
+        padding: 8px 8px 8px 12px;
+        margin-right: 8px;
+        border-radius: 30px;
+
+    }
+
+    .pig > .dot.clean {
+        padding: 0 0 0 0;
+    }
 }
