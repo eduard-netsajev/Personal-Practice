@@ -142,7 +142,7 @@ class World:
         """
         grid = [["." for _ in range(self.width)] for _ in range(self.height)]
         #icons = ["^", "/", ">", "\\", "|", "/", "<", "\\"] # NON-UNICODE, uncomment if problems
-        icons = [chr(0x2191), chr(0x2197), chr(0x2192), chr(0x2198), \
+        icons = [chr(0x2191), chr(0x2197), chr(0x2192), chr(0x2198),
                  chr(0x2193), chr(0x2199), chr(0x2190), chr(0x2196)]
         for robot in self.robots:
             grid[robot[1]][robot[0]] = icons[(robot[2]+robot[3]) % 8]
