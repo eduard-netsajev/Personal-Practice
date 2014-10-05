@@ -40,13 +40,13 @@ class Robot(Agent):
                     SkyNet.discover_map_width = False
                     self.order = -1
                     SkyNet.width_searcher = None
-                    #print("Field width is " + str(SkyNet.width))
+                    # print("Field width is " + str(SkyNet.width))
                 elif i == 4:
                     SkyNet.height = self.y + info[0]
                     SkyNet.discover_map_height = False
                     self.order = -1
                     SkyNet.height_searcher = None
-                    #print("Field height is " + str(SkyNet.height))
+                    # print("Field height is " + str(SkyNet.height))
 
             elif info[1] == -2:  # Obstacle detected
                 # print("Obstacle! Robot " + str(self.name) + " Direction " + str(i))
@@ -78,21 +78,17 @@ class Robot(Agent):
         if order < 5:
             self.order = order
             turn = self.continue_task()
+            # self.next_turn = SkyNet.ensure_safety(self, turn)
         else:
             turn = random.randint(-1, 1)
-            print("Robot {} Random turn: ".format(self.name) + str(turn))
+            # self.next_turn = turn
+            #print("Robot {} Random turn: ".format(self.name) + str(turn))
 
         self.next_turn = SkyNet.ensure_safety(self, turn)
-        next_direction = self.direction + self.next_turn
+        next_direction = (self.direction + self.next_turn) % 8
 
-        if 2 < next_direction < 6:
-                self.next_y += 1
-        elif next_direction == 0 or next_direction % 2 == 1:
-            self.next_y -= 1
-        if 0 < next_direction < 4:
-            self.next_x += 1
-        elif 4 < next_direction < 8:
-            self.next_x -= 1
+        self.next_x = self.x + SkyNet.directions[next_direction][0]
+        self.next_y = self.y + SkyNet.directions[next_direction][1]
 
     def execute_turn(self):
         self.last_seven.append(self.next_turn)
@@ -101,7 +97,7 @@ class Robot(Agent):
 
         self.turn(self.world, self.next_turn)
         self.direction += self.next_turn
-        print("Robot {} turned {} with order {}".format(self.name, self.next_turn, self.order))
+        # print("Robot {} turned {} with order {}".format(self.name, self.next_turn, self.order))
         self.direction %= 8
 
     def continue_task(self):
@@ -158,6 +154,8 @@ class SkyNet:
 
     directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 
+    dump = ""
+
     @classmethod
     def give_orders(cls):
         for robot in cls.network:
@@ -175,8 +173,8 @@ class SkyNet:
                 cls.height_searcher.order = 2
 
         for robot in cls.network:
-            print("Robot {} at {} {} direction {} with order {} and target {}"
-                  .format(robot.name, robot.x, robot.y, robot.direction, robot.order, robot.target))
+            # print("Robot {} at {} {} direction {} with order {} and target {}"
+            # .format(robot.name, robot.x, robot.y, robot.direction, robot.order, robot.target))
             if robot.order == -1:
                 if cls.discover_treasure:
                     cls.treasure_searchers.append(robot)
@@ -187,20 +185,50 @@ class SkyNet:
                 robot.calculate_turn(robot.order)
 
         condition = True
+        cls.dump = ""
+        counter = 0
         while condition:  # TODO Fix collisions
+            counter += 1
+            if counter > 10:
+                # print(cls.dump)
+                break
             colliding_robots = []
             positions = []
             for i in range(len(cls.network)):
+
+                real_pos = (cls.network[i].x, cls.network[i].y)
                 pos = (cls.network[i].next_x, cls.network[i].next_y)
+
                 try:
                     positions.index(pos)
                     colliding_robots.append(pos)
                 except ValueError:
                     positions.append(pos)
-                if pos in colliding_robots:
-                    cls.network[i].calculate_turn(5)
+
+                try:
+                    positions.index(real_pos)
+                    colliding_robots.append(real_pos)
+                except ValueError:
+                    positions.append(real_pos)
+
+                for robot in cls.network:
+                    if (robot.x, robot.y) in colliding_robots:
+                        # print("Robot " + str(robot.name) + " Recalculated from " + str(robot.next_turn))
+                        # print("Was pos " + str((robot.x, robot.y)))
+                        robot.calculate_turn(5)
+                        # print("To > " + str(robot.next_turn))
+                        # print("Now pos " + str((robot.x, robot.y)))
+
+                    if (robot.next_x, robot.next_y) in colliding_robots:
+                        # print("Robot " + str(robot.name) + " Recalculated from " + str(robot.next_turn))
+                        # print("Was pos " + str((robot.next_x, robot.next_y)))
+                        robot.calculate_turn(5)
+                        # print("To > " + str(robot.next_turn))
+                        # print("Now pos " + str((robot.next_x, robot.next_y)))
+            cls.dump += "Collide at: " + str(colliding_robots) + "\n" + str(positions) + "\n"
 
             condition = len(colliding_robots) != 0
+            cls.dump += "\n NEW ROUND WITH LEN " + str(len(colliding_robots)) + "\n"
 
         for robot in cls.network:
             robot.execute_turn()
@@ -292,18 +320,18 @@ class SkyNet:
 
         direction = (robot.direction + intention) % 8
         results_one = robot.detect(robot.world, direction)
-        if results_one is None or results_one[1] == -3:
+        if results_one is None or results_one[1] == -3 or (results_one[1] >= 0 and results_one[0] > 1):
             return intention
 
         variant_two = variants.pop(random.randint(0, 1))
         direction = (robot.direction + variant_two) % 8
         results_two = robot.detect(robot.world, direction)
-        if results_two is None or results_two[1] == -3:
+        if results_two is None or results_two[1] == -3 or (results_two[1] >= 0 and results_two[0] > 1):
             return variant_two
 
         direction = (robot.direction + variants[0]) % 8
         results_last = robot.detect(robot.world, direction)
-        if results_last is None or results_last[1] == -3:
+        if results_last is None or results_last[1] == -3 or (results_last[1] >= 0 and results_last[0] > 1):
             return variants[0]
 
         if results_one[0] == results_two[0] == results_last[0]:
@@ -320,35 +348,35 @@ class SkyNet:
                 return variants[0]
 
         if sum(robot.last_seven) > 5:
-                return -1
+            return -1
         if sum(robot.last_seven) < -5:
-                return 1
+            return 1
 
         if robot.direction == 4:
-            if robot.x < cls.get_width()/2:
+            if robot.x < cls.get_width() / 2:
                 return -1
             else:
                 return 1
 
         if robot.direction == 0:
-            if robot.x < cls.get_width()/2:
+            if robot.x < cls.get_width() / 2:
                 return 1
             else:
                 return -1
 
         if robot.direction == 2:
-            if robot.y < cls.get_height()/2:
+            if robot.y < cls.get_height() / 2:
                 return 1
             else:
                 return -1
 
         if robot.direction == 6:
-            if robot.y < cls.get_height()/2:
+            if robot.y < cls.get_height() / 2:
                 return -1
             else:
                 return 1
 
-        return 0
+        return random.randint(-1, 1)
 
     @classmethod
     def print_knowledge(cls):
@@ -395,37 +423,38 @@ class SkyNet:
             return searcher
 
     quoter = -1
+
     @classmethod
     def get_target(cls):
         """
         Generator to use for generating target cells for robots.
         """
         while True:
-            cls.quoter = (cls.quoter+1) % 4
+            cls.quoter = (cls.quoter + 1) % 4
             width = cls.get_width()
             height = cls.get_height()
 
             if cls.quoter == 0:
-                for i in range(int(height/2) + 1):
-                    for j in range(int(width/2) + 1):
+                for i in range(int(height / 2) + 1):
+                    for j in range(int(width / 2) + 1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
                             yield j, i  # x, y
             elif cls.quoter == 1:
-                for i in range(height-1, int(height/2), -1):
-                    for j in range(width-1, int(width/2), -1):
+                for i in range(height - 1, int(height / 2), -1):
+                    for j in range(width - 1, int(width / 2), -1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
                             yield j, i  # x, y
             elif cls.quoter == 2:
-                for i in range(int(height/2) + 1):
-                    for j in range(width-1, int(width/2), -1):
+                for i in range(int(height / 2) + 1):
+                    for j in range(width - 1, int(width / 2), -1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
                             yield j, i  # x, y
             elif cls.quoter == 3:
-                for i in range(height-1, int(height/2), -1):
-                    for j in range(int(width/2) + 1):
+                for i in range(height - 1, int(height / 2), -1):
+                    for j in range(int(width / 2) + 1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
                             yield j, i  # x, y
@@ -498,9 +527,11 @@ class SkyNet:
 
 
 def main():
-    world = World(width=20, height=10, sleep_time=1, treasure=None,
+    world = World(width=30, height=10, sleep_time=1, treasure=None,
                   obstacles=[(5, 5), (8, 3), (6, 2), (3, 4), (3, 6), (3, 5), (4, 7), (5, 5)], reliability=1)
-    robots = [Robot(world, 4, 1, 5), Robot(world, 2, 3, 2), Robot(world, 5, 4, 5)]
+    robots = [
+        # Robot(world, 4, 1, 5), Robot(world, 2, 3, 2), Robot(world, 7, 4, 6),
+        Robot(world, 10, 4, 2), Robot(world, 5, 4, 1)]
     world.print_state()
     SkyNet.print_knowledge()
 
@@ -513,6 +544,7 @@ def main():
             break
         except RobotCollisionException:
             print("Robots collided. They had no choice")
+            # print(SkyNet.dump)
             break
         except RobotDonutsAreBoringException:
             print("Some robot made a full circle. Gert thinks it must be useless move.")
