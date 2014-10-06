@@ -145,19 +145,6 @@ class Reader {
         return tokenizer.nextToken();
     }
 
-    /*static String getCurrentLineToken() throws IOException {
-        if (!tokenizer.hasMoreTokens()) {
-            //TODO add check for eof if necessary
-            tokenizer = new StringTokenizer(
-                    currentLine );
-        }
-        try {
-            return tokenizer.nextToken();
-        } catch (NoSuchElementException e) {
-            return "-1"; // no tokens left
-        }
-    }*/
-
     static String nextLine(){
         flushTokenizer();
         try {
