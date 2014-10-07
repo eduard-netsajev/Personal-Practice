@@ -55,6 +55,9 @@ class LocationSearch implements ILocationSearch {
 
             LatLon midpoint = LatLon.midpoint(p1, p2);
             double radius = LatLon.distance(p1, p2) / 2.5;
+            if (radius < 1) {
+                radius = 1.0; // For small objects
+            }
             // debugging purposes only System.out.println(radius);
 
             query.setLatitude(midpoint.latitude);

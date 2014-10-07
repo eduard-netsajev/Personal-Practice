@@ -23,7 +23,12 @@ def index1(name):
 
 @route('/<routing:path>')
 def hello(routing):
+    global visits
     return index1('Stranger')
 
+
+@route('/favicon.ico')
+def pff():
+    pass
 
 run(host='localhost', port=8080, debug=True)

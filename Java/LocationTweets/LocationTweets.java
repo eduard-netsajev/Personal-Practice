@@ -1,8 +1,4 @@
-import twitter4j.*;
-import twitter4j.auth.OAuth2Token;
-import twitter4j.conf.ConfigurationBuilder;
-
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LocationTweets implements ITwitterApplication {
@@ -12,8 +8,20 @@ public class LocationTweets implements ITwitterApplication {
     private static final String TWITTER_CUSTOMER_SECRET =
             "SvSHa19OT1BfHD95DaQI2eJs8zGMMXh1c3XWkgXqEzLLUzszVC";
 
+    private static int tweetsCount = 5;
+
     public static void main(String[] args){
 
+        LocationTweets lc = new LocationTweets();
+
+        List<IAction> ls;
+        ls = lc.getActionsFromInput("query \"Tallinn Raja 4D\" 15 search kala" +
+                " " +
+                "sort date desc");
+        System.out.println();
+
+        /*LocationSearch locSearch = new LocationSearch();
+        ITwitterQuery iQuery = locSearch.getQueryFromLocation("Tallinn");
 
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true).setApplicationOnlyAuthEnabled(true);
@@ -33,86 +41,47 @@ public class LocationTweets implements ITwitterApplication {
             System.exit(-1);
         }
 
-        String s;
-        StringBuilder response = new StringBuilder();
         try {
+            Query query = new Query();
+            query.setCount(10);
+            GeoLocation location = new GeoLocation(iQuery.getLatitude(),
+                    iQuery.getLongitude());
+            query.setGeoCode(location, iQuery.getRadius(), Query.KILOMETERS);
+            query.setResultType(Query.ResultType.recent);
 
-            URL url = new URL("http://nominatim.openstreetmap" +
-                    ".org/search/Tallinn?format=json&addressdetails" +
-                    "=1" +
-                    "&limit=1");
-            Reader.init(url.openStream());
-            while (true) {
-                s = Reader.nextLine();
-                if (s == null) {
-                    break;
-                } else {
-                    response.append(s);
-                }
-            }
+            QueryResult result;
+            do {
+                result = twitter.search(query);
+                List<Status> tweets = result.getTweets();
+                for (Status tweet : tweets) {
+                    try {
+                        GeoLocation ths = tweet.getGeoLocation();
 
-            JSONObject res = new JSONArray(response.toString()).getJSONObject(0);
-            System.out.println(res.toString());
-
-            JSONArray boundingBox  = res.getJSONArray("boundingbox");
-            //http://www.movable-type.co.uk/scripts/latlong.html
-            LatLon p1 = new LatLon(Double.parseDouble(boundingBox.getString(0)),
-                    Double.parseDouble(boundingBox.getString(2)));
-
-            LatLon p2 = new LatLon(Double.parseDouble(boundingBox.getString(1)),
-                    Double.parseDouble(boundingBox.getString(3)));
-
-            LatLon midpoint = LatLon.midpoint(p1, p2);
-            double radius = LatLon.distance(p1, p2) / 3.0;
-            System.out.println(radius);
-
-            try {
-                Query query = new Query();
-                query.setCount(10);
-                GeoLocation location = new GeoLocation(midpoint.latitude,
-                        midpoint.longitude);
-                query.setGeoCode(location, radius, Query.KILOMETERS);
-                query.setResultType(Query.ResultType.recent);
-
-                QueryResult result;
-                do {
-                    result = twitter.search(query);
-                    List<Status> tweets = result.getTweets();
-                    for (Status tweet : tweets) {
                         try {
-                            GeoLocation ths = tweet.getGeoLocation();
-
-                            try {
-                                System.out.println(ths.getLatitude());
-                                System.out.println(ths.getLongitude());
-                            } catch (Exception e) {
-                                System.out.println("problem2");
-                            }
-
-
+                            System.out.println(ths.getLatitude());
+                            System.out.println(ths.getLongitude());
                         } catch (Exception e) {
-                            System.out.println("problem1");
+                            System.out.println("problem2");
                         }
-                        System.out.println(tweet.getCreatedAt().toString());
-                        System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
+
+
+                    } catch (Exception e) {
+                        System.out.println("problem1");
                     }
-                    break; // TODO next page
-                } while ((query = result.nextQuery()) != null);
-                System.exit(0);
-            } catch (TwitterException te) {
-                te.printStackTrace();
-                System.out.println("Failed to search tweets: " + te.getMessage());
-                System.exit(-1);
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
+                    System.out.println(tweet.getCreatedAt().toString());
+                    System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
+                }
+                break; // TODO next page
+            } while ((query = result.nextQuery()) != null);
+            System.exit(0);
+        } catch (TwitterException te) {
+            te.printStackTrace();
+            System.out.println("Failed to search tweets: " + te.getMessage());
+            System.exit(-1);
+        }*/
 
     }
+
 
     /**
      * Given a command as a String (in interactive mode), this method should
@@ -127,7 +96,113 @@ public class LocationTweets implements ITwitterApplication {
      */
     @Override
     public List<IAction> getActionsFromInput(String action) {
-        return null;
+
+        String[] args = action.split("\\s+");
+
+        List<IAction> actions = new ArrayList<IAction>(2);
+
+        String type = "NoType";
+
+        try {
+            for (int i = 0; i < args.length; i++) {
+
+                type = args[i];
+
+                switch (type) {
+                    case "query":
+                        QueryAction queryAction = new QueryAction();
+                        String location = args[++i];
+
+                        String temp = "";
+                        if (location.charAt(0) == '"') {
+                            while (!temp.endsWith("\"")) {
+                                temp = args[++i];
+                                location += " " + temp;
+                            }
+                            location = location.substring(1,
+                                    location.length() - 1);
+                        }
+                        queryAction.setLocation(location);
+
+                        int count;
+                        try {
+                            count = Integer.parseUnsignedInt(args[++i]);
+                            queryAction.setCount(count);
+                        } catch (NumberFormatException e) {
+                            count = getTweetsCount();
+                            i--;
+                        }
+
+                        queryAction.setCount(count);
+                        actions.add(queryAction);
+                        break;
+                    case "setcount":
+                        try {
+                            int tweetsCount = Integer.parseUnsignedInt(args[++i]);
+                            actions.add(new SetCountAction(tweetsCount));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Illegal count argument.");
+                        }
+                        break;
+                    case "sort":
+                        SortFilterAction filterAction = new SortFilterAction();
+                        String field = args[++i];
+                        switch (field) {
+                            case "author":
+                                filterAction.setSortField(1);
+                                break;
+                            case "date":
+                                filterAction.setSortField(2);
+                                break;
+                            case "content":
+                                filterAction.setSortField(3);
+                                break;
+                            default:
+                                System.out.println("Illegal sort argument.");
+                        }
+
+                        if (i+1 < args.length) {
+
+                            if (args[++i].equals("desc")) {
+                                filterAction.setSortOrder(2);
+                            } else {
+                                i--;
+                            }
+                        }
+
+                        actions.add(filterAction);
+                        break;
+                    case "print":
+                        actions.add(new PrintAction());
+                        break;
+                    case "search":
+                        SortFilterAction searchAction = new SortFilterAction();
+
+                        String phrase = args[++i];
+                        String tempToken = "";
+                        if (phrase.charAt(0) == '"') {
+                            while (!tempToken.endsWith("\"")) {
+                                tempToken = args[++i];
+                                phrase += tempToken;
+                            }
+                            phrase = phrase.substring(1, phrase.length() - 2);
+                        }
+                        searchAction.setSearchKeyword(phrase);
+                        actions.add(searchAction);
+                        break;
+                    case "help":
+                        actions.add(new HelpAction());
+                        break;
+                    default:
+                        System.out.println("Illegal arguments detected. See help");
+                        /*throw new InputMismatchException("Actions reading failed");*/
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Not enough arguments for action " + type);
+        }
+
+        return actions;
     }
 
     /**
@@ -136,12 +211,102 @@ public class LocationTweets implements ITwitterApplication {
      * different actions (for example query, sort and search), this method
      * return a list of all the actions.
      *
-     * @param args Command line arguments (from main method)
+     * @param arguments Command line arguments (from main method)
      * @return List of actions to be executed
      */
     @Override
-    public List<IAction> getActionsFromArguments(String[] args) {
-        return null;
+    public List<IAction> getActionsFromArguments(String[] arguments) {
+
+        List<IAction> actions = new ArrayList<IAction>(5);
+
+        String argString = String.join(" ", arguments);
+        String[] commands = argString.split("-"); // Note: removes leading '-'
+
+        QueryAction queryAction = new QueryAction();
+        queryAction.setLocation(commands[0]);
+        queryAction.setCount(getTweetsCount());
+        actions.add(queryAction);
+
+        boolean allWasOK = true;
+
+        for (int c = 1; c < commands.length; c++) {
+            String command = commands[c];
+            command = command.trim();
+            String[] args = command.split("\\s+");
+            String type = "NoType";
+            try {
+                for (int i = 0; i < args.length; i++) {
+                    type = args[i];
+                    switch (type) {
+                        case "count":
+                            try {
+                                int tweetsCount = Integer.parseUnsignedInt(args[++i]);
+                                actions.add(new SetCountAction(tweetsCount));
+                            } catch (NumberFormatException e) {
+                                allWasOK = false;
+                                System.out.println("Illegal count argument.");
+                            }
+                            continue;
+                        case "sort":
+                            SortFilterAction filterAction = new SortFilterAction();
+                            String field = args[++i];
+                            switch (field) {
+                                case "author":
+                                    filterAction.setSortField(1);
+                                    break;
+                                case "date":
+                                    filterAction.setSortField(2);
+                                    break;
+                                case "content":
+                                    filterAction.setSortField(3);
+                                    break;
+                                default:
+                                    allWasOK = false;
+                                    System.out.println("Illegal sort argument.");
+                            }
+
+                            if (i + 1 < args.length) {
+                                if (args[++i].equals("desc")) {
+                                    filterAction.setSortOrder(2);
+                                }
+                            }
+                            actions.add(filterAction);
+                            continue;
+                        case "search":
+                            SortFilterAction searchAction = new SortFilterAction();
+
+                            String phrase = args[++i];
+                            String tempToken = "";
+                            if (phrase.charAt(0) == '"') {
+                                while (!tempToken.endsWith("\"")) {
+                                    tempToken = args[++i];
+                                    phrase += tempToken;
+                                }
+                                phrase = phrase.substring(1, phrase.length() - 2);
+                            }
+                            searchAction.setSearchKeyword(phrase);
+                            actions.add(searchAction);
+                            continue;
+                        default:
+                            allWasOK = false;
+                            System.out.println("Illegal arguments detected. See help");
+                        /*throw new InputMismatchException("Actions reading failed");*/
+                    }
+                }
+            } catch (IndexOutOfBoundsException e) {
+                allWasOK = false;
+                System.out.println("Not enough arguments for action " + type);
+            }
+        }
+
+        if (allWasOK) {
+            actions.add(new PrintAction());
+        } else {
+            System.out.println("There were some problems with your parameters");
+            actions.add(new HelpAction());
+        }
+
+        return actions;
     }
 
     /**
@@ -152,49 +317,6 @@ public class LocationTweets implements ITwitterApplication {
     @Override
     public void executeAction(IAction action) {
 
-    }
-
-    /**
-     * Executes all the actions given as a list. The default implementation just
-     * iterates over all the actions and calls executeAction.
-     *
-     * @param actions A list of actions
-     */
-    @Override
-    public void executeActions(List<IAction> actions) {
-
-    }
-
-    /**
-     * Executes a location search using location search set with
-     * setLocationSearch(). Returns a query object which holds all the values
-     * for Twitter search. Note that this method has a default implementation
-     * which just executes a method from local location search and returns its
-     * return value. Use this default implementation if you don't have caching
-     * implemented. If you need caching, you need to override this method.
-     *
-     * @param location The location which is to be searched for
-     * @return Query object which holds all the necessary information about
-     * Twitter query
-     * @see ITwitterApplication#setLocationSearch(ILocationSearch)
-     */
-    @Override
-    public ITwitterQuery getQueryFromLocation(String location) {
-        return null;
-    }
-
-    /**
-     * Executes a search of tweets on TwitterSearch object which is stored via
-     * setTwitterSearch(). Returns a list of received tweets.
-     *
-     * @param query Query object which holds all the necessary values
-     * @return List of ITweet objects received from Twitter search.
-     * <code>null</code> if nothing received.
-     * @see ITwitterApplication#setTwitterSearch(ITwitterSearch)
-     */
-    @Override
-    public List<? extends ITweet> getTweets(ITwitterQuery query) {
-        return null;
     }
 
     /**
@@ -281,6 +403,14 @@ public class LocationTweets implements ITwitterApplication {
     @Override
     public List<? extends ITweet> getTweets() {
         return null;
+    }
+
+    public static int getTweetsCount() {
+        return tweetsCount;
+    }
+
+    public static void setTweetsCount(int tweetsCount) {
+        LocationTweets.tweetsCount = tweetsCount;
     }
 }
 

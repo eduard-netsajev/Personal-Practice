@@ -1,0 +1,1 @@
+class PrintAction implements IAction{}

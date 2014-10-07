@@ -1,0 +1,1 @@
+class HelpAction implements IAction {}
