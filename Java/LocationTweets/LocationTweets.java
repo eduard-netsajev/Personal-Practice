@@ -3,12 +3,13 @@ import java.util.List;
 
 public class LocationTweets implements ITwitterApplication {
 
-    private static final String TWITTER_CUSTOMER_KEY =
-            "zpNDfFQlI8sfAvA0e5dIwypU9";
-    private static final String TWITTER_CUSTOMER_SECRET =
-            "SvSHa19OT1BfHD95DaQI2eJs8zGMMXh1c3XWkgXqEzLLUzszVC";
-
     private static int tweetsCount = 5;
+
+    private ILocationSearch locationSearch;
+
+    private ITwitterSearch twitterSearch;
+
+    private List<? extends ITweet> tweets;
 
     public static void main(String[] args){
 
@@ -20,65 +21,9 @@ public class LocationTweets implements ITwitterApplication {
                 "sort date desc");
         System.out.println();
 
-        /*LocationSearch locSearch = new LocationSearch();
+        LocationSearch locSearch = new LocationSearch();
         ITwitterQuery iQuery = locSearch.getQueryFromLocation("Tallinn");
 
-        ConfigurationBuilder cb = new ConfigurationBuilder();
-        cb.setDebugEnabled(true).setApplicationOnlyAuthEnabled(true);
-        cb.setOAuthConsumerKey(TWITTER_CUSTOMER_KEY)
-                .setOAuthConsumerSecret(TWITTER_CUSTOMER_SECRET);
-
-        TwitterFactory tf = new TwitterFactory(cb.build());
-        twitter4j.Twitter twitter = tf.getInstance();
-
-        OAuth2Token token;
-        try {
-            token = twitter.getOAuth2Token();
-            System.out.println(token.toString());
-        } catch (TwitterException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-            System.exit(-1);
-        }
-
-        try {
-            Query query = new Query();
-            query.setCount(10);
-            GeoLocation location = new GeoLocation(iQuery.getLatitude(),
-                    iQuery.getLongitude());
-            query.setGeoCode(location, iQuery.getRadius(), Query.KILOMETERS);
-            query.setResultType(Query.ResultType.recent);
-
-            QueryResult result;
-            do {
-                result = twitter.search(query);
-                List<Status> tweets = result.getTweets();
-                for (Status tweet : tweets) {
-                    try {
-                        GeoLocation ths = tweet.getGeoLocation();
-
-                        try {
-                            System.out.println(ths.getLatitude());
-                            System.out.println(ths.getLongitude());
-                        } catch (Exception e) {
-                            System.out.println("problem2");
-                        }
-
-
-                    } catch (Exception e) {
-                        System.out.println("problem1");
-                    }
-                    System.out.println(tweet.getCreatedAt().toString());
-                    System.out.println("@" + tweet.getUser().getScreenName() + " - " + tweet.getText());
-                }
-                break; // TODO next page
-            } while ((query = result.nextQuery()) != null);
-            System.exit(0);
-        } catch (TwitterException te) {
-            te.printStackTrace();
-            System.out.println("Failed to search tweets: " + te.getMessage());
-            System.exit(-1);
-        }*/
 
     }
 
@@ -328,7 +273,7 @@ public class LocationTweets implements ITwitterApplication {
      */
     @Override
     public void setLocationSearch(ILocationSearch locationSearch) {
-
+        this.locationSearch = locationSearch;
     }
 
     /**
@@ -339,7 +284,7 @@ public class LocationTweets implements ITwitterApplication {
      */
     @Override
     public ILocationSearch getLocationSearch() {
-        return null;
+        return locationSearch;
     }
 
     /**
@@ -350,7 +295,7 @@ public class LocationTweets implements ITwitterApplication {
      */
     @Override
     public void setTwitterSearch(ITwitterSearch twitterSearch) {
-
+        this.twitterSearch = twitterSearch;
     }
 
     /**
@@ -360,7 +305,7 @@ public class LocationTweets implements ITwitterApplication {
      */
     @Override
     public ITwitterSearch getTwitterSearch() {
-        return null;
+        return twitterSearch;
     }
 
     /**
@@ -391,7 +336,7 @@ public class LocationTweets implements ITwitterApplication {
      */
     @Override
     public void setTweets(List<? extends ITweet> tweets) {
-
+        this.tweets = tweets;
     }
 
     /**
@@ -402,7 +347,7 @@ public class LocationTweets implements ITwitterApplication {
      */
     @Override
     public List<? extends ITweet> getTweets() {
-        return null;
+        return tweets;
     }
 
     public static int getTweetsCount() {
