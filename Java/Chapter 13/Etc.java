@@ -1,6 +1,6 @@
-import java.util.*;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
 
 public class Etc {
     public static void main(String[] args) {
@@ -26,6 +26,7 @@ public class Etc {
 
         Arrays.sort(people);
         Collections.sort(samePeople, new PersonComparator());
+        Collections.sort(samePeople, Collections.reverseOrder(new PersonComparator()));
         // samePeople.sort(new PersonComparator()); - redirects to above
     }
 }

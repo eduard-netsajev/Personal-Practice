@@ -41,4 +41,10 @@ class Tweet implements ITweet {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public String toString() {
+        return user + "\n" + timestamp.toString() + "\n" + text + "\n";
+    }
+
 }

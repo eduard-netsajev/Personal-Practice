@@ -1,9 +1,6 @@
 import twitter4j.JSONArray;
-import twitter4j.JSONException;
 import twitter4j.JSONObject;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
@@ -25,14 +22,12 @@ class LocationSearch implements ILocationSearch {
     @Override
     public ITwitterQuery getQueryFromLocation(String location) {
         ITwitterQuery query = new TwitterQuery();
-
         try {
             String s;
             StringBuilder response = new StringBuilder();
-            URLEncoder.encode(location, "UTF-8");
-            URL url = new URL("http://nominatim.openstreetmap.org/search/" +
-                    URLEncoder.encode(location, "UTF-8") +
-                    "?format=json&addressdetails=1&limit=1");
+            URL url = new URL("http://nominatim.openstreetmap.org/search.php?q="
+                    + URLEncoder.encode(location, "UTF-8") +
+                    "&format=json&addressdetails=1&limit=1");
             Reader.init(url.openStream());
             while (true) {
                 s = Reader.nextLine();
@@ -44,7 +39,6 @@ class LocationSearch implements ILocationSearch {
             }
 
             JSONObject res = new JSONArray(response.toString()).getJSONObject(0);
-            // debugging purposes only System.out.println(res.toString());
 
             JSONArray boundingBox = res.getJSONArray("boundingbox");
             LatLon p1 = new LatLon(Double.parseDouble(boundingBox.getString(0)),
@@ -56,9 +50,8 @@ class LocationSearch implements ILocationSearch {
             LatLon midpoint = LatLon.midpoint(p1, p2);
             double radius = LatLon.distance(p1, p2) / 2.5;
             if (radius < 1) {
-                radius = 1.0; // For small objects
+                radius = 1.0; // for small objects
             }
-            // debugging purposes only System.out.println(radius);
 
             query.setLatitude(midpoint.latitude);
             query.setLongitude(midpoint.longitude);
@@ -66,11 +59,8 @@ class LocationSearch implements ILocationSearch {
             query.setRadius(radius);
 
             return query;
-        } catch (MalformedURLException e) {
-            e.printStackTrace(System.out);
-            return null;
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LocationTweets.out.println("Failed to search location " + location);
             return null;
         }
     }

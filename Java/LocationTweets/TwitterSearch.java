@@ -29,15 +29,10 @@ class TwitterSearch implements ITwitterSearch {
         TwitterFactory tf = new TwitterFactory(cb.build());
         twitter = tf.getInstance();
 
-        //OAuth2Token token;
         try {
             twitter.getOAuth2Token();
-            //token = twitter.getOAuth2Token();
-            // System.out.println(token.toString());
         } catch (TwitterException e1) {
-            // TODO Auto-generated catch block
-            System.out.println("Couldn't connect to Twitter");
-            //e1.printStackTrace();
+            LocationTweets.out.println("Couldn't connect to Twitter");
             System.exit(-1);
         }
     }
@@ -57,7 +52,6 @@ class TwitterSearch implements ITwitterSearch {
         try {
             Query query = new Query();
             query.setResultType(Query.ResultType.recent);
-            //query.setCount(iQuery.getCount());
             GeoLocation location = new GeoLocation(iQuery.getLatitude(),
                     iQuery.getLongitude());
             query.setGeoCode(location, iQuery.getRadius(), Query.KILOMETERS);
@@ -81,13 +75,12 @@ class TwitterSearch implements ITwitterSearch {
                     if (i == iQuery.getCount()) {
                         break search;
                     }
-
                 }
             } while ((query = result.nextQuery()) != null);
         } catch (TwitterException te) {
             te.printStackTrace();
-            System.out.println("Failed to search tweets: " + te.getMessage());
-            System.exit(-1);
+            LocationTweets.out.println("Failed to search tweets: " + te.getMessage());
+            return null;
         }
 
         return tweets;

@@ -18,18 +18,15 @@ class Reader {
         currentLine = "";
     }
 
-    // get next word
-
     static void flushTokenizer() {
         currentLine = "";
         tokenizer = new StringTokenizer(
                 currentLine );
     }
 
+    // get next word
     static String next() throws IOException {
-
         while ( ! tokenizer.hasMoreTokens() ) {
-            //TODO add check for eof if necessary
             currentLine = reader.readLine();
             tokenizer = new StringTokenizer(
                     currentLine );
@@ -46,9 +43,5 @@ class Reader {
         } catch (IOException|NullPointerException e) {
             return null;
         }
-    }
-
-    static int nextInt() throws IOException {
-        return Integer.parseInt( next() );
     }
 }
