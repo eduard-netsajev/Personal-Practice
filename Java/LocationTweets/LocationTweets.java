@@ -69,7 +69,7 @@ public class LocationTweets implements ITwitterApplication {
     @Override
     public List<IAction> getActionsFromInput(String action) {
 
-        List<IAction> actions = new ArrayList<IAction>(2);
+        List<IAction> actions = new ArrayList<>(2);
 
         if (action.startsWith("?")){
             CommandInfoAction help = new CommandInfoAction(action.substring(1));
@@ -142,9 +142,13 @@ public class LocationTweets implements ITwitterApplication {
                                 continue;
                         }
 
-                        if (i+1 < args.length && args[i+1].equals("desc")) {
-                            i++;
-                            filterAction.setSortOrder(2);
+                        if (i+1 < args.length){
+                            if (args[i+1].equals("desc")) {
+                                i++;
+                                filterAction.setSortOrder(2);
+                            } else if (args[i+1].equals("asc")) {
+                                i++;
+                            }
                         }
 
                         actions.add(filterAction);
@@ -155,14 +159,19 @@ public class LocationTweets implements ITwitterApplication {
                     case "search":
                         SortFilterAction searchAction = new SortFilterAction();
 
-                        String phrase = args[++i];
-                        String tempToken = "";
+                        String phrase = args[i+1];
+
+                        String tempPhrase = "";
                         if (phrase.charAt(0) == '"') {
-                            while (!tempToken.endsWith("\"")) {
-                                tempToken = args[++i];
-                                phrase += tempToken;
+                            phrase = "";
+                            while (!tempPhrase.endsWith("\"")) {
+                                tempPhrase = args[++i];
+                                phrase += " " + tempPhrase;
                             }
-                            phrase = phrase.substring(1, phrase.length() - 2);
+                            phrase = phrase.substring(2,
+                                    phrase.length() - 1);
+                        } else {
+                            i++;
                         }
                         searchAction.setSearchKeyword(phrase);
                         actions.add(searchAction);
@@ -195,7 +204,7 @@ public class LocationTweets implements ITwitterApplication {
     @Override
     public List<IAction> getActionsFromArguments(String[] arguments) {
 
-        List<IAction> actions = new ArrayList<IAction>(5);
+        List<IAction> actions = new ArrayList<>(5);
 
         int l = -1;
 
@@ -266,32 +275,36 @@ public class LocationTweets implements ITwitterApplication {
                                 if (args[i + 1].equals("desc")) {
                                     filterAction.setSortOrder(2);
                                     i++;
+                                } else if (args[i + 1].equals("asc")) {
+                                    i++;
                                 }
                             }
                             actions.add(filterAction);
                         case "search":
                             SortFilterAction searchAction = new SortFilterAction();
 
-                            String phrase = args[++i];
-                            String tempToken = "";
+                            String phrase = args[i+1];
+                            String tempPhrase = "";
                             if (phrase.charAt(0) == '"') {
-                                while (!tempToken.endsWith("\"")) {
-                                    tempToken = args[++i];
-                                    phrase += tempToken;
+                                phrase = "";
+                                while (!tempPhrase.endsWith("\"")) {
+                                    tempPhrase = args[++i];
+                                    phrase += " " + tempPhrase;
                                 }
-                                phrase = phrase.substring(1, phrase.length() - 2);
+                                phrase = phrase.substring(2,
+                                        phrase.length() - 1);
                             }
                             searchAction.setSearchKeyword(phrase);
                             actions.add(searchAction);
                         default:
                             allWasOK = false;
-                            out.println("Illegal argument found: " + type);
+                            out.println("Illegal argument found: '" + type + "'");
                             continue commands;
                     }
                 }
             } catch (IndexOutOfBoundsException e) {
                 allWasOK = false;
-                out.println("Missing arguments for action " + type);
+                out.println("Missing arguments for action '" + type + "'");
             }
         }
 
@@ -420,7 +433,7 @@ public class LocationTweets implements ITwitterApplication {
                 out.println(SEARCH_INFORMATION);
                 break;
             default:
-                out.println("Can't recognize commands " + command);
+                out.println("Can't recognize command '" + command + "'");
                 out.println("Type 'help' for a list of available commands.");
                 break;
         }
@@ -434,7 +447,7 @@ public class LocationTweets implements ITwitterApplication {
         }
         if (sfAction.getSortField() == 0) {
             String search = sfAction.getSearchKeyword();
-            List<Tweet> tweetsFiltered = new ArrayList<Tweet>();
+            List<Tweet> tweetsFiltered = new ArrayList<>();
 
             for(ITweet tweet: tweets) {
                 if (tweet instanceof Tweet) {
@@ -623,13 +636,37 @@ public class LocationTweets implements ITwitterApplication {
             "can use both '-c' and '-count' for setting tweets number.\nToo " +
             "see results of the query use 'print' command.";
 
-    public final String SETCOUNT_INFORMATION = "";
+    public final String SETCOUNT_INFORMATION = "Command 'setcound <count>' is " +
+            "intended for changing\nthe default value of tweets count given " +
+            "to queries.\nExamples: setcount 15\nTo set the default count from"+
+            " the console,\nuse '-c <count>' or '-count <count>' parameters" +
+            ".\nNote that setting default count command are given the highest" +
+            " priority,\nthus program executes them before making a query. So" +
+            " commands like\n'query Tallinn setcount 15' or 'java " +
+            "LocationTweets \"Tallinn University of Technology\" -c 25'\nwill" +
+            " translate into:\n1) set the default count to the respective " +
+            "amount\n2) execute all other commands";
 
-    public final String PRINT_INFORMATION = "";
+    public final String PRINT_INFORMATION = "Command 'print' prints currently" +
+            " acquired tweets.\nNote that if you type print before sorting " +
+            "the data,\nthis command will print pre-processed (unsorted) " +
+            "tweets.\nAutomatically executed if command-line query is " +
+            "successful.";
 
-    public final String SORT_INFORMATION = "";
+    public final String SORT_INFORMATION = "Command 'sort <field> <order>' " +
+            "sorts the available tweets.\nPossible sorting fields: author, " +
+            "date, content\nOrder field is voluntary, by default sorting is " +
+            "ascending\nExamples:\nsort content\nsort author desc\nsort date " +
+            "asc\nConsole counterparts:\njava LocationTweets Tallinn -sort " +
+            "author desc\njava LocationTweets \"Tallinn University Of " +
+            "Technology\" -c 45 sort content";
 
-    public final String SEARCH_INFORMATION = "";
+    public final String SEARCH_INFORMATION = "Command 'search <key>' filters " +
+            "available tweets.\nAs result only tweets " +
+            "which author, date or content\ncontain <key> remain for " +
+            "processing. Examples:\nsearch developer\nsearch \"Tallinn " +
+            "University Of Technology\"\njava LocationTweets Tallinn 15 " +
+            "-search \"Old Town\"\njava LocationTweets Tartu -search linn";
 }
 
 
