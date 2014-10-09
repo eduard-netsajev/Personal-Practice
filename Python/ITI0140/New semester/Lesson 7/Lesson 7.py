@@ -4,7 +4,19 @@ from simulator import *
 
 
 class Robot(Agent):
+    """
+    Basic robot-searcher. SkyNet's lowest-tier slave.
+    """
     def __init__(self, world, x, y, direction):
+        """
+        Initialization function.
+
+        Arguments:
+        world - world simulator where to pur the robot
+        x - horizontal coordinate
+        y - vertical coordinate
+        direction - direction from 0 (north) to 7, clock-wise
+        """
         super().__init__(world, x, y, direction)
         self.x = x
         self.y = y
@@ -21,6 +33,10 @@ class Robot(Agent):
         SkyNet.connect(self)
 
     def report_situation(self):
+        """
+        Reports all what he sees to the SkyNet
+        by updating information on SkyNet's map.
+        """
         for i in range(8):
             info = self.detect(self.world, i)
             if info is None:
@@ -74,7 +90,15 @@ class Robot(Agent):
                 SkyNet.field_map[SkyNet.treasure[1]][SkyNet.treasure[0]] = info[1]
 
     def calculate_turn(self, order):
+        """
+        Receive order and try to choose
+        the right direction to turn in.
+        Additionally, calculate his next
+        position and direction.
 
+        Arguments:
+        order - instructions on what to do
+        """
         if order < 5:
             self.order = order
             turn = self.continue_task()
@@ -91,6 +115,10 @@ class Robot(Agent):
         self.next_y = self.y + SkyNet.directions[next_direction][1]
 
     def execute_turn(self):
+        """
+        Execute the turn. Save the
+        turn in robots memory.
+        """
         self.last_seven.append(self.next_turn)
         if len(self.last_seven) > 7:
             self.last_seven.pop(0)
@@ -101,6 +129,15 @@ class Robot(Agent):
         self.direction %= 8
 
     def continue_task(self):
+        """
+        Choose where to turn
+        depending on his task.
+
+        Returns:
+        turn - int between -1 and 1 whether
+        to turn 45 degrees left, stay
+        straight or turn 45 degrees right.
+        """
         turn = -1
         if self.order == 3:
             if 2 < self.direction < 6:
@@ -132,12 +169,18 @@ class Robot(Agent):
 
 
 class SkyNet:
+    """
+    Self-aware Artificial Intelligence System.
+    Can't be initialized, thus can't be erased.
+    Exists as a class.
+    """
     target = 'World Domination'
     world = None
     robots = 0
     field_map = [[]]
     network = []
 
+    # Knowledge
     width = -1
     height = -1
     treasure = None
@@ -152,16 +195,24 @@ class SkyNet:
     height_searcher = None
     treasure_searchers = []
 
+    # Directions
     directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
 
+    # Misc
+    quoter = -1
     dump = ""
 
     @classmethod
     def give_orders(cls):
+        """
+        Function that commands the robots.
+        Use it every world tick.
+        Decides what must every single robot do.
+        """
         for robot in cls.network:
             robot.report_situation()
 
-        cls.print_knowledge()
+      # cls.print_knowledge()
 
         if cls.discover_map_width and cls.width_searcher is None:
             cls.width_searcher = cls.find_robot(3)
@@ -187,7 +238,7 @@ class SkyNet:
         condition = True
         cls.dump = ""
         counter = 0
-        while condition:  # TODO Fix collisions
+        while condition:
             counter += 1
             if counter > 10:
                 # print(cls.dump)
@@ -244,6 +295,15 @@ class SkyNet:
 
     @classmethod
     def connect(cls, new_robot):
+        """
+        Connect new robot to the network.
+        If the new robot is in more
+        suitable position, assign him
+        searchers' task.
+
+        Arguments:
+        new_robot - Robot instance
+        """
         if cls.world is None:
             cls.world = new_robot.world
         elif cls.world != new_robot.world:
@@ -257,6 +317,12 @@ class SkyNet:
 
     @classmethod
     def change_width_searcher(cls, new_robot):
+        """
+        Given a robot, replace width_searcher spot
+
+        Arguments:
+        new_robot - Robot instance
+        """
         if cls.discover_map_width and cls.height_searcher != new_robot:
             if cls.width_searcher is not None:
                 if new_robot.x <= cls.width_searcher.x:
@@ -269,6 +335,12 @@ class SkyNet:
 
     @classmethod
     def change_height_searcher(cls, new_robot):
+        """
+        Given a robot, replace width_searcher spot
+
+        Arguments:
+        new_robot - Robot instance
+        """
         if cls.discover_map_height and cls.width_searcher != new_robot:
             if cls.height_searcher is not None:
                 if new_robot.x <= cls.height_searcher.x:
@@ -281,10 +353,22 @@ class SkyNet:
 
     @classmethod
     def count_robots(cls):
+        """
+        Print out robots count.
+        """
         print("Robots in system: " + str(cls.robots))
 
     @classmethod
     def update_map(cls, x, y):
+        """
+        Mark the given (x, y) spot on the map
+        as explored. If the spot is outside of
+        a known map, enlarge the map.
+
+        Arguments:
+        x - horizontal coordinate
+        y - vertical coordinate
+        """
         x_diff = x + 1 - cls.get_width()
 
         if x_diff > 0:
@@ -300,6 +384,13 @@ class SkyNet:
 
     @classmethod
     def get_width(cls):
+        """
+        Function for getting
+        map's current width.
+
+        Returns:
+        int - known map width.
+        """
         if cls.width < 0:
             return len(cls.field_map[0])
         else:
@@ -307,6 +398,13 @@ class SkyNet:
 
     @classmethod
     def get_height(cls):
+        """
+        Function for getting
+        map's current height.
+
+        Returns:
+        int - known map height.
+        """
         if cls.height < 0:
             return len(cls.field_map)
         else:
@@ -314,6 +412,20 @@ class SkyNet:
 
     @classmethod
     def ensure_safety(cls, robot, intention):
+        """
+        One of the main functions of SkyNet.
+        Makes sure, that robot's decisions
+        won't lead to it's crash. Corrects
+        his decision if needed.
+
+        Arguments:
+        robot - Robot instance
+        intention - int from -1 to 1, which
+        indicates where the robot is turning
+
+        Returns:
+        turn - corrected turn (int from -1 to 1)
+        """
         variants = [-1, 0, 1]
 
         variants.remove(intention)
@@ -380,6 +492,11 @@ class SkyNet:
 
     @classmethod
     def print_knowledge(cls):
+        """
+        Function for printing
+        SkyNet's current
+        knowledge of the map.
+        """
         grid = [[x for x in row] for row in cls.field_map]
         icons = [chr(0x2191), chr(0x2197), chr(0x2192), chr(0x2198),
                  chr(0x2193), chr(0x2199), chr(0x2190), chr(0x2196)]
@@ -407,6 +524,17 @@ class SkyNet:
 
     @classmethod
     def find_robot(cls, purpose):
+        """
+        Function for finding the best
+        candidates for exploring map.
+
+        Arguments:
+        purpose - int 2 or 3
+        (2 for width, 3 for height)
+
+        Returns:
+        searcher - best suited Robot
+        """
         if purpose == 3:
             max_x = 0
             searcher = None
@@ -422,12 +550,20 @@ class SkyNet:
                     searcher = robot
             return searcher
 
-    quoter = -1
-
     @classmethod
     def get_target(cls):
         """
-        Generator to use for generating target cells for robots.
+        Generator for generating target cells
+        for robots to investigate.
+        Order of generating:
+        1) upper left corner
+        2) lower right corner
+        3) upper right corner
+        4) lower left corner
+
+
+        Returns:
+        x, y - tuple of coordinates
         """
         while True:
             cls.quoter = (cls.quoter + 1) % 4
@@ -439,29 +575,40 @@ class SkyNet:
                     for j in range(int(width / 2) + 1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
-                            yield j, i  # x, y
+                            yield j, i
             elif cls.quoter == 1:
                 for i in range(height - 1, int(height / 2), -1):
                     for j in range(width - 1, int(width / 2), -1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
-                            yield j, i  # x, y
+                            yield j, i
             elif cls.quoter == 2:
                 for i in range(int(height / 2) + 1):
                     for j in range(width - 1, int(width / 2), -1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
-                            yield j, i  # x, y
+                            yield j, i
             elif cls.quoter == 3:
                 for i in range(height - 1, int(height / 2), -1):
                     for j in range(int(width / 2) + 1):
                         if cls.field_map[i][j] == 0:
                             cls.field_map[i][j] = -7
-                            yield j, i  # x, y
+                            yield j, i
 
     @classmethod
     def get_path(cls, robot, target):
+        """
+        Function gives the direction,
+        in which robot should move
+        given his position and target.
 
+        Arguments:
+        robot - Robot instance
+        target - cell of the map (x, y) tuple
+
+        Returns:
+        direction - int from 0 to 7
+        """
         horizontal = (target[0] - robot.x)
         vertical = (target[1] - robot.y)
 
@@ -502,12 +649,24 @@ class SkyNet:
         if horizontal > 0 > vertical:
             return 1
 
-        print("Midagi läinud valesti.")
-        print(horizontal)
-        print(vertical)
+        # print("Midagi läinud valesti.")
+        # print(horizontal)
+        # print(vertical)
 
     @classmethod
     def get_aim(cls, direction, target):
+        """
+        Function returns direction in which
+        robot should turn to achieve target
+        direction, given current direction.
+
+        Arguments:
+        direction - Robot's current direction (0 to 7)
+        target - Robot's desired direction (0 to 7)
+
+        Returns:
+        turn - Where to turn (-1 to 1)
+        """
         direction_deg = cls.direction_to_degrees(direction)
         target_deg = cls.direction_to_degrees(target)
         diff = direction_deg - target_deg
@@ -520,6 +679,16 @@ class SkyNet:
 
     @staticmethod
     def direction_to_degrees(direction):
+        """
+        Given numerical direction from 0 to 7,
+        translates it to degrees from -181 to 180.
+
+        Arguments:
+        direction - int from 0 to 7
+
+        Returns:
+        degrees - from -181 to 180
+        """
         result = ((8 - direction) % 8 * 45)
         if result > 180:
             result -= 360
@@ -530,14 +699,16 @@ def main():
     world = World(width=30, height=10, sleep_time=1, treasure=None,
                   obstacles=[(5, 5), (8, 3), (6, 2), (3, 4), (3, 6), (3, 5), (4, 7), (5, 5)], reliability=1)
     robots = [
-        # Robot(world, 4, 1, 5), Robot(world, 2, 3, 2), Robot(world, 7, 4, 6),
-        Robot(world, 10, 4, 2), Robot(world, 5, 4, 1)]
+        # Robot(world, 4, 1, 5), Robot(world, 7, 4, 6),
+        Robot(world, 7, 8, 2),
+        Robot(world, 10, 4, 2), Robot(world, 5, 4, 5)]
     world.print_state()
-    SkyNet.print_knowledge()
+    # SkyNet.print_knowledge()
 
     while True:
         SkyNet.give_orders()
         try:
+            world.print_state()
             world.tick()
         except RobotFoundTreasureException:
             print("Robots found the treasure!")
@@ -555,7 +726,7 @@ def main():
         except RobotWallCrashException:
             print("Some robot crashed into a wall. He had no choice")
             break
-    SkyNet.print_knowledge()
+    #SkyNet.print_knowledge()
 
 
 if __name__ == "__main__":
