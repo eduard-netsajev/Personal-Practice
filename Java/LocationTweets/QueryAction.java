@@ -1,17 +1,21 @@
 /**
  * Data object to hold parameters for query action.
- * The methods are regular getters/setters.
- * @author Ago
- *
  */
 class QueryAction implements IQueryAction {
 
+    /**
+     * Official name of the location.
+     */
     private String location;
+
+    /**
+     * Amount of tweets to fetch.
+     */
     private int count;
 
     @Override
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocation(String newLocation) {
+        location = newLocation;
     }
 
     @Override
@@ -20,8 +24,8 @@ class QueryAction implements IQueryAction {
     }
 
     @Override
-    public void setCount(int count) {
-        this.count = count;
+    public void setCount(int newCount) {
+        count = newCount;
     }
 
     @Override

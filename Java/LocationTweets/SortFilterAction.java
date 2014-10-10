@@ -1,7 +1,21 @@
+/**
+ * Data object for sort and search actions, holds action parameters.
+ */
 class SortFilterAction implements IFilterAction {
 
+    /**
+     * Which field use to sort.
+     */
     private int sortField;
+
+    /**
+     * Sort order.
+     */
     private int sortOrder = 1;
+
+    /**
+     * Search keyword.
+     */
     private String searchKeyword;
 
     @Override
@@ -10,9 +24,9 @@ class SortFilterAction implements IFilterAction {
     }
 
     /**
-     * Sets sort field. Use IFilterAction.FIELD_* constants.
+     * Sets sort field.
      *
-     * @param field Sort field, use IFilterAction.FIELD_* constants.
+     * @param field Sort field.
      */
     @Override
     public void setSortField(int field) {
@@ -25,9 +39,9 @@ class SortFilterAction implements IFilterAction {
     }
 
     /**
-     * Sets sort order. Use IFilterAction.ORDER_* constants.
+     * Sets sort order.
      *
-     * @param order Sort order, use IFilterAction.ORDER_* constants.
+     * @param order Sort order.
      */
     @Override
     public void setSortOrder(int order) {
