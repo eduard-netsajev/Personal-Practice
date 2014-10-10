@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Cache functionality which is able to
  * look information from the cache file

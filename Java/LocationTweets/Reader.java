@@ -4,37 +4,61 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+/**
+ * Reader class for general input reading.
+ */
 class Reader {
+    /**
+     * BufferedReader instance.
+     */
     static BufferedReader reader;
+
+    /**
+     * StringTokenizer instance.
+     */
     static StringTokenizer tokenizer;
+
+    /**
+     * Currently being used line.
+     */
     static String currentLine;
 
-    // call this method to initialize reader for InputStream
-
+    /**
+     * Call this method to initialize reader for InputStream.
+     * @param input InputStream instance
+     */
     static void init(InputStream input) {
-        reader = new BufferedReader(
-                new InputStreamReader(input) );
+        reader = new BufferedReader(new InputStreamReader(input));
         tokenizer = new StringTokenizer("");
         currentLine = "";
     }
 
+    /**
+     * Clear both tokenizer and current line.
+     */
     static void flushTokenizer() {
         currentLine = "";
-        tokenizer = new StringTokenizer(
-                currentLine );
+        tokenizer = new StringTokenizer(currentLine);
     }
 
-    // get next word
+    /**
+     * Get next token (word).
+     * @return next token
+     * @throws IOException
+     */
     static String next() throws IOException {
-        while ( ! tokenizer.hasMoreTokens() ) {
+        while (!tokenizer.hasMoreTokens()) {
             currentLine = reader.readLine();
-            tokenizer = new StringTokenizer(
-                    currentLine );
+            tokenizer = new StringTokenizer(currentLine);
         }
         return tokenizer.nextToken();
     }
 
-    static String nextLine(){
+    /**
+     * Grab whole next line. Put it into the tokenizer.
+     * @return next line
+     */
+    static String nextLine() {
         flushTokenizer();
         try {
             currentLine = reader.readLine();

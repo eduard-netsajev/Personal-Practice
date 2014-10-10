@@ -1,21 +1,57 @@
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Iterator;
+import java.util.Collections;
 
+/**
+ * Core of the application.
+ */
 public class LocationTweets implements ITwitterApplication {
 
+    /**
+     * My course grade.
+     */
+    private static final int FIVE = 5;
+
+    /**
+     * LocationSearch instance object.
+     */
     private ILocationSearch locationSearch;
 
+    /**
+     * TwitterSearch instance object.
+     */
     private ITwitterSearch twitterSearch;
 
+    /**
+     * Cache instance object.
+     */
     private ICache cache;
 
+    /**
+     * List of Tweet objects.
+     */
     private List<? extends ITweet> tweets;
 
-    private static int tweetsCount = 5;
+    /**
+     * Count of tweets for queries.
+     * By default set to 5.
+     */
+    private static int tweetsCount = FIVE;
 
+    /**
+     * Application Output stream.
+     */
     static PrintStream out = System.out;
 
-    public static void main(String[] args){
+    /**
+     * Main method, start point of the application.
+     *
+     * @param args - console parameters.
+     */
+    public static void main(String[] args) {
 
         LocationTweets lc = new LocationTweets();
 
@@ -26,7 +62,7 @@ public class LocationTweets implements ITwitterApplication {
             List<IAction> actions = lc.getActionsFromArguments(args);
             lc.executeActions(actions);
 
-            if (!(actions.get(actions.size()-1) instanceof HelpAction)){
+            if (!(actions.get(actions.size() - 1) instanceof HelpAction)) {
                 System.exit(0);
             }
         }
@@ -60,8 +96,6 @@ public class LocationTweets implements ITwitterApplication {
      * parse the input and return a list of IAction instances. Usually one
      * command should create one action, this method gives the opportunity to
      * have combined actions for one command line ("query tallinn search kala").
-     * If you don't use combined actions, just return a list with one element in
-     * it - the IAction instance to be executed.
      *
      * @param action Command string from interactive mode
      * @return List of actions to be executed
@@ -71,7 +105,7 @@ public class LocationTweets implements ITwitterApplication {
 
         List<IAction> actions = new ArrayList<>(2);
 
-        if (action.startsWith("?")){
+        if (action.startsWith("?")) {
             CommandInfoAction help = new CommandInfoAction(action.substring(1));
             actions.add(help);
             return actions;
@@ -89,7 +123,7 @@ public class LocationTweets implements ITwitterApplication {
                 switch (type) {
                     case "query":
                         QueryAction queryAction = new QueryAction();
-                        String location = args[i+1];
+                        String location = args[i + 1];
 
                         String temp = "";
                         if (location.charAt(0) == '"') {
@@ -105,7 +139,7 @@ public class LocationTweets implements ITwitterApplication {
                         }
                         queryAction.setLocation(location);
 
-                        if (i+1 < args.length) {
+                        if (i + 1 < args.length) {
                             try {
                                 int count = Integer.parseUnsignedInt(args[++i]);
                                 queryAction.setCount(count);
@@ -118,35 +152,26 @@ public class LocationTweets implements ITwitterApplication {
                     case "setcount":
                         String countArg = args[++i];
                         try {
-                            int tweetsCount = Integer.parseUnsignedInt(countArg);
-                            actions.add(new SetCountAction(tweetsCount));
+                            int twCount = Integer.parseUnsignedInt(countArg);
+                            actions.add(new SetCountAction(twCount));
                         } catch (NumberFormatException e) {
                             out.println("Illegal count argument: " + countArg);
                         }
                         break;
                     case "sort":
                         SortFilterAction filterAction = new SortFilterAction();
-                        String field = args[++i];
-                        switch (field) {
-                            case "author":
-                                filterAction.setSortField(1);
-                                break;
-                            case "date":
-                                filterAction.setSortField(2);
-                                break;
-                            case "content":
-                                filterAction.setSortField(3);
-                                break;
-                            default:
-                                out.println("Illegal sort argument: " + field);
-                                continue;
+                        int fieldNum = getField(args[++i]);
+
+                        if (fieldNum == -1) {
+                            continue;
                         }
 
-                        if (i+1 < args.length){
-                            if (args[i+1].equals("desc")) {
+                        if (i + 1 < args.length) {
+                            if (args[i + 1].equals("desc")) {
                                 i++;
-                                filterAction.setSortOrder(2);
-                            } else if (args[i+1].equals("asc")) {
+                                int desc = IFilterAction.ORDER_DESCENDING;
+                                filterAction.setSortOrder(desc);
+                            } else if (args[i + 1].equals("asc")) {
                                 i++;
                             }
                         }
@@ -159,7 +184,7 @@ public class LocationTweets implements ITwitterApplication {
                     case "search":
                         SortFilterAction searchAction = new SortFilterAction();
 
-                        String phrase = args[i+1];
+                        String phrase = args[i + 1];
 
                         String tempPhrase = "";
                         if (phrase.charAt(0) == '"') {
@@ -193,10 +218,32 @@ public class LocationTweets implements ITwitterApplication {
     }
 
     /**
+     * Given a string of field name, returns int of the field,
+     * as defined in {@link IFilterAction} interface.
+     * @param field field name, like author, date or content
+     * @return integer linked to the respective field
+     */
+    private int getField(String field) {
+        switch (field) {
+            case "author":
+                return IFilterAction.FIELD_AUTHOR;
+            case "date":
+                return IFilterAction.FIELD_DATE;
+            case "content":
+                return IFilterAction.FIELD_TWEET;
+            default:
+                out.println("Illegal sort argument: " + field);
+                return -1;
+        }
+    }
+
+    /**
      * Given command line arguments this method parses the arguments and returns
      * a list of IAction instances. As the command line can accept several
      * different actions (for example query, sort and search), this method
-     * return a list of all the actions.
+     * return a list of all the actions. Depending on success of parsing
+     * all the arguments, append either PrintAction or HelpAction to the end
+     * of the list. HelpAction if there were some errors. Otherwise PrintAction.
      *
      * @param arguments Command line arguments (from main method)
      * @return List of actions to be executed
@@ -204,13 +251,13 @@ public class LocationTweets implements ITwitterApplication {
     @Override
     public List<IAction> getActionsFromArguments(String[] arguments) {
 
-        List<IAction> actions = new ArrayList<>(5);
+        List<IAction> actions = new ArrayList<>(FIVE);
 
         int l = -1;
 
 
         QueryAction queryAction = new QueryAction();
-        String location = arguments[l+1];
+        String location = arguments[l + 1];
 
         String temp = "";
         if (location.charAt(0) == '"') {
@@ -233,6 +280,7 @@ public class LocationTweets implements ITwitterApplication {
 
         commands:
         for (int c = 1; c < commands.length; c++) {
+            // TODO encapsulate this bit
             String command = commands[c];
             command = command.trim();
             String[] args = command.split("\\s+");
@@ -245,8 +293,8 @@ public class LocationTweets implements ITwitterApplication {
                         case "count":
                             String countArg = args[++i];
                             try {
-                                int tweetsCount = Integer.parseUnsignedInt(countArg);
-                                actions.add(new SetCountAction(tweetsCount));
+                                int twCount = Integer.parseUnsignedInt(countArg);
+                                actions.add(new SetCountAction(twCount));
                             } catch (NumberFormatException e) {
                                 allWasOK = false;
                                 out.println("Illegal count argument: "+countArg);
@@ -342,7 +390,11 @@ public class LocationTweets implements ITwitterApplication {
                 needHelp = true;
             }
         }
-        actions.forEach(this::executeAction);
+
+        for (IAction action : actions) {
+            executeAction(action);
+        }
+
         if (needHelp) {
             executeAction(new HelpAction());
         }
