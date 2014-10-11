@@ -164,6 +164,8 @@ public class LocationTweets implements ITwitterApplication {
 
                         if (fieldNum == -1) {
                             continue;
+                        } else {
+                            filterAction.setSortField(fieldNum);
                         }
 
                         if (i + 1 < args.length) {
@@ -280,7 +282,6 @@ public class LocationTweets implements ITwitterApplication {
 
         commands:
         for (int c = 1; c < commands.length; c++) {
-            // TODO encapsulate this bit
             String command = commands[c];
             command = command.trim();
             String[] args = command.split("\\s+");
@@ -293,45 +294,38 @@ public class LocationTweets implements ITwitterApplication {
                         case "count":
                             String countArg = args[++i];
                             try {
-                                int twCount = Integer.parseUnsignedInt(countArg);
+                                int twCount = Integer.parseUnsignedInt(
+                                        countArg);
                                 actions.add(new SetCountAction(twCount));
                             } catch (NumberFormatException e) {
                                 allWasOK = false;
-                                out.println("Illegal count argument: "+countArg);
+                                out.println("Illegal count argument: "
+                                        + countArg);
                             }
                             continue commands;
                         case "sort":
-                            SortFilterAction filterAction = new SortFilterAction();
-                            String field = args[++i];
-                            switch (field) {
-                                case "author":
-                                    filterAction.setSortField(1);
-                                    break;
-                                case "date":
-                                    filterAction.setSortField(2);
-                                    break;
-                                case "content":
-                                    filterAction.setSortField(3);
-                                    break;
-                                default:
-                                    allWasOK = false;
-                                    out.println("Illegal sort argument: "+field);
-                                    continue commands;
+                            SortFilterAction fAction = new SortFilterAction();
+                            int field = getField(args[++i]);
+                            if (field > 0) {
+                                fAction.setSortField(field);
+                            } else {
+                                allWasOK = false;
+                                continue commands;
                             }
 
                             if (i + 1 < args.length) {
                                 if (args[i + 1].equals("desc")) {
-                                    filterAction.setSortOrder(2);
+                                    fAction.setSortOrder(2);
                                     i++;
                                 } else if (args[i + 1].equals("asc")) {
                                     i++;
                                 }
                             }
-                            actions.add(filterAction);
+                            actions.add(fAction);
                         case "search":
-                            SortFilterAction searchAction = new SortFilterAction();
+                            SortFilterAction sActiong = new SortFilterAction();
 
-                            String phrase = args[i+1];
+                            String phrase = args[i + 1];
                             String tempPhrase = "";
                             if (phrase.charAt(0) == '"') {
                                 phrase = "";
@@ -342,11 +336,12 @@ public class LocationTweets implements ITwitterApplication {
                                 phrase = phrase.substring(2,
                                         phrase.length() - 1);
                             }
-                            searchAction.setSearchKeyword(phrase);
-                            actions.add(searchAction);
+                            sActiong.setSearchKeyword(phrase);
+                            actions.add(sActiong);
                         default:
                             allWasOK = false;
-                            out.println("Illegal argument found: '" + type + "'");
+                            out.println("Illegal argument found: '"
+                                    + type + "'");
                             continue commands;
                     }
                 }
@@ -367,9 +362,10 @@ public class LocationTweets implements ITwitterApplication {
     }
 
     /**
-     * Executes all the actions given as a list. The default implementation just
-     * iterates over all the actions and calls executeAction.
-     * My implementation prioritizes SetCountAction types first.
+     * Executes all the actions given as a list.
+     * Prioritizes SetCountAction type actions first.
+     * Filters all HelpAction instances out, executes
+     * one after all other actions have been executed.
      *
      * @param actions A list of actions
      */
@@ -426,45 +422,49 @@ public class LocationTweets implements ITwitterApplication {
     }
 
     /**
-     * Executes a location search using location search set with
-     * setLocationSearch(). Returns a query object which holds all the values
-     * for Twitter search. Note that this method has a default implementation
-     * which just executes a method from local location search and returns its
-     * return value. Use this default implementation if you don't have caching
-     * implemented. If you need caching, you need to override this method.
+     * Returns a query object which holds all the values.
+     * First, make a look-up in the Cache file, set with setCache().
+     * If location is found in the cache and it has all the needed
+     * geographic parameters set, use them to create a query object.
+     * Otherwise, execute a location search using LocationSearch.
      *
      * @param location The location which is to be searched for
      * @return Query object which holds all the necessary information about
      * Twitter query
-     * @see ITwitterApplication#setLocationSearch(ILocationSearch)
+     * @see LocationSearch
      */
     @Override
     public ITwitterQuery getQueryFromLocation(String location) {
-        ICache cache = getCache();
+        ICache iCache = getCache();
         ITwitterQuery query;
 
-        if(getLocationSearch() == null) {
+        if (getLocationSearch() == null) {
             setLocationSearch(new LocationSearch());
         }
 
-        if (cache != null) {
-            query = cache.getQueryFromCache(location);
+        if (iCache != null) {
+            query = iCache.getQueryFromCache(location);
             if (query != null) { // get the official name
                 location = query.getLocation();
             }
 
             if (query == null || !query.isGeoSet()) {
-                ILocationSearch locationSearch = getLocationSearch();
-                query = locationSearch.getQueryFromLocation(location);
-                cache.updateLocation(query);
+                ILocationSearch locSearch = getLocationSearch();
+                query = locSearch.getQueryFromLocation(location);
+                iCache.updateLocation(query);
             }
         } else {
-            ILocationSearch locationSearch = getLocationSearch();
-            query = locationSearch.getQueryFromLocation(location);
+            ILocationSearch locSearch = getLocationSearch();
+            query = locSearch.getQueryFromLocation(location);
         }
         return query;
     }
 
+    /**
+     * Prints information about the asked command.
+     *
+     * @param action CommandInfoAction instance with the needed command.
+     */
     private void printCommandInfo(CommandInfoAction action) {
         String command = action.getCommand();
 
@@ -491,53 +491,72 @@ public class LocationTweets implements ITwitterApplication {
         }
     }
 
+    /**
+     * Either sorts or filters available tweets,
+     * depending on sfAction parameters.
+     *
+     * @param sfAction {@link SortFilterAction} instance
+     */
     private void sortFilterTweets(SortFilterAction sfAction) {
-        List<? extends ITweet> tweets = getTweets();
-        if (tweets == null){
+        List<? extends ITweet> avTweets = getTweets();
+        if (avTweets == null) {
             out.println("No tweets for sort/filter action.");
             return;
         }
-        if (sfAction.getSortField() == 0) {
-            String search = sfAction.getSearchKeyword();
+        int field = sfAction.getSortField();
+        int order = sfAction.getSortOrder();
+        String keyword = sfAction.getSearchKeyword();
+
+        if (field == 0 && keyword != null) {
             List<Tweet> tweetsFiltered = new ArrayList<>();
 
-            for(ITweet tweet: tweets) {
+            for (ITweet tweet: avTweets) {
                 if (tweet instanceof Tweet) {
-                    if (tweet.toString().contains(search)) {
-                        tweetsFiltered.add((Tweet)tweet);
+                    if (tweet.toString().contains(keyword)) {
+                        tweetsFiltered.add((Tweet) tweet);
                     }
                 }
             }
             setTweets(tweetsFiltered);
-        } else {
-            if (sfAction.getSortOrder() == 1) { // ascending
-                switch (sfAction.getSortField()){
-                    case 1:
-                        Collections.sort(tweets, new AuthorComparator());
+        } else if (order > 0) {
+            if (order == IFilterAction.ORDER_ASCENDING) {
+                switch (field) {
+                    case IFilterAction.FIELD_AUTHOR:
+                        Collections.sort(avTweets, new AuthorComparator());
                         break;
-                    case 2:
-                        Collections.sort(tweets, new DateComparator());
+                    case IFilterAction.FIELD_DATE:
+                        Collections.sort(avTweets, new DateComparator());
                         break;
-                    case 3:
-                        Collections.sort(tweets, new ContentComparator());
+                    case IFilterAction.FIELD_TWEET:
+                        Collections.sort(avTweets, new ContentComparator());
                         break;
+                    default:
+                        out.println("Unknown sort field parameter.");
                 }
-            } else { // descending
-                switch (sfAction.getSortField()){
-                    case 1:
-                        Collections.sort(tweets, Collections.reverseOrder(new AuthorComparator()));
+            } else if (order == IFilterAction.ORDER_DESCENDING) { // descending
+                switch (field) {
+                    case IFilterAction.FIELD_AUTHOR:
+                        Collections.sort(avTweets, Collections.reverseOrder(
+                                new AuthorComparator()));
                         break;
-                    case 2:
-                        Collections.sort(tweets, Collections.reverseOrder(new DateComparator()));
+                    case IFilterAction.FIELD_DATE:
+                        Collections.sort(avTweets, Collections.reverseOrder(
+                                new DateComparator()));
                         break;
-                    case 3:
-                        Collections.sort(tweets, Collections.reverseOrder(new ContentComparator()));
+                    case IFilterAction.FIELD_TWEET:
+                        Collections.sort(avTweets, Collections.reverseOrder(
+                                new ContentComparator()));
                         break;
+                    default:
+                        out.println("Unknown sort field parameter.");
                 }
             }
         }
     }
 
+    /**
+     * Simple quick guide printing function.
+     */
     private void printHelp() {
         out.println("---------------------------------");
         out.println("Help for Location Tweets program");
@@ -553,42 +572,53 @@ public class LocationTweets implements ITwitterApplication {
         out.println("---------------------------------");
     }
 
-
+    /**
+     * Executes TwitterQuery.
+     *
+     * @param action QueryAction instance.
+     */
     private void executeQuery(QueryAction action) {
         String location = action.getLocation();
         int count = action.getCount();
 
         ITwitterQuery query = getQueryFromLocation(location);
         if (query != null && query.isGeoSet()) {
-            query.setCount(count > 0 ? count : getTweetsCount());
-
-            if(getTwitterSearch() == null) {
+            if (count > 0) {
+                query.setCount(count);
+            } else {
+                query.setCount(getTweetsCount());
+            }
+            if (getTwitterSearch() == null) {
                 setTwitterSearch(new TwitterSearch());
             }
             setTweets(getTwitterSearch().getTweets(query));
         }
     }
 
-    private void printTweets(List<? extends ITweet> tweets) {
-        if (tweets == null) {
+    /**
+     * Prints given tweets.
+     *
+     * @param tweetsList A list of tweets
+     */
+    private void printTweets(List<? extends ITweet> tweetsList) {
+        if (tweetsList == null) {
             return;
         }
-        for(ITweet tweet: tweets){
+        for (ITweet tweet: tweetsList) {
             out.println(tweet.toString());
         }
     }
-
 
     /**
      * Stores location search object which will be used to make queries to
      * location search API.
      *
-     * @param locationSearch Implementation of ILocationSearch, which can find
-     *                       information about location (city, country etc.).
+     * @param newLocationSearch Implementation of ILocationSearch, which
+     *                          can find information about location.
      */
     @Override
-    public void setLocationSearch(ILocationSearch locationSearch) {
-        this.locationSearch = locationSearch;
+    public void setLocationSearch(ILocationSearch newLocationSearch) {
+        locationSearch = newLocationSearch;
     }
 
     /**
@@ -606,11 +636,11 @@ public class LocationTweets implements ITwitterApplication {
      * Stores Twitter search object which will be used to query tweets from
      * Twitter API.
      *
-     * @param twitterSearch Implementation of ITwitterSearch
+     * @param newTwitterSearch Implementation of ITwitterSearch
      */
     @Override
-    public void setTwitterSearch(ITwitterSearch twitterSearch) {
-        this.twitterSearch = twitterSearch;
+    public void setTwitterSearch(ITwitterSearch newTwitterSearch) {
+        twitterSearch = newTwitterSearch;
     }
 
     /**
@@ -626,11 +656,11 @@ public class LocationTweets implements ITwitterApplication {
     /**
      * Stores cache object which will be used to cache locations in the file.
      *
-     * @param cache Implementation of ICache
+     * @param newCache Implementation of ICache
      */
     @Override
-    public void setCache(ICache cache) {
-        this.cache = cache;
+    public void setCache(ICache newCache) {
+        cache = newCache;
     }
 
     /**
@@ -647,11 +677,11 @@ public class LocationTweets implements ITwitterApplication {
      * Stores the latest state of tweets list. You should store your tweets
      * using this method after querying, sorting, searching.
      *
-     * @param tweets A list of tweets
+     * @param tweetsList A list of tweets
      */
     @Override
-    public void setTweets(List<? extends ITweet> tweets) {
-        this.tweets = tweets;
+    public void setTweets(List<? extends ITweet> tweetsList) {
+        tweets = tweetsList;
     }
 
     /**
@@ -665,60 +695,83 @@ public class LocationTweets implements ITwitterApplication {
         return tweets;
     }
 
+    /**
+     * Gets current default tweets count value used for queries.
+     *
+     * @return int representing current default tweets count value
+     */
     public static int getTweetsCount() {
         return tweetsCount;
     }
 
-    public static void setTweetsCount(int tweetsCount) {
-        LocationTweets.tweetsCount = tweetsCount;
+    /**
+     * Sets new default value for tweets queries.
+     *
+     * @param newTweetsCount new value of tweets count default value
+     */
+    public static void setTweetsCount(int newTweetsCount) {
+        LocationTweets.tweetsCount = newTweetsCount;
     }
 
-    public final String QUERY_INFORMATION = "Command 'query <location>' is " +
-            "the main command for getting\ntweets from Twitter API from " +
-            "specified in <location> parameter place,\n" +
-            "which can be practically anything. If location contains " +
-            "spaces,\nit must be enclosed in quote marks. You can specify " +
-            "needed tweets count\nby adding a number after location parameter" +
-            ".\nExamples:\nquery Tallinn\nquery London 10\n" +
-            "query \"Tallinn University of Technology\" 25\n" +
-            "\nTo make a query using console parameters you should use next " +
-            "patterns:\njava LocationTweets Tallinn\njava LocationTweets " +
-            "London -c 10\njava LocationTweets" +
-            " \"Tallinn University Of Technology\" -count 25\nNote that you " +
-            "can use both '-c' and '-count' for setting tweets number.\nToo " +
-            "see results of the query use 'print' command.";
+    /**
+     * Information about query command.
+     */
+    public static final String QUERY_INFORMATION = "Command 'query <location>"
+            + " is the main command for getting\ntweets from Twitter API from "
+            + "specified in <location> parameter place,\n"
+            + "which can be practically anything. If location contains "
+            + "spaces,\nit must be enclosed in quote marks. You can specify "
+            + "needed tweets count\nby adding a number after location parameter"
+            + ".\nExamples:\nquery Tallinn\nquery London 10\n"
+            + "query \"Tallinn University of Technology\" 25\n"
+            + "\nTo make a query using console parameters you should use next "
+            + "patterns:\njava LocationTweets Tallinn\njava LocationTweets "
+            + "London -c 10\njava LocationTweets"
+            + " \"Tallinn University Of Technology\" -count 25\nNote that you "
+            + "can use both '-c' and '-count' for setting tweets number.\nToo "
+            + "see results of the query use 'print' command.";
 
-    public final String SETCOUNT_INFORMATION = "Command 'setcound <count>' is " +
-            "intended for changing\nthe default value of tweets count given " +
-            "to queries.\nExamples: setcount 15\nTo set the default count from"+
-            " the console,\nuse '-c <count>' or '-count <count>' parameters" +
-            ".\nNote that setting default count command are given the highest" +
-            " priority,\nthus program executes them before making a query. So" +
-            " commands like\n'query Tallinn setcount 15' or 'java " +
-            "LocationTweets \"Tallinn University of Technology\" -c 25'\nwill" +
-            " translate into:\n1) set the default count to the respective " +
-            "amount\n2) execute all other commands";
+    /**
+     * Information about setcount command.
+     */
+    public static final String SETCOUNT_INFORMATION = "Command 'setcound "
+            + "<count>' is intended for changing\nthe default value of tweets "
+            + "count given to queries.\nExamples: setcount 15\nTo set the "
+            + "default count from the console,\nuse '-c <count>' or '-count "
+            + "<count>' parameters.\nNote that setting default count command"
+            + " are given the highest priority,\nthus program executes them "
+            + "before making a query. So commands like\n'query Tallinn setcount"
+            + " 15' or 'java LocationTweets \"Tallinn University of Technology"
+            + "\" -c 25'\nwill translate into:\n1) set the default count to the"
+            + " respective amount\n2) execute all other commands";
 
-    public final String PRINT_INFORMATION = "Command 'print' prints currently" +
-            " acquired tweets.\nNote that if you type print before sorting " +
-            "the data,\nthis command will print pre-processed (unsorted) " +
-            "tweets.\nAutomatically executed if command-line query is " +
-            "successful.";
+    /**
+     * Information about print information.
+     */
+    public static final String PRINT_INFORMATION = "Command 'print' prints "
+            + "currently acquired tweets.\nNote that if you type print before"
+            + " sorting the data,\nthis command will print pre-processed "
+            + "(unsorted) tweets.\nAutomatically executed if command-line "
+            + "query is successful.";
 
-    public final String SORT_INFORMATION = "Command 'sort <field> <order>' " +
-            "sorts the available tweets.\nPossible sorting fields: author, " +
-            "date, content\nOrder field is voluntary, by default sorting is " +
-            "ascending\nExamples:\nsort content\nsort author desc\nsort date " +
-            "asc\nConsole counterparts:\njava LocationTweets Tallinn -sort " +
-            "author desc\njava LocationTweets \"Tallinn University Of " +
-            "Technology\" -c 45 sort content";
+    /**
+     * Information about sort information.
+     */
+    public static final String SORT_INFORMATION = "Command 'sort <field> "
+            + "<order>' sorts the available tweets.\nPossible sorting fields:"
+            + " author, date, content\nOrder field is voluntary, by default "
+            + "sorting is ascending\nExamples:\nsort content\nsort author "
+            + "desc\nsort date asc\nConsole counterparts:\njava LocationTweets "
+            + "Tallinn -sort author desc\njava LocationTweets \"Tallinn "
+            + "University Of Technology\" -c 45 sort content";
 
-    public final String SEARCH_INFORMATION = "Command 'search <key>' filters " +
-            "available tweets.\nAs result only tweets " +
-            "which author, date or content\ncontain <key> remain for " +
-            "processing. Examples:\nsearch developer\nsearch \"Tallinn " +
-            "University Of Technology\"\njava LocationTweets Tallinn 15 " +
-            "-search \"Old Town\"\njava LocationTweets Tartu -search linn";
+    /**
+     * Information about search command.
+     */
+    public static final String SEARCH_INFORMATION = "Command 'search <key>' "
+            + "filters available tweets.\nAs result only tweets "
+            + "which author, date or content\ncontain <key> remain for "
+            + "processing. Examples:\nsearch developer\nsearch \"Tallinn "
+            + "University Of Technology\"\njava LocationTweets Tallinn 15 "
+            + "-search \"Old Town\"\njava LocationTweets Tartu -search linn";
 }
-
-

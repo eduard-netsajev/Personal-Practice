@@ -25,6 +25,7 @@ class Reader {
 
     /**
      * Call this method to initialize reader for InputStream.
+     *
      * @param input InputStream instance
      */
     static void init(InputStream input) {
@@ -44,7 +45,7 @@ class Reader {
     /**
      * Get next token (word).
      * @return next token
-     * @throws IOException
+     * @throws IOException if any problems happen
      */
     static String next() throws IOException {
         while (!tokenizer.hasMoreTokens()) {
@@ -59,6 +60,7 @@ class Reader {
      * @return next line
      */
     static String nextLine() {
+        // probably not even needed here
         flushTokenizer();
         try {
             currentLine = reader.readLine();

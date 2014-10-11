@@ -7,7 +7,7 @@ class AuthorComparator implements Comparator<ITweet> {
 
     @Override
     public int compare(ITweet tw1, ITweet tw2) {
-        return tw1.getUser().compareTo(tw2.getUser());
+        return tw1.getUser().compareToIgnoreCase(tw2.getUser());
     }
 }
 
@@ -29,6 +29,6 @@ class ContentComparator implements Comparator<ITweet> {
 
     @Override
     public int compare(ITweet tw1, ITweet tw2) {
-        return tw1.getText().compareTo(tw2.getText());
+        return tw1.getText().compareToIgnoreCase(tw2.getText());
     }
 }
