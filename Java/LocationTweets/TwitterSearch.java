@@ -1,26 +1,42 @@
-import twitter4j.*;
+import twitter4j.Query;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.GeoLocation;
+import twitter4j.QueryResult;
+import twitter4j.Status;
 import twitter4j.conf.ConfigurationBuilder;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Twitter search functionality. The implementation
- * of this interface should be able to search tweets
- * from Twitter API.
- * @author Ago
- *
+ * Twitter search queries functionality.
+ * Used to search tweets from Twitter API.
  */
 class TwitterSearch implements ITwitterSearch {
 
+    /**
+     * Twitter instance.
+     */
     Twitter twitter;
 
+    /**
+     * Twitter API Custmoer Key.
+     */
     private static final String TWITTER_CUSTOMER_KEY =
             "zpNDfFQlI8sfAvA0e5dIwypU9";
+
+    /**
+     * Twitter API Customer Secret Key.
+     */
     private static final String TWITTER_CUSTOMER_SECRET =
             "SvSHa19OT1BfHD95DaQI2eJs8zGMMXh1c3XWkgXqEzLLUzszVC";
 
-    TwitterSearch(){
+    /**
+     * Constructor, which immediately connects to Twitter
+     * to check whether the configuration is working.
+     */
+    TwitterSearch() {
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true).setApplicationOnlyAuthEnabled(true);
         cb.setOAuthConsumerKey(TWITTER_CUSTOMER_KEY)
@@ -47,7 +63,7 @@ class TwitterSearch implements ITwitterSearch {
     @Override
     public List<? extends ITweet> getTweets(ITwitterQuery iQuery) {
 
-        List<Tweet> tweets = new ArrayList<Tweet>();
+        List<Tweet> tweets = new ArrayList<>();
 
         try {
             Query query = new Query();
@@ -76,13 +92,14 @@ class TwitterSearch implements ITwitterSearch {
                         break search;
                     }
                 }
-            } while ((query = result.nextQuery()) != null);
+                query = result.nextQuery();
+            } while (query != null);
         } catch (TwitterException te) {
             te.printStackTrace();
-            LocationTweets.out.println("Failed to search tweets: " + te.getMessage());
+            LocationTweets.out.print("Failed to search tweets: ");
+            LocationTweets.out.println(te.getMessage());
             return null;
         }
-
         return tweets;
     }
 }

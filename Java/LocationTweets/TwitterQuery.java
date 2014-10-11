@@ -7,45 +7,62 @@
  * If the geographical data is missing, the main location
  * (or the getLocation() value) is used to make the
  * query from twitter API.
- * @author Ago
- *
  */
-public class TwitterQuery implements ITwitterQuery {
+class TwitterQuery implements ITwitterQuery {
 
+    /**
+     * Point's latitude.
+     */
     private double latitude;
+
+    /**
+     * Point's longitude.
+     */
     private double longitude;
+
+    /**
+     * Point's radius.
+     */
     private double radius;
+
+    /**
+     * Location official name.
+     */
     private String location;
+
+    /**
+     * Queried tweets count.
+     */
     private int count;
 
     @Override
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setLatitude(double locLatitude) {
+        latitude = locLatitude;
     }
 
     @Override
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLongitude(double locLongitude) {
+        longitude = locLongitude;
     }
 
     @Override
-    public void setRadius(double radius) {
-        this.radius = radius;
+    public void setRadius(double locRadius) {
+        radius = locRadius;
     }
 
     @Override
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLocation(String locationName) {
+        location = locationName;
     }
 
     /**
      * The count of tweets to query.
      *
-     * @param count Count of tweets to query
+     * @param tweetsCount Count of tweets to query
      */
     @Override
-    public void setCount(int count) {
-        this.count = count;
+    public void setCount(int tweetsCount) {
+        count = tweetsCount;
     }
 
     @Override

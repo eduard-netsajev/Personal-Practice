@@ -1,5 +1,8 @@
 import java.util.Comparator;
 
+/**
+ * Comparator class for comparing tweets by their authors.
+ */
 class AuthorComparator implements Comparator<ITweet> {
 
     @Override
@@ -8,6 +11,9 @@ class AuthorComparator implements Comparator<ITweet> {
     }
 }
 
+/**
+ * Comparator class for comparing tweets by their timestamps.
+ */
 class DateComparator implements Comparator<ITweet> {
 
     @Override
@@ -16,6 +22,9 @@ class DateComparator implements Comparator<ITweet> {
     }
 }
 
+/**
+ * Comparator class for comparing tweets by their contents.
+ */
 class ContentComparator implements Comparator<ITweet> {
 
     @Override

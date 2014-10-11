@@ -1,15 +1,24 @@
 import java.util.Date;
+
 /**
  * Data object for a tweet. Holds the text,
  * the author and the timestamp.
- * The methods are regular getters/setters.
- * @author Ago
- *
  */
 class Tweet implements ITweet {
 
+    /**
+     * Text of the tweet.
+     */
     private String text;
+
+    /**
+     * Author's username.
+     */
     private String user;
+
+    /**
+     * Date when the tweet was posted.
+     */
     private Date timestamp;
 
     @Override
@@ -18,8 +27,8 @@ class Tweet implements ITweet {
     }
 
     @Override
-    public void setText(String text) {
-        this.text = text;
+    public void setText(String tweetText) {
+        text = tweetText;
     }
 
     @Override
@@ -28,8 +37,8 @@ class Tweet implements ITweet {
     }
 
     @Override
-    public void setUser(String user) {
-        this.user = user;
+    public void setUser(String author) {
+        user = author;
     }
 
     @Override
@@ -38,13 +47,12 @@ class Tweet implements ITweet {
     }
 
     @Override
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestamp(Date tweetTimestamp) {
+        timestamp = tweetTimestamp;
     }
 
     @Override
     public String toString() {
         return user + "\n" + timestamp.toString() + "\n" + text + "\n";
     }
-
 }
