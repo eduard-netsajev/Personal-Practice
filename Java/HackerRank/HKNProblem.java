@@ -7,28 +7,30 @@ import java.util.StringTokenizer;
 class HKNProblemSolution {
 
     public static void main(String[] args) {
-        Reader.init(System.in);
+        ReaderCustom.init(System.in);
+
+        long a = 0;
+        long b = 0;
 
         try {
-            long a = Long.parseLong(Reader.next());
-            long b = Long.parseLong(Reader.next()) + 1;
-
-            int count = 0;
-            for (; a < b; a++) {
+            a = Long.parseLong(ReaderCustom.next());
+            b = Long.parseLong(ReaderCustom.next()) + 1;
+        } catch (IOException e) {
+            System.exit(1);
+                    }
+        int count = 0;
+        for (; a < b; a++) {
+            if (a % 2 != 0) {
                 if (isPalindrome(a)) {
                     count++;
                 }
             }
-            System.out.println(count);
-        } catch (IOException e) {
-            // nothing
         }
+        System.out.println(count);
     }
 
     private static boolean isPalindrome(long a) {
-        if (Long.lowestOneBit(a) != 1 ) {
-            return false;
-        }
+
         char[] chars = Long.toBinaryString(a).toCharArray();
 
         for (int i = 0, j = chars.length -1; i < j; i++, j--) {
@@ -36,11 +38,7 @@ class HKNProblemSolution {
                 return false;
             }
         }
-
-
-
         return true;
-
     }
 }
 
@@ -49,7 +47,7 @@ class HKNProblemSolution {
 /**
  * Reader class for general input reading.
  */
-class Reader {
+class ReaderCustom {
     /**
      * BufferedReader instance.
      */
