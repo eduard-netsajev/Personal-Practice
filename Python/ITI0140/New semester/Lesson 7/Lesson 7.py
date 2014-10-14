@@ -212,7 +212,7 @@ class SkyNet:
         for robot in cls.network:
             robot.report_situation()
 
-        cls.print_knowledge()
+        # cls.print_knowledge()
 
         if cls.discover_map_width and cls.width_searcher is None:
             cls.width_searcher = cls.find_robot(3)
@@ -697,7 +697,7 @@ class SkyNet:
 
 def main():
     world = World(width=30, height=10, sleep_time=1, treasure=None,
-                  obstacles=[(5, 5), (8, 3), (6, 2), (3, 4), (3, 6), (3, 5), (4, 7), (5, 5)], reliability=0.1)
+                  obstacles=[(5, 5), (8, 3), (6, 2), (3, 4), (3, 6), (3, 5), (4, 7), (5, 5)], reliability=0.9)
     robots = [
         # Robot(world, 4, 1, 5), Robot(world, 7, 4, 6),
         Robot(world, 7, 8, 2),
@@ -708,7 +708,7 @@ def main():
     while True:
         SkyNet.give_orders()
         try:
-            #world.print_state()
+            world.print_state()
             world.tick()
         except RobotFoundTreasureException:
             print("Robots found the treasure!")
@@ -726,7 +726,7 @@ def main():
         except RobotWallCrashException:
             print("Some robot crashed into a wall. He had no choice")
             break
-    SkyNet.print_knowledge()
+    world.print_state()
 
 
 if __name__ == "__main__":
