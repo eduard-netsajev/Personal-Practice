@@ -30,6 +30,10 @@ class HKNProblemSolution {
         long x;
         long y;
 
+        if (len == 0){
+            return false;
+        }
+
         for (int i = 0; i < len; i++) {
             x = (a & ((1 << len) - 1)) >> --len;
             y = (a >> i) & 1;
