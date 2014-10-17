@@ -99,3 +99,9 @@ class TestConvert(unittest.TestCase):
 
     def test_23(self):
         self.assertEqual(rn.convert("MMCMXC"), 2990)
+
+    def test_24(self):
+        self.assertEqual(rn.convert("IXIX"), -1)
+
+    def test_25(self):
+        self.assertEqual(rn.convert("IM"), -1)

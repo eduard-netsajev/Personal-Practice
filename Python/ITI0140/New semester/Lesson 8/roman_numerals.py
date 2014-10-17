@@ -18,6 +18,8 @@ def convert(input):
     Similarly, 999 cannot be IM and 1999 cannot be MIM.
     """
     if type(input) == str:
+        if len(input) == 0:
+            return 0
         input = input.upper()
         if len(input.replace("M", "").replace("D", "").replace("C", "").replace("L", "").replace("X", "").replace("V", "").replace("I", "")) != 0:
             return -1
@@ -26,10 +28,9 @@ def convert(input):
         input.find("DD") != -1 or input.find("CCCCC") != -1:
             return -1
         if input.find("IIV") != -1 or input.find("IIX") != -1 or input.find("IL") != -1 or \
-        input.find("IC") != -1 or input.find("ID") != -1 or input.find("IM") != -1:
+        input.find("IC") != -1 or input.find("ID") != -1 or input.find("IM") != -1 \
+        or check_separation(input):
             return -1
-        #or check_separation(input):
-        #    return - 1
         for i, char in enumerate(input):
             if char == 'M':
                 if larger_number_after(i, char, input):
@@ -73,18 +74,20 @@ def convert(input):
 def check_separation(string):
     numerals = [("I", 1), ("V", 5), ("X", 10), ("L", 50), ("C", 100), ("D", 500), ("M", 1000)]
     idx = {'I': 0, 'V': 1, 'X': 2, 'L': 3, 'C': 4, 'D': 5, 'M': 6}
+    if len(string) < 3:
+        return False
     for i, char in enumerate(string):
-        if i < len(string)-1:
-            if string[i+1] == char and larger_number_after(i+1, char, string):
+        if i < len(string)-2:
+            if string[i+2] == char and larger_number_after(i+1, char, string):
                 return True
             for j in range(idx[char]+1, len(numerals)):
-                if i < len(string)-1 and char != 'I':
-                    if string[i+1] == "M" and string[i] == "C" or \
-                    string[i+1] == "X" and string[i] == "C" or \
-                    string[i+1] == "L" and string[i] == "X":
+                if j < len(string)-1 and char == 'I':
+                    if string[j+1] == "M" and string[j] == "C" or \
+                    string[j+1] == "X" and string[j] == "C" or \
+                    string[j+1] == "L" and string[j] == "X":
                         pass
-                    elif string[i+1] == numerals[j][0]:
-                        return True
+                    elif string[j+1] == numerals[j][0]:
+                        pass
                 pass
     return False
 
@@ -95,11 +98,12 @@ def larger_number_after(i, char, string):
         if numerals[string[i+1]] > numerals[char]:
             return True
     return False
-     
+
 
 def main():
-    print(convert("VII"))
-    print(convert("IX"))
+    print(convert("IXIX"))
+    print(convert("I"))
+    print(convert("IXIX"))
     print(convert("XX"))
     print(convert("MMMMM"))
 
@@ -131,10 +135,10 @@ def roman_to_int(n):
 def new_main():
     # Tested with until 125000 - 100% identical results
     ok = 0
-    until = 125000
+    until = 5000
     for i in range(1, until):
         roman_string = str(int_to_roman(i))
-        # print(roman_string)
+        print(roman_string)
         if (convert(roman_string)) == i:
             # print(i, roman_string, convert(roman_string))
             ok += 1
@@ -147,4 +151,4 @@ def new_main():
     print("{}% correct".format(result))
 
 if __name__ == "__main__":
-    new_main()
+    main()
