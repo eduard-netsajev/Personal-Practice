@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
-
 /**
  * Reader class for general input reading.
  */
@@ -61,7 +60,7 @@ class Reader {
      */
     static String nextLine() {
         // probably not even needed here
-        flushTokenizer();
+//        flushTokenizer();
         try {
             currentLine = reader.readLine();
             tokenizer = new StringTokenizer(currentLine);
@@ -69,5 +68,15 @@ class Reader {
         } catch (IOException|NullPointerException e) {
             return null;
         }
+    }
+
+    static int nextInt() throws IOException {
+        return Integer.parseInt( next() );
+    }
+    static long nextLong() throws IOException {
+        return Long.parseLong( next() );
+    }
+    static double nextDouble() throws IOException {
+        return Double.parseDouble( next() );
     }
 }
