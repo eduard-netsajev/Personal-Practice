@@ -1,3 +1,5 @@
+package p10370;
+
 import java.io.*;
 import java.util.StringTokenizer;
 

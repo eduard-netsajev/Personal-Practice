@@ -6,7 +6,7 @@ import java.util.StringTokenizer;
 /**
  * Reader class for general input reading.
  */
-class Reader {
+class ReaderTemplate {
     /**
      * BufferedReader instance.
      */

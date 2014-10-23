@@ -1,11 +1,21 @@
+package p11044;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
-/**
- * Reader class for general input reading.
- */
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        Reader.init(System.in);
+        for (int n = Reader.nextInt(); n > 0; n--) {
+            System.out.println((Reader.nextInt() / 3) * (Reader.nextInt() / 3));
+        }
+    }
+}
+
 class Reader {
     /**
      * BufferedReader instance.
@@ -44,7 +54,7 @@ class Reader {
     /**
      * Get next token (word).
      * @return next token
-     * @throws IOException if any problems happen
+     * @throws java.io.IOException if any problems happen
      */
     static String next() throws IOException {
         while (!tokenizer.hasMoreTokens()) {

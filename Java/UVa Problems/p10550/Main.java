@@ -1,11 +1,44 @@
+package p10550;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
-/**
- * Reader class for general input reading.
- */
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Reader.init(System.in);
+
+        int degrees;
+
+        int i = Reader.nextInt();
+        int f = Reader.nextInt();
+        int s = Reader.nextInt();
+        int t = Reader.nextInt();
+
+        while(i != 0 || f != 0 || s != 0 || t != 0) {
+            degrees = 720;
+            if (i < f) i += 40;
+            degrees += 9 * (i - f);
+            degrees += 360;
+            if (s < f) f -= 40;
+            degrees += 9 * (s - f);
+            if (s < t) t -= 40;
+            degrees += 9 * (s - t);
+            System.out.println(degrees);
+
+            i = Reader.nextInt();
+            f = Reader.nextInt();
+            s = Reader.nextInt();
+            t = Reader.nextInt();
+
+        }
+
+    }
+}
+
+
 class Reader {
     /**
      * BufferedReader instance.
@@ -44,7 +77,7 @@ class Reader {
     /**
      * Get next token (word).
      * @return next token
-     * @throws IOException if any problems happen
+     * @throws java.io.IOException if any problems happen
      */
     static String next() throws IOException {
         while (!tokenizer.hasMoreTokens()) {

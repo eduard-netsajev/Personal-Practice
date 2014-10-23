@@ -1,3 +1,5 @@
+package p10146;
+
 import java.io.*;
 import java.util.*;
 
