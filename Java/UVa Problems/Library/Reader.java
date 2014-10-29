@@ -1,16 +1,20 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+package Library;
+
+import java.io.*;
 import java.util.StringTokenizer;
 /**
  * Reader class for general input reading.
  */
-class ReaderTemplate {
+class Reader {
     /**
      * BufferedReader instance.
      */
     static BufferedReader reader;
+
+    /**
+     * Fast output.
+     */
+    static PrintWriter out;
 
     /**
      * StringTokenizer instance.
@@ -28,6 +32,7 @@ class ReaderTemplate {
      * @param input InputStream instance
      */
     static void init(InputStream input) {
+        out = new PrintWriter(new BufferedOutputStream(System.out));
         reader = new BufferedReader(new InputStreamReader(input));
         tokenizer = new StringTokenizer("");
         currentLine = "";
