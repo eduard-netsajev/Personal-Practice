@@ -1,31 +1,45 @@
 package p978;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.*;
+import java.io.*;
+import java.util.Collections;
+import java.util.PriorityQueue;
 
 public class Main {
+
+    static IntStreamReader inp;
+    static OutputWriter out;
+    static PriorityQueue<Integer> GreenArmy;
+    static PriorityQueue<Integer> BlueArmy;
+    static int[] blueWinners;
+    static int[] greenWinners;
+
+
     public static void main(String[] args) throws IOException {
-        Reader.init(System.in);
-        int t = Reader.nextInt();
+
+
+//initialize
+        inp = new IntStreamReader(System.in);
+
+        out	=	new OutputWriter(System.out);
+
+
+        int t = inp.getNextInt();
 
         int B, SG, SB;
 
         while(true) {
-            B = Reader.nextInt();
-            SG = Reader.nextInt();
-            SB = Reader.nextInt();
+            B = inp.getNextInt();
+            SG = inp.getNextInt();
+            SB = inp.getNextInt();
 
-            PriorityQueue<Integer> GreenArmy = new PriorityQueue<Integer>(SG, Collections.reverseOrder());
-            PriorityQueue<Integer> BlueArmy = new PriorityQueue<Integer>(SB, Collections.reverseOrder());
+            GreenArmy = new PriorityQueue<Integer>(SG, Collections.reverseOrder());
+            BlueArmy = new PriorityQueue<Integer>(SB, Collections.reverseOrder());
 
             for(int i = 0; i < SG; i++) {
-                GreenArmy.offer(Reader.nextInt());
+                GreenArmy.offer(inp.getNextInt());
             }
             for(int i = 0; i < SB; i++) {
-                BlueArmy.offer(Reader.nextInt());
+                BlueArmy.offer(inp.getNextInt());
             }
 
             while(!GreenArmy.isEmpty() && !BlueArmy.isEmpty()) {
@@ -35,16 +49,14 @@ public class Main {
 
                 int f = Math.min(Math.min(gs, bs), B);
 
-                int[] blueWinners = new int[f];
-                int[] greenWinners = new int[f];
+                blueWinners = new int[f];
+                greenWinners = new int[f];
                 int greenWin = 0;
                 int blueWin = 0;
 
                 for(int i = 0; i < f; i++) {
                     int b = BlueArmy.poll();
                     int g = GreenArmy.poll();
-
-                    // System.out.printf("Fight: blue %d versus green %d\n", b, g);
 
                     if (b > g) {
                         blueWinners[blueWin] = b-g;
@@ -63,99 +75,109 @@ public class Main {
             }
 
             if (!GreenArmy.isEmpty()) {
-                System.out.println("green wins");
+                out.printLine("green wins");
                 while(!GreenArmy.isEmpty()) {
-                    System.out.println(GreenArmy.poll());
+                    out.printLine(GreenArmy.poll());
                 }
             } else if (!BlueArmy.isEmpty()) {
-                System.out.println("blue wins");
+                out.printLine("blue wins");
                 while(!BlueArmy.isEmpty()) {
-                    System.out.println(BlueArmy.poll());
+                    out.printLine(BlueArmy.poll());
                 }
             } else {
-                System.out.println("green and blue died");
+                out.printLine("green and blue died");
             }
             if(--t > 0) {
-                System.out.println();
+                out.printLine();
             } else {
                 break;
             }
         }
+
+
+//flush output
+        out.flush();
+
+//remember to close the
+//outputstream, at the end
+        out.close();
+    }
+
+    static class IntStreamReader {
+
+        private BufferedInputStream inp = null;
+        private int offset = 0;
+        private int size = 51200;
+        private byte[] buff = new byte[size];
+
+        public IntStreamReader(InputStream in) throws IOException {
+            inp = new BufferedInputStream(in);
+            inp.read(buff, 0, size);
+        }
+
+        public int getNextInt() throws IOException {
+            int parsedInt = 0;
+            int i = offset;
+            // skip any non digits
+            while (i < buff.length && (buff[i] < '0' || buff[i] > '9')) {
+                i++;
+            }
+            // read digits and parse number
+            while (i < buff.length && buff[i] >= '0' && buff[i] <= '9') {
+                parsedInt *= 10;
+                parsedInt += buff[i] - '0';
+                i++;
+            }
+            // check if we reached end of buffer
+            if (i == buff.length) {
+                // copy leftovers to buffer start
+                int j = 0;
+                for (; offset < buff.length; j++, offset++) {
+                    buff[j] = buff[offset];
+                }
+                // and now fil the buffer
+                inp.read(buff, j, size - j);
+                // and attempt to parse int again
+                offset = 0;
+                parsedInt = getNextInt();
+            } else {
+                offset = i;
+            }
+            return parsedInt;
+        }
     }
 }
 
-/**
- * Reader class for general input reading.
- */
-class Reader {
-    /**
-     * BufferedReader instance.
-     */
-    static BufferedReader reader;
+class OutputWriter {
+    private final PrintWriter writer;
 
-    /**
-     * StringTokenizer instance.
-     */
-    static StringTokenizer tokenizer;
-
-    /**
-     * Currently being used line.
-     */
-    static String currentLine;
-
-    /**
-     * Call this method to initialize reader for InputStream.
-     *
-     * @param input InputStream instance
-     */
-    static void init(InputStream input) {
-        reader = new BufferedReader(new InputStreamReader(input));
-        tokenizer = new StringTokenizer("");
-        currentLine = "";
+    public OutputWriter(OutputStream outputStream) {
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream)));
     }
 
-    /**
-     * Clear both tokenizer and current line.
-     */
-    static void flushTokenizer() {
-        currentLine = "";
-        tokenizer = new StringTokenizer(currentLine);
+    public OutputWriter(Writer writer) {
+        this.writer = new PrintWriter(writer);
     }
 
-    /**
-     * Get next token (word).
-     * @return next token
-     * @throws java.io.IOException if any problems happen
-     */
-    static String next() throws IOException {
-        while (!tokenizer.hasMoreTokens()) {
-            currentLine = reader.readLine();
-            tokenizer = new StringTokenizer(currentLine);
-        }
-        return tokenizer.nextToken();
-    }
-
-    /**
-     * Grab whole next line. Put it into the tokenizer.
-     * @return next line
-     */
-    static String nextLine() {
-        try {
-            currentLine = reader.readLine();
-            tokenizer = new StringTokenizer(currentLine);
-            return currentLine;
-        } catch (IOException|NullPointerException e) {
-            return null;
+    public void print(Object...objects) {
+        for (int i = 0; i < objects.length; i++) {
+            if (i != 0)
+                writer.print(' ');
+            writer.print(objects[i]);
         }
     }
 
-    static int nextInt() throws IOException {
-        return Integer.parseInt( next() );
+    public void printLine(Object...objects) {
+        print(objects);
+        writer.println();
     }
-    static long nextLong() throws IOException {
-        return Long.parseLong( next() );
+
+    public void close() {
+        writer.close();
     }
-    static double nextDouble() throws IOException {
-        return Double.parseDouble( next() );
+
+    public void flush() {
+        writer.flush();
     }
+
 }

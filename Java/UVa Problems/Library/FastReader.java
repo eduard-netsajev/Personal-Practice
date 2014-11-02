@@ -1,101 +1,31 @@
-package p11503;
-/**
- * REALLY FAST!
- */
+package Library;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.InputMismatchException;
 
-public class Main {
+public class FastReader {
+    public static void main(String[] args) {
 
-    static InputReader in = new InputReader(System.in);
-    static OutputWriter out	= new OutputWriter(System.out);
+        //initialize
+        InputReader in 		= new InputReader(System.in);
+        OutputWriter out	=	new OutputWriter(System.out);
 
-    static DisjointSets DS;
-    static String a1;
-    static String a2;
-    static HashMap<String, Integer> map;
+        //read int
+        int i = in.readInt();
+        //read string
+        String s = in.readString();
+        //read int array of size N
+        int[] x = IOUtils.readIntArray(in,3);
+        //printline
+        out.printLine("X");
 
-    public static void main(String[] args) throws IOException {
-        int T = in.readInt();
 
-        while(T-- > 0) {
-            int F = in.readInt();
-            map = new HashMap<>(4000);
-            DS = new DisjointSets(100000);
-            int counter = 0;
-            while(F-- > 0) {
-                a1 = in.readString();
-                a2 = in.readString();
-                Integer an = map.get(a1);
+        //flush output
+        out.flush();
 
-                if (an == null) {
-                    map.put(a1, (an = counter++));
-                }
-                Integer bn = map.get(a2);
-                if (bn == null) {
-                    map.put(a2, (bn = counter++));
-                }
-                DS.unionSet(an, bn);
-            }
-        }
+        //remember to close the
+        //outputstream, at the end
         out.close();
-    }
-}
-
-class DisjointSets {
-
-    private int[] parent, rank, setSize;
-
-    public DisjointSets(int N) {
-        parent = new int[N];
-        rank = new int[N];
-        setSize = new int[N];
-        Arrays.fill(setSize, 1);
-
-        for(int i = 0; i < N; i++) {
-            parent[i] = i;
-        }
-    }
-
-    public int findSet(int c) {
-
-        while(parent[c] != c) {
-            parent[c] = parent[parent[c]];
-            c = parent[c];
-        }
-        return c;
-    }
-
-    public void unionSet(int i, int j) {
-
-        int x = findSet(i);
-        int y = findSet(j);
-
-        if (x != y) {
-
-            if (rank[x] > rank[y]) {
-                connectToSet(x, y);
-            } else if (rank[y] > rank[x]) {
-                connectToSet(y, x);
-            } else {
-                connectToSet(x, y);
-                rank[x]++;
-            }
-        } else {
-            Main.out.printLine(setSize[x]);
-        }
-    }
-
-    private void connectToSet(int larger, int smaller) {
-        parent[smaller] = larger;
-        Main.out.printLine(setSize[larger] += setSize[smaller]);
-    }
-
-    public int sizeOfSet(int i) {
-        return setSize[findSet(i)];
     }
 }
 
@@ -138,8 +68,8 @@ class InputReader {
         }
         int res = 0;
         do {
-            if (c < '0' || c > '9')
-                throw new InputMismatchException();
+        if (c < '0' || c > '9')
+            throw new InputMismatchException();
             res *= 10;
             res += c - '0';
             c = read();
@@ -204,6 +134,17 @@ class OutputWriter {
 
     public void flush() {
         writer.flush();
+    }
+
+}
+
+class IOUtils {
+
+    public static int[] readIntArray(InputReader in, int size) {
+        int[] array = new int[size];
+        for (int i = 0; i < size; i++)
+            array[i] = in.readInt();
+        return array;
     }
 
 }

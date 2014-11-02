@@ -1,51 +1,133 @@
 package p10071;
+
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.InputMismatchException;
 
 class Main {
-    // UVa Online Judge problem nr. 10071 Run time: 0.596
+    // UVa Online Judge problem nr. 10071 Run time: 0.402
+
+    static OutputWriter out	= new OutputWriter(System.out);
+    static InputReader inp = new InputReader(System.in);
+
     public static void main(String[] args) {
-        Reader.init(System.in);
-        PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
         while (true){
             try{
-                int speed = Reader.nextInt();
-                int time = Reader.nextInt();
-                out.println(2 * speed * time);
+                out.printLine(2 * inp.readInt() * inp.readInt());
             } catch (Exception e){
                 //e.printStackTrace(out);
                 break;
             }
         }
+        out.flush();
         out.close();
     }
 }
 
+class InputReader {
 
-class Reader {
-    static BufferedReader reader;
-    static StringTokenizer tokenizer;
+    private InputStream stream;
+    private byte[] buf = new byte[1024];
+    private int curChar;
+    private int numChars;
+    private SpaceCharFilter filter;
 
-// call this method to initialize reader for InputStream
-
-    static void init(InputStream input) {
-        reader = new BufferedReader(
-                new InputStreamReader(input) );
-        tokenizer = new StringTokenizer("");
+    public InputReader(InputStream stream) {
+        this.stream = stream;
     }
 
-// get next word
-
-    static String next() throws IOException {
-        while ( ! tokenizer.hasMoreTokens() ) {
-            //TODO add check for eof if necessary
-            tokenizer = new StringTokenizer(
-                    reader.readLine() );
+    public int read() {
+        if (numChars == -1)
+            throw new InputMismatchException();
+        if (curChar >= numChars) {
+            curChar = 0;
+            try {
+                numChars = stream.read(buf);
+            } catch (IOException e) {
+                throw new InputMismatchException();
+            }
+            if (numChars <= 0)
+                return -1;
         }
-        return tokenizer.nextToken();
+        return buf[curChar++];
     }
 
-    static int nextInt() throws IOException {
-        return Integer.parseInt( next() );
+    public int readInt() {
+        int c = read();
+        while (isSpaceChar(c))
+            c = read();
+        int sgn = 1;
+        if (c == '-') {
+            sgn = -1;
+            c = read();
+        }
+        int res = 0;
+        do {
+            if (c < '0' || c > '9')
+                throw new InputMismatchException();
+            res *= 10;
+            res += c - '0';
+            c = read();
+        } while (!isSpaceChar(c));
+        return res * sgn;
     }
+
+    public String readString() {
+        int c = read();
+        while (isSpaceChar(c))
+            c = read();
+        StringBuilder res = new StringBuilder();
+        do {
+            res.appendCodePoint(c);
+            c = read();
+        } while (!isSpaceChar(c));
+        return res.toString();
+    }
+
+    public boolean isSpaceChar(int c) {
+        if (filter != null)
+            return filter.isSpaceChar(c);
+        return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+    }
+
+    public String next() {
+        return readString();
+    }
+
+    public interface SpaceCharFilter {
+        public boolean isSpaceChar(int ch);
+    }
+}
+
+class OutputWriter {
+    private final PrintWriter writer;
+
+    public OutputWriter(OutputStream outputStream) {
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream)));
+    }
+
+    public OutputWriter(Writer writer) {
+        this.writer = new PrintWriter(writer);
+    }
+
+    public void print(Object...objects) {
+        for (int i = 0; i < objects.length; i++) {
+            if (i != 0)
+                writer.print(' ');
+            writer.print(objects[i]);
+        }
+    }
+
+    public void printLine(Object...objects) {
+        print(objects);
+        writer.println();
+    }
+
+    public void close() {
+        writer.close();
+    }
+
+    public void flush() {
+        writer.flush();
+    }
+
 }

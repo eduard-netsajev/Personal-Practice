@@ -6,8 +6,13 @@ class Main {
     // UVa Online Judge problem nr. 615
     // Ranking: 1821    Run time:  0.129
 
+
+    //initialize
+    static InputReader in = new InputReader(System.in);
+    static OutputWriter out	= new OutputWriter(System.out);
+
     public static void main(String[] args) {
-        Reader.init(System.in);
+
         // ID - ParentID pair
         int NODES_RANGE = 51000;
         int[] nodes = new int[NODES_RANGE];
@@ -22,9 +27,8 @@ class Main {
         boolean tree = true;
 
         while(true) {
-            try {
-                int n1 = Reader.nextInt();
-                int n2 = Reader.nextInt();
+                int n1 = in.readInt();
+                int n2 = in.readInt();
                 if (n1 == 0 && n2 == 0) {
                     if (k > 0) {
                         // Variable for holding the root key
@@ -63,10 +67,13 @@ class Main {
                     }
                     // Verdict
                     if(tree){
-                        System.out.println("Case " + testCase + " is a tree.");
+                        out.print("Case ");
+                        out.print(testCase);
+                        out.print(" is a tree.\n");
                     } else {
-                        System.out.println("Case " + testCase +
-                                " is not a tree.");
+                        out.print("Case ");
+                        out.print(testCase);
+                        out.print(" is not a tree.\n");
                     }
                     // Start with new test case
                     testCase++;
@@ -89,40 +96,122 @@ class Main {
                         nodes[n2] = n1;
                     }
                 }
-            } catch (IOException e) {
-                break;
-            }
         }
+
+//flush output
+        out.flush();
+
+//remember to close the
+//outputstream, at the end
+        out.close();
     }
 }
 
+class InputReader {
 
-// Class for buffered reading int and double values
+    private InputStream stream;
+    private byte[] buf = new byte[1024];
+    private int curChar;
+    private int numChars;
+    private SpaceCharFilter filter;
 
-class Reader {
-    static BufferedReader reader;
-    static StringTokenizer tokenizer;
-
-// call this method to initialize reader for InputStream
-
-    static void init(InputStream input) {
-        reader = new BufferedReader(
-                new InputStreamReader(input) );
-        tokenizer = new StringTokenizer("");
+    public InputReader(InputStream stream) {
+        this.stream = stream;
     }
 
-// get next word
-
-    static String next() throws IOException {
-        while ( ! tokenizer.hasMoreTokens() ) {
-            //TODO add check for eof if necessary
-            tokenizer = new StringTokenizer(
-                    reader.readLine() );
+    public int read() {
+        if (numChars == -1)
+            throw new InputMismatchException();
+        if (curChar >= numChars) {
+            curChar = 0;
+            try {
+                numChars = stream.read(buf);
+            } catch (IOException e) {
+                throw new InputMismatchException();
+            }
+            if (numChars <= 0)
+                return -1;
         }
-        return tokenizer.nextToken();
+        return buf[curChar++];
     }
 
-    static int nextInt() throws IOException {
-        return Integer.parseInt( next() );
+    public int readInt() {
+        int c = read();
+        while (isSpaceChar(c))
+            c = read();
+        int sgn = 1;
+        if (c == '-') {
+            sgn = -1;
+            c = read();
+        }
+        int res = 0;
+        do {
+            if (c < '0' || c > '9')
+                throw new InputMismatchException();
+            res *= 10;
+            res += c - '0';
+            c = read();
+        } while (!isSpaceChar(c));
+        return res * sgn;
     }
+
+    public String readString() {
+        int c = read();
+        while (isSpaceChar(c))
+            c = read();
+        StringBuilder res = new StringBuilder();
+        do {
+            res.appendCodePoint(c);
+            c = read();
+        } while (!isSpaceChar(c));
+        return res.toString();
+    }
+
+    public boolean isSpaceChar(int c) {
+        if (filter != null)
+            return filter.isSpaceChar(c);
+        return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
+    }
+
+    public String next() {
+        return readString();
+    }
+
+    public interface SpaceCharFilter {
+        public boolean isSpaceChar(int ch);
+    }
+}
+
+class OutputWriter {
+    private final PrintWriter writer;
+
+    public OutputWriter(OutputStream outputStream) {
+        writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outputStream)));
+    }
+
+    public OutputWriter(Writer writer) {
+        this.writer = new PrintWriter(writer);
+    }
+
+    public void print(Object...objects) {
+        for (int i = 0; i < objects.length; i++) {
+            if (i != 0)
+                writer.print(' ');
+            writer.print(objects[i]);
+        }
+    }
+
+    public void printLine(Object...objects) {
+        print(objects);
+        writer.println();
+    }
+
+    public void close() {
+        writer.close();
+    }
+
+    public void flush() {
+        writer.flush();
+    }
+
 }

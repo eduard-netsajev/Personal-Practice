@@ -155,6 +155,10 @@ def generate_fractal():
     draw_heatmap_rgb()
 
 
+def julia(c):
+    pass
+
+
 def main():
     import time
     t0 = time.time()
