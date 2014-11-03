@@ -5,26 +5,10 @@ import java.util.InputMismatchException;
 
 public class FastReader {
     public static void main(String[] args) {
-
         //initialize
         InputReader in 		= new InputReader(System.in);
         OutputWriter out	=	new OutputWriter(System.out);
-
-        //read int
-        int i = in.readInt();
-        //read string
-        String s = in.readString();
-        //read int array of size N
-        int[] x = IOUtils.readIntArray(in,3);
-        //printline
-        out.printLine("X");
-
-
-        //flush output
-        out.flush();
-
-        //remember to close the
-        //outputstream, at the end
+        //remember to close
         out.close();
     }
 }
@@ -39,6 +23,11 @@ class InputReader {
 
     public InputReader(InputStream stream) {
         this.stream = stream;
+    }
+
+    public InputReader(InputStream stream, SpaceCharFilter filter) {
+        this.stream = stream;
+        this.filter = filter;
     }
 
     public int read() {
@@ -57,7 +46,7 @@ class InputReader {
         return buf[curChar++];
     }
 
-    public int readInt() {
+    public int nextInt() {
         int c = read();
         while (isSpaceChar(c))
             c = read();
@@ -68,8 +57,8 @@ class InputReader {
         }
         int res = 0;
         do {
-        if (c < '0' || c > '9')
-            throw new InputMismatchException();
+            if (c < '0' || c > '9')
+                throw new InputMismatchException();
             res *= 10;
             res += c - '0';
             c = read();
@@ -77,7 +66,44 @@ class InputReader {
         return res * sgn;
     }
 
-    public String readString() {
+    public double nextDouble() {
+        int c = read();
+        while (isSpaceChar(c))
+            c = read();
+        long sgn = 1;
+        if (c == '-') {
+            sgn = -1;
+            c = read();
+        }
+        long res = 0;
+        do {
+            if (c < '0' || c > '9')
+                throw new InputMismatchException();
+            res *= 10;
+            res += c - '0';
+            c = read();
+        } while (!(c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1 || c == '.'));
+
+        if (c != '.') {
+            return res * sgn;
+        }
+        c = read();
+
+        long aft = 0;
+        int len = 1;
+        do {
+            if (c < '0' || c > '9')
+                throw new InputMismatchException();
+            aft *= 10;
+            len *= 10;
+            aft += c - '0';
+            c = read();
+        } while (!isSpaceChar(c));
+
+        return res * sgn + aft / (1.0 * len);
+    }
+
+    public String nextLine() {
         int c = read();
         while (isSpaceChar(c))
             c = read();
@@ -85,7 +111,7 @@ class InputReader {
         do {
             res.appendCodePoint(c);
             c = read();
-        } while (!isSpaceChar(c));
+        } while (!isEndChar(c));
         return res.toString();
     }
 
@@ -95,8 +121,22 @@ class InputReader {
         return c == ' ' || c == '\n' || c == '\r' || c == '\t' || c == -1;
     }
 
+    public boolean isEndChar(int c) {
+        if (filter != null)
+            return filter.isSpaceChar(c);
+        return c == '\n' || c == '\r' || c == '\t' || c == -1;
+    }
+
     public String next() {
-        return readString();
+        int c = read();
+        while (isSpaceChar(c))
+            c = read();
+        StringBuilder res = new StringBuilder();
+        do {
+            res.appendCodePoint(c);
+            c = read();
+        } while (!isSpaceChar(c));
+        return res.toString();
     }
 
     public interface SpaceCharFilter {
@@ -134,17 +174,6 @@ class OutputWriter {
 
     public void flush() {
         writer.flush();
-    }
-
-}
-
-class IOUtils {
-
-    public static int[] readIntArray(InputReader in, int size) {
-        int[] array = new int[size];
-        for (int i = 0; i < size; i++)
-            array[i] = in.readInt();
-        return array;
     }
 
 }
