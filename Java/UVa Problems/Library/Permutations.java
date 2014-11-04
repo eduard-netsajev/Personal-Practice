@@ -9,20 +9,16 @@ import java.util.*;
  * Not mine. Found on StackOverflow.
  */
 class Permutations<E> implements  Iterator<E[]>{
-
-
     // Test
     public static void main(String[] args) {
-
         // change this line to get all Integer, String, whatever permutations
-        Permutations<Character> perm = new Permutations<>(new Character[]{'a', 'b', 'a'});
+        Permutations<Character> perm = new Permutations<>(new Character[]{'3', '2', '1'});
         int count = 0;
         while(perm.hasNext()){
             System.out.println(Arrays.toString(perm.next()));
             count++;
         }
         System.out.println("total: " + count);
-
     }
 
     private E[] arr;
@@ -46,7 +42,6 @@ class Permutations<E> implements  Iterator<E[]>{
         }
         Arrays.sort(ind);//start with ascending sequence of integers
 
-
         //output = new E[arr.length]; <-- cannot do in Java with generics, so use reflection
         output = (E[]) Array.newInstance(arr.getClass().getComponentType(), arr.length);
         has_next = true;
@@ -67,7 +62,6 @@ class Permutations<E> implements  Iterator<E[]>{
         for(int i = 0; i < ind.length; i++){
             output[i] = arr[ind[i]];
         }
-
 
         //get next permutation
         has_next = false;
@@ -110,7 +104,7 @@ class Permutations<E> implements  Iterator<E[]>{
 class nextPermutationsAfterAscSorted {
 
     // simply prints all permutation - to see how it works
-    private static void printPermutations( Comparable[] c ) {
+    public static void printPermutations( Comparable[] c ) {
         System.out.println( Arrays.toString( c ) );
         while ( ( c = nextPermutation( c ) ) != null ) {
             System.out.println( Arrays.toString( c ) );
