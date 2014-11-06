@@ -1,0 +1,48 @@
+veebiserver:
+proge mis mudkui käib
+ja ootab, et keegi talle
+interneti kaudu päringuid saadaks
+
+port 80
+
+GET prax3/katse.html
+    suhteline path mingist
+    ettemääratud veebilehtede kataloogist
+
+headerid brauseri-infoga
+nimi: väärtus
+
+vastab:
+
+headerid brauseri-infoga
+nimi: vääratus
+
+tegelik sisu
+
+http protokoll
+
+progede käimapanemine:
+proge trükib värke ja see
+värk ongi veeboserveri vastus
+
+public-html/cgi-bin/
+
+loe kirjuta pane-käima
+ r     w       x
+
+omanik grupp kõik ülejaanud
+
+
+variant B:
+    -proge in veebiserverisse sisse ehitatud/kokku lingitud
+
+variant C:
+    - spetsiifiline veebiserver
+
+    java proged tüüpiliselt
+    nt. tomcat
+
+    node.js
+
+cgi - common gateway interface
+

@@ -154,6 +154,7 @@ def generate_fractal():
 
     draw_heatmap_rgb()
 
+
 def main():
     import time
     t0 = time.time()

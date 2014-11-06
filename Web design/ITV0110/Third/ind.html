@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script>
+
+        function gid(x) {
+            return document.getElementById(x);
+        }
+
+
+        console.log("Opened");
+
+        function clickedButton(){
+
+            var nimi = gid('name').value;
+            var raha = gid('money').value;
+
+
+            console.log("Clicked Button");
+            console.log(nimi + ' ' + raha);
+            // This is the client-side script
+// Initialize the Ajax request
+            var xhr = new XMLHttpRequest();
+            var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/lng.py?nimi=' + nimi + '&raha=' + raha;
+            xhr.open('get', str);
+
+// Track the state changes of the request
+            xhr.onreadystatechange = function(){
+                // Ready state 4 means the request is done
+                if(xhr.readyState === 4){
+
+                    console.log(xhr.responseText);
+
+                    // 200 is a successful return
+                    if(xhr.status === 200){
+                        alert(xhr.responseText); // 'This is the returned text.'
+                    }else{
+                        alert('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+                    }
+                }
+            }
+
+// Send the request to python script
+            xhr.send(null);
+        }
+    </script>
+
+</head>
+<body>
+<button onclick="clickedButton()">Click me!</button>
+
+<form onsubmit="clickedButton()">
+    <label style="font-weight: normal">
+        Enter name:
+        <input type="text" id="name">
+    <br>
+    Enter money:
+    <input type="number" id="money" min="0" max=100000
+           required value="20"></label>
+    <input type=submit value="Set">
+</form>
+
+</body>
+</html>
