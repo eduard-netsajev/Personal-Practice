@@ -12,13 +12,18 @@ funkstioonidega:
 • x=20,
 kus a on matrikli numbri viimane number.
 """
-
+sympy.init_printing()
 x = sympy.symbols("x")
 a = 0
 b = 20
 f1 = x ** 3 + 4 * x ** 2 + 100
-f2 = (6 + 1) * sympy.sin(x) + sympy.cos(x)
+f2 = (4 + 1) * sympy.sin(x) + sympy.cos(x)
 f = f1 - f2
 
-result = sympy.integrate(f, (x, a, b))
-print(result, "<>", sympy.N(result))
+z = sympy.symbols('z')
+fun = sympy.integrate(f, (x, 0, z))
+
+print(sympy.pretty(fun))
+print()
+print()
+print("Result when z = {}:".format(b), sympy.N(sympy.integrate(f, (x, 0, b))))
