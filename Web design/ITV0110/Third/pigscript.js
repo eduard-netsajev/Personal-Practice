@@ -10,9 +10,37 @@ var pigScore = 0;
 var currentPoints = 0;
 
 
-var startSeconds = new Date().getTime() / 1000;
-var name = prompt("Enter your name : ", "Guest");
+var startTime = new Date().getTime() / 1000;
 
+var name = "nbd";
+
+var gameAllowed = false;
+
+toggleButtons(false);
+gid("restart").disabled = true;
+gid("set").disabled = true;
+
+while(name.length < 4) {
+    name = prompt("Enter your name (atleast 4 chars): ", "Guest");
+}
+
+if(name.length > 3 && name != 'null') {
+    gameAllowed = true;
+    toggleButtons(true);
+    gid("restart").disabled = false;
+    gid("set").disabled = false;
+}
+
+var curPage = "piggame";
+
+function show(page) {
+    if (page !=curPage) {
+        gid(curPage).setAttribute("class", "noshow");
+
+        setTimeout(function() {gid(page).setAttribute("class", "");}, 400);
+        curPage = page;
+    }
+}
 
 function fake_rolling(times) {
     var firstDice = Math.floor((Math.random() * 6) + 1);
@@ -153,11 +181,11 @@ function restart() {
     clearTable();
     clearTimers();
     setMessage("Let's roll!");
-    startSeconds = new Date().getTime() / 1000;
+    startTime = new Date().getTime() / 1000;
 }
 
 function toggleButtons(toBool) {
-    if (toBool) {
+    if (toBool && gameAllowed) {
         gid("take").disabled = false;
         gid("roll").disabled = false;
     } else {
@@ -167,7 +195,7 @@ function toggleButtons(toBool) {
 }
 
 function stopGame() {
-    var time = new Date().getTime() / 1000 - startSeconds;
+    var time = new Date().getTime() / 1000 - startTime;
     time = Math.floor(time);
     // AJAX call
 
@@ -175,7 +203,7 @@ function stopGame() {
 // Initialize the Ajax request
     xhr = new XMLHttpRequest();
     str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/saveresult.py?name=' + name
-        + '&playerScore=' + playerScore + '&pigScore=' + pigScore + '&time=' + time;
+        + '&playerScore=' + playerScore + '&pigScore=' + pigScore + '&time=' + time + '&starttime=' + Math.floor(startTime);
     xhr.open('get', str);
 
 // Track the state changes of the request
@@ -295,4 +323,9 @@ function setDice(dice, num) {
 
     setDots(dotsToSet);
     unsetDots(dotsToUnset);
+}
+
+function getData(form) {
+
+    return false;
 }

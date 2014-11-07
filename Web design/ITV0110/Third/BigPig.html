@@ -5,9 +5,14 @@
     <title>Big Pig</title>
     <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
     <link rel="stylesheet" href="pigstyle.css">
-    <script src="pigscript.js"></script>
-</head>
+</head><div class="menu">
+    <button class="menuitem" id="pvpig" onclick="show('piggame')">Pig</button>
+    <button class="menuitem" id="pvp" onclick="show('pvpgame')">PvP</button>
+    <button class="menuitem" id="scores" onclick="show('scorespage')">Scores</button>
+</div>
 <body>
+<div id="piggame">
+
 <div style="display: table; margin-left: auto; margin-right: auto">
     <div class="container scores" id="youscore">
         <div id="you">You</div>
@@ -91,7 +96,7 @@
                     Pig threshold (above zero):
                     <input style="background-color: #FFF8DC; max-width: 50px" type="number" id="setX" name="threshold" min="1" max=100
                            required value="20"></label>
-                <input class="butt" type=submit value="Set">
+                <input id="set" class="butt" type=submit value="Set">
             </form>
         </div>
 
@@ -99,6 +104,42 @@
     <div class="container scores" id="pigscore">
         <div id="pig">Pig</div>
     </div>
+</div></div>
+
+<div id="pvpgame" class="noshow">
+    <center>Not implemented yet</center>
 </div>
+
+<div id="scorespage" class="noshow">
+<div class="container" style="display: table">
+    <form onsubmit="return getData(this);">
+        <div style="display: table-cell; min-width: 300px">
+        <label style="font-weight: bold">
+
+            <strong>Player</strong><br>
+
+            <input class="filterinput" type="radio" name="player" value="any" checked>Any<br>
+            <input class="filterinput" type="radio" name="player" value="name">
+            <input type="text" style="background-color: #FFF8DC; max-width: 250px" name="player_name">​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<br>
+
+        </label>
+        </div>
+        <div style="display: table-cell; padding: 20px">versus</div>
+        <div style="display: table-cell; min-width: 300px">
+            <label style="font-weight: bold">
+            <input class="filterinput" type="radio" name="enemy" value="any" checked>Any<br>
+            <input class="filterinput" type="radio" name="enemy" value="bot">Pig<br>
+            <input class="filterinput" type="radio" name="enemy" value="name">
+                <input type="text" style="background-color: #FFF8DC; max-width: 250px" name="enemy_name">​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​​<br>
+        </label>
+        </div>
+        <input id="filter" class="butt" type=submit value="Filter">
+    </form>
+</div>
+
+</div>
+
+
 </body>
+<script src="pigscript.js"></script>
 </html>

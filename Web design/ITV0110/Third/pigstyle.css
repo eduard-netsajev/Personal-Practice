@@ -34,6 +34,10 @@ button {
     border-radius: 15px;
 }
 
+.filterinput {
+    float: left;
+}
+
 button:enabled, .butt:enabled {
     background-color: #B0E57C;
     border-color: #C0E58C;
@@ -46,7 +50,7 @@ button:hover, .butt:hover {
     color: saddlebrown;
 }
 
-button:disabled {
+button:disabled, .butt:disabled {
     cursor: default;
     background-color: #AAD8AA;
     color: gray;
@@ -77,6 +81,9 @@ body {
 /*for mobile devices*/
 @media (max-width: 720px) {
     .scores {
+        display: none;
+    }
+    .menu {
         display: none;
     }
 }
@@ -155,6 +162,30 @@ body {
 }
 .pig > .dot.clean {
     padding: 0 0 0 0;
+}
+
+.menu {
+    max-width: 100%;
+    text-align: center;
+    border-radius: 6px;
+    margin-right: auto;
+    margin-left: auto;
+    display: table;
+}
+
+.menuitem {
+    width: 150px;
+}
+#piggame, #pvpgame, #scorespage {
+    transition-property: opacity, height, visibility;
+    transition-duration: 400ms;
+    transition-timing-function: ease;
+}
+
+.noshow {
+    visibility: collapse;
+    opacity: 0;
+    height: 0;
 }
 
 #you, #pig {
