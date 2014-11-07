@@ -1,0 +1,221 @@
+
+html {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    background-color: #FFF0AA;
+}
+
+.butt {
+    width: 70px;
+    height: auto;
+    position: inherit;
+    border-radius: 15px;
+    cursor: pointer;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+}
+
+input {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    width: 300px;
+    margin: 5px;
+    height: auto;
+    position: inherit;
+    font-size: 2em;
+    border-radius: 15px;
+}
+
+button:enabled, .butt:enabled {
+    background-color: #B0E57C;
+    border-color: #C0E58C;
+    color: #8a6d3b;
+}
+
+button:hover, .butt:hover {
+    background-color: #5cb85c;
+    border-color: limegreen;
+    color: saddlebrown;
+}
+
+button:disabled {
+    cursor: default;
+    background-color: #AAD8AA;
+    color: gray;
+    border-color: darkseagreen;
+}
+p {
+    margin: 0 0 10px;
+}
+
+body {
+    margin: 0 0 0 0;
+}
+.container {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 1.5em;
+    text-align: center;
+    color: saddlebrown;
+    display: table-cell;
+}
+
+.scores {
+    display: table-cell;
+}
+
+/*for mobile devices*/
+@media (max-width: 720px) {
+    .scores {
+        display: none;
+    }
+}
+
+.dot {
+    display: inline-block;
+    padding: 7px 7px 7px 7px;
+    background-color: #000;
+    border-radius: 20px;
+}
+
+.dot.clean {
+    background-color: #56BAEC;
+}
+
+.dice {
+    display: inline-block;
+    padding: 9px 7px 7px 9px;
+    font-size: 12px;
+    line-height: 1;
+    background-color: #56BAEC;
+    border-radius: 10px;
+}
+
+.score > span {
+    font-weight: bold;
+}
+
+.bubble {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 50px;
+    margin-top: 5px;
+    width: 150px;
+    height: 30px;
+    padding: 0;
+    background: #FFF8DC;
+    border-radius: 10px;
+}
+
+.bubble:after {
+    content: '';
+    position: absolute;
+    display: inline-block;
+    border-style: solid;
+    border-width: 15px 20px 0;
+    border-color: #FFF8DC transparent;
+    width: 0;
+    margin-left: -20px;
+    bottom: -15px;
+    left: 70%;
+}
+
+.pig {
+    display: inline-block;
+    position: relative;
+    margin-left: 70px;
+    margin-right: 20px;
+    padding: 3px 3px 3px 5px;
+    font-size: 12px;
+    line-height: 1;
+    border-radius: 40px;
+    background-color: #DEADEC;
+}
+
+.pig > .dot.eye {
+    padding: 2px 2px 2px 2px;
+    background-color: #000;
+
+}
+.pig > .dot {
+    background-color: #e277ec;
+    padding: 5px 5px 5px 8px;
+    margin-right: 5px;
+    border-radius: 20px;
+}
+.pig > .dot.clean {
+    padding: 0 0 0 0;
+}
+
+#you, #pig {
+    display: table-cell;
+    visibility: hidden;
+    padding: 20px 20px 20px 20px;
+}
+
+
+@media (min-width: 721px) {
+
+    .butt {
+        width: 105px;
+    }
+    .dot {
+        padding: 11px 11px 11px 11px;
+        border-radius: 40px;
+    }
+    .dice {
+        padding: 14px 11px 11px 14px;
+        font-size: 18px;
+        line-height: 1;
+        background-color: #56BAEC;
+        border-radius: 15px;
+    }
+
+    button {
+        width: 400px;
+        margin: 8px;
+        height: auto;
+        position: inherit;
+        font-size: 2.5em;
+        border-radius: 23px;
+    }
+
+    .pig {
+
+        margin-left: 45px;
+        margin-right: 20px;
+        padding: 3px 3px 3px 5px;
+        font-size: 18px;
+        line-height: 1;
+        border-radius: 40px;
+        background-color: #DEADEC;
+    }
+
+    .pig > .dot.eye {
+        padding: 4px 4px 4px 4px;
+        background-color: #000;
+        border-radius: 30px;
+    }
+
+    .pig > .dot {
+        background-color: #e277ec;
+        padding: 8px 8px 8px 12px;
+        margin-right: 8px;
+        border-radius: 30px;
+
+    }
+
+    .pig > .dot.clean {
+        padding: 0 0 0 0;
+    }
+}
