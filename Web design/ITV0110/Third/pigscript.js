@@ -32,9 +32,26 @@ if(name.length > 3 && name != 'null') {
 }
 
 var curPage = "piggame";
+var hidden = true;
 
 function show(page) {
     if (page !=curPage) {
+
+        if (curPage == "piggame") {
+            gid("you").style.visibility = "collapse";
+            gid("pig").style.visibility = "collapse";
+        }
+        if (page == "piggame") {
+            if (hidden) {
+            gid("you").style.visibility = "hidden";
+            gid("pig").style.visibility = "hidden";
+            } else {
+                gid("you").style.visibility = "visible";
+                gid("pig").style.visibility = "visible";
+            }
+        }
+
+
         gid(curPage).setAttribute("class", "noshow");
 
         setTimeout(function() {gid(page).setAttribute("class", "");}, 400);
@@ -236,6 +253,7 @@ function clearTable() {
     gid("pigscore").innerHTML = "<div id='pig'>Pig</div>";
     gid("you").style.visibility = "hidden";
     gid("pig").style.visibility = "hidden";
+    hidden = true;
 }
 
 function setCurrentPoints(points) {
@@ -258,6 +276,7 @@ function setPlayerScore(points) {
 function addPlayerScore() {
     gid("you").innerHTML += "<br>"+ currentPoints;
     gid("you").style.visibility = "visible";
+    hidden = false;
 }
 
 function addPigScore() {
@@ -325,8 +344,31 @@ function setDice(dice, num) {
     unsetDots(dotsToUnset);
 }
 
-var sortField = 4;
+var sortField = 5;
 var sortOrder = 1;
+
+function setField(field, arrow) {
+    sortField = field;
+
+    pressArrow(arrow);
+
+
+
+    getData(gid("f1"));
+}
+
+var activeArrow = 5;
+
+function pressArrow(arrow) {
+    /*var lastar = gid("field" + activeArrow);
+    var a = lastar.className.split(" ");
+    if (a[0] == "inactive") {
+        lastar.className = "active glyphicon " + a[2];
+    } else {
+        lastar.className = "inactive glyphicon " + a[2];
+    }*/
+
+}
 
 function getData(form) {
     var p1 = form.player.value;
@@ -356,7 +398,7 @@ function getData(form) {
         + '&p2=' + p2 + '&sortfield=' + sortField + '&sortorder=' + sortOrder;
     xhr.open('get', str);
 
-//    console.log(str);
+    console.log(str);
 
     // Track the state changes of the request
     xhr.onreadystatechange = function(){
@@ -388,18 +430,35 @@ function showScores(data) {
     }
     var res = data.split("\n");
 
+    var nofound = true;
+
     for (var i = 0; i < res.length; i++) {
 
         var pieces = res[i].split(',');
         if (pieces.length < 6) {
             continue;
         }
+        nofound = false;
         var row = table.insertRow(-1);
 
+        if (i % 2 == 0) {
+            row.className = "tbody-tr-2n";
+        } else {
+            row.className = "tbody-tr";
+        }
+
         for (var j = 0; j < 6; j++) {
+
             var cell = row.insertCell(-1);
+            cell.className = "tbody-tr-td";
             cell.innerHTML = pieces[j];
         }
+    }
+
+    if (nofound) {
+        gid("errow").style.visibility = "visible"
+    } else {
+        gid("errow").style.visibility = "collapse"
     }
 
 }

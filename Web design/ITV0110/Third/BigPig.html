@@ -111,7 +111,7 @@
 </div>
 
 <div id="scorespage" class="noshow">
-    <form onsubmit="return getData(this);">
+    <form id="f1" onsubmit="return getData(this);">
         <div class="container" style="display: table;">
             <div style="display: table-cell; text-align: left; min-width: 100px">
                 <label style="font-weight: bold">
@@ -141,53 +141,29 @@
             <thead>
         <tr>
             <th>Player
-                <span class="inactive glyphicon arrow-down" onclick="alert('hee')"></span></th>
+                <span id="field0" class="inactive glyphicon arrow-down" onclick="setField(0, this)"></span></th>
             <th>Score
-                <span class="inactive glyphicon arrow-down"></span></th>
+                <span id="field1" class="inactive glyphicon arrow-down" onclick="setField(1, this)"></span></th>
             <th>Enemy
-                <span class="inactive glyphicon arrow-down"></span></th>
+                <span id="field2" class="inactive glyphicon arrow-down" onclick="setField(2, this)"></span></th>
             <th>Score
-                <span class="inactive glyphicon arrow-down"></span></th>
+                <span id="field3" class="inactive glyphicon arrow-down" onclick="setField(3, this)"></span></th>
             <th>Duration
-                <span class="inactive glyphicon arrow-down"></span></th>
+                <span id="field4" class="inactive glyphicon arrow-down" onclick="setField(4, this)"></span></th>
             <th>Time
-                <span class="active glyphicon arrow-up"></span></th>
+                <span id="field5" class="active glyphicon arrow-up" onclick="setField(5, this)"></span></th>
         </tr>
             </thead>
-            <tr>
-                <td>Player</td>
-                <td>Score</td>
-                <td>Enemy</td>
-                <td>Score</td>
-                <td>Duration</td>
-                <td>Time</td>
-            </tr>
-
-            <tr>
-                <td>Carolina Biggleswade</td>
-                <td>23</td>
-                <td>65</td>
-                <td>65</td>
-                <td>65</td>
-                <td>Jockey</td>
-            </tr>
-            <tr>
-                <td>Carolina Biggleswade</td>
-                <td>23</td>
-                <td>65</td>
-                <td>65</td>
-                <td>65</td>
-                <td>Jockey</td>
-            </tr>
-            <tr>
-                <td>Carolina Biggleswade</td>
-                <td>23</td>
-                <td>65</td>
-                <td>65</td>
-                <td>65</td>
-                <td>Jockey</td>
+            <tr class="tbody-tr">
+                <td class="tbody-tr-td">Player</td>
+                <td class="tbody-tr-td">Score</td>
+                <td class="tbody-tr-td">Enemy</td>
+                <td class="tbody-tr-td">Score</td>
+                <td class="tbody-tr-td">Duration</td>
+                <td class="tbody-tr-td">Time</td>
             </tr>
         </table>
+        <div id="errow" class="error-row">No games matching your query were found.</div>
 
     </form>
 </div>

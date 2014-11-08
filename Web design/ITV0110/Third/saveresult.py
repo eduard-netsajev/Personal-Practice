@@ -18,7 +18,7 @@ if formdata.has_key("p1name") and formdata.has_key("p1score") and formdata.has_k
     dirname = os.path.dirname
     file = os.path.join(dirname(dirname(__file__)), os.path.join('prax3', 'pig.txt'))
     f = open(file, 'a')
-    f.write(p1name + ',' + p1score + ',' + p2name + ',' + p2score + ',' + starttime + ',' + time + '\n')
+    f.write(p1name + ',' + p1score + ',' + p2name + ',' + p2score + ',' + time + ',' + starttime + '\n')
     f.close()
     print 'Data saved'
 else:

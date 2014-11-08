@@ -329,43 +329,54 @@ thead th:last-child {
     border-top-right-radius: 5px;
 }
 
-tbody tr td {
+.tbody-tr-td {
     font-weight: 400;
-    color: #b9883e;
     font-size: 1.4em;
     padding: 20px 20px 20px 20px;
     /*background: #fff1b4;*/
     border-bottom: 1px solid #b1aa6d;
 }
 
-tbody tr:nth-child(2n) {
+.tbody-tr-2n {
+    color: #b9883e;
     background: #fff1b4;
+    opacity: 0.5;
 }
-tbody tr:nth-child(2n-1) {
+.tbody-tr {
+    color: #b9883e;
     background: #fceda7;
+    opacity: 0.5;
 }
 
-tbody tr:last-child td {
+.tbody-tr-last-td {
     border-bottom: none;
 }
-tbody tr:last-child td:first-child {
+.tbody-tr-last-td-first {
     -moz-border-radius-bottomleft: 5px;
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
 }
-tbody tr:last-child td:last-child {
+.tbody-tr-last-td-last {
     -moz-border-radius-bottomright: 5px;
     -webkit-border-bottom-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-tbody:hover > tr td {
-    filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
-}
-
-tbody:hover > tr:hover td {
+.tbody-tr:hover {
     text-shadow: none;
     color: saddlebrown;
-    filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
     opacity: 1;
+}
+
+.tbody-tr-2n:hover {
+    text-shadow: none;
+    opacity: 1;
+    color: saddlebrown;
+}
+
+.error-row {
+    text-align: center;
+    width: 100%;
+    color: saddlebrown;
+    font-size: 1.5em;
 }
