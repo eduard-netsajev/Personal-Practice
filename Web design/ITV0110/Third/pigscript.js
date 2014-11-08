@@ -21,7 +21,7 @@ gid("restart").disabled = true;
 gid("set").disabled = true;
 
 while(name.length < 4) {
-    name = prompt("Enter your name (atleast 4 chars): ", "Guest");
+    name = prompt("Enter your name (atleast 4 chars): ", "Guest").trim();
 }
 
 if(name.length > 3 && name != 'null') {
@@ -202,8 +202,8 @@ function stopGame() {
     // This is the client-side script
 // Initialize the Ajax request
     xhr = new XMLHttpRequest();
-    str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/saveresult.py?name=' + name
-        + '&playerScore=' + playerScore + '&pigScore=' + pigScore + '&time=' + time + '&starttime=' + Math.floor(startTime);
+    str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/saveresult.py?p1name=' + name
+        + '&p1score=' + playerScore + '&p2name=Pig' + '&p2score=' + pigScore + '&time=' + time + '&starttime=' + Math.floor(startTime);
     xhr.open('get', str);
 
 // Track the state changes of the request
@@ -325,7 +325,81 @@ function setDice(dice, num) {
     unsetDots(dotsToUnset);
 }
 
+var sortField = 4;
+var sortOrder = 1;
+
 function getData(form) {
+    var p1 = form.player.value;
+    var p2 = form.enemy.value;
+
+    if (p1 == "name") {
+        p1 = form.player_name.value.trim();
+        if (p1.length < 1) {
+            p1 = "Any";
+        }
+    } else if (p1 == "Me") {
+        p1 = name;
+    }
+    if (p2 == "name") {
+        p2 = form.enemy_name.value.trim();
+        if (p2.length < 1) {
+            p2 = "Any";
+        }
+    }
+
+    // AJAX call
+
+    // This is the client-side script
+    // Initialize the Ajax request
+    xhr = new XMLHttpRequest();
+    str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/getscores.py?p1=' + p1
+        + '&p2=' + p2 + '&sortfield=' + sortField + '&sortorder=' + sortOrder;
+    xhr.open('get', str);
+
+//    console.log(str);
+
+    // Track the state changes of the request
+    xhr.onreadystatechange = function(){
+        // Ready state 4 means the request is done
+        if(xhr.readyState === 4){
+            // 200 is a successful return
+            if(xhr.status === 200){
+                showScores(xhr.responseText.trim());  // 'This is the returned text.'
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+
+// Send the request to python script
+    xhr.send(null);
+    // end of AJAX
 
     return false;
+}
+
+function showScores(data) {
+    console.log(data);
+
+    var table = document.getElementById("scoretable");
+
+    while(table.rows.length > 1) {
+        table.deleteRow(-1);
+    }
+    var res = data.split("\n");
+
+    for (var i = 0; i < res.length; i++) {
+
+        var pieces = res[i].split(',');
+        if (pieces.length < 6) {
+            continue;
+        }
+        var row = table.insertRow(-1);
+
+        for (var j = 0; j < 6; j++) {
+            var cell = row.insertCell(-1);
+            cell.innerHTML = pieces[j];
+        }
+    }
+
 }
