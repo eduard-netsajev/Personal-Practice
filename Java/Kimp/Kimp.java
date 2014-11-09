@@ -5,9 +5,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -18,6 +18,11 @@ import javafx.stage.Stage;
 public class Kimp extends Application {
 
     private Path path;
+    private Rectangle rect;
+
+    private double rsX;
+    private double rsY;
+
     private Group shapes;
     private static final Double DEFAULTSTROKE = 3.0;
     private static final Double MAXSTROKE = 30.0;
@@ -27,7 +32,7 @@ public class Kimp extends Application {
     private static final Integer DEFAULTBLUE = 255;
     private static final Integer MAXRGB = 255;
     private static final Integer MINRGB = 0;
-    private boolean drawingPath = false;
+    private boolean drawingShape = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -39,6 +44,17 @@ public class Kimp extends Application {
         // A group to hold all the drawn shapes
         shapes = new Group();
 
+        // ToggleGroup to hold the selected drawing mode
+        ToggleGroup modeChoice = new ToggleGroup();
+        ToggleButton tbS = new ToggleButton("Stroke");
+        tbS.setSelected(true);
+        ToggleButton tbR = new ToggleButton("Rectangle");
+        tbS.setToggleGroup(modeChoice);
+        tbR.setToggleGroup(modeChoice);
+
+        // VBox for the toggle buttons
+        VBox toggleBox = new VBox(5);
+        toggleBox.getChildren().addAll(tbS, tbR);
 
         // Build the slider, label, and button and their VBox layout container 
         Button btnClear = new Button();
@@ -74,9 +90,9 @@ public class Kimp extends Application {
         colorBox.getChildren().addAll(rhbox, ghbox, bhbox);
 
         // Put all controls in one HBox
-        HBox toolBox = new HBox(10);
+        HBox toolBox = new HBox(77);
         toolBox.setAlignment(Pos.TOP_CENTER);
-        toolBox.getChildren().addAll(utilBox, colorBox);
+        toolBox.getChildren().addAll(toggleBox, utilBox, colorBox);
 
         // Build a Binding object to compute a Paint object from the sliders
         ObjectBinding<Paint> colorBinding = new ObjectBinding<Paint>() {
@@ -112,9 +128,9 @@ public class Kimp extends Application {
         canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent me) {
-                System.out.println("Click");
-                if (drawingPath) {
-                    drawingPath = false;
+//                System.out.println("Click");
+                if (drawingShape) {
+                    drawingShape = false;
                     return;
                 }
                 double a = sampleLine.getStrokeWidth() / 2.0;
@@ -130,15 +146,28 @@ public class Kimp extends Application {
             @Override
             public void handle(MouseEvent me) {
 
-                System.out.println("Press");
+//                System.out.println("Press");
 
-                path = new Path();
-                path.setMouseTransparent(true);
-                path.setStrokeWidth(sampleLine.getStrokeWidth());
-                path.setStroke(sampleLine.getStroke());
-                shapes.getChildren().add(path);
-                path.getElements().add(
-                        new MoveTo(me.getSceneX(), me.getSceneY()));
+                if (modeChoice.getSelectedToggle() == tbS) {
+
+                    path = new Path();
+                    path.setMouseTransparent(true);
+                    path.setStrokeWidth(sampleLine.getStrokeWidth());
+                    path.setStroke(sampleLine.getStroke());
+                    shapes.getChildren().add(path);
+                    path.getElements().add(
+                            new MoveTo(me.getSceneX(), me.getSceneY()));
+                } else if (modeChoice.getSelectedToggle() == tbR) {
+
+                    // Rectangle-Start
+                    rsX = me.getSceneX();
+                    rsY = me.getSceneY();
+
+                    rect = new Rectangle(rsX, rsY, 0, 0);
+                    shapes.getChildren().add(rect);
+                    rect.setFill(sampleLine.getStroke());
+//                    System.out.println("CREATE RECT");
+                }
             }
         });
 
@@ -146,8 +175,14 @@ public class Kimp extends Application {
 
             @Override
             public void handle(MouseEvent me) {
-                path = null;
-                System.out.println("Release");
+                if (modeChoice.getSelectedToggle() == tbS) {
+                    path = null;
+                } else if (modeChoice.getSelectedToggle() == tbR) {
+//                    shapes.getChildren().add(rect);
+//                    System.out.println("SAVE RECT");
+                    rect = null;
+                }
+//                System.out.println("Release");
             }
         });
 
@@ -155,13 +190,57 @@ public class Kimp extends Application {
 
             @Override
             public void handle(MouseEvent me) {
-                System.out.println("Drag");
-                drawingPath = true;
-                // keep lines within rectangle
-                if (canvas.getBoundsInLocal().contains(me.getX(), me.getY())) {
-                    path.getElements().add(new LineTo(me.getSceneX(), me.getSceneY()));
-                }
+//                System.out.println("Drag");
+                drawingShape = true;
 
+                if (modeChoice.getSelectedToggle() == tbS) {
+                    // keep lines within rectangle
+                    if (canvas.getBoundsInLocal().contains(me.getX(), me.getY())) {
+                        path.getElements().add(new LineTo(me.getSceneX(), me.getSceneY()));
+                    }
+                } else if (modeChoice.getSelectedToggle() == tbR) {
+                    // clicked (release)
+
+                    double meX = me.getSceneX();
+                    double meY = me.getSceneY();
+
+                    if (rsX < meX) {
+                        if (rsY < meY) {
+
+                            rect.setX(rsX);
+                            rect.setY(rsY);
+                            rect.setWidth(meX - rsX);
+                            rect.setHeight(meY - rsY);
+                        } else {
+                            rect.setX(rsX);
+                            rect.setY(meY);
+                            rect.setWidth(meX - rsX);
+                            rect.setHeight(rsY - meY);
+                        }
+                    } else {
+                        if (rsY < meY) {
+
+                            rect.setX(meX);
+                            rect.setY(rsY);
+                            rect.setWidth(rsX - meX);
+                            rect.setHeight(meY - rsY);
+                        } else {
+                            rect.setX(meX);
+                            rect.setY(meY);
+                            rect.setWidth(rsX - meX);
+                            rect.setHeight(rsY - meY);
+                        }
+                    }
+                }
+            }
+        });
+
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent ke) {
+                if (ke.getCode() == KeyCode.ESCAPE) {
+                    System.exit(0);
+                }
             }
         });
 
@@ -178,5 +257,6 @@ public class Kimp extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
     }
 }
