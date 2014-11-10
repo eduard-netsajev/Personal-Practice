@@ -9,6 +9,10 @@ var pigScore = 0;
 
 var currentPoints = 0;
 
+var sortField = 5;
+var sortOrder = -1;
+
+getData(gid("f1"));
 
 var startTime = new Date().getTime() / 1000;
 
@@ -43,8 +47,8 @@ function show(page) {
         }
         if (page == "piggame") {
             if (hidden) {
-            gid("you").style.visibility = "hidden";
-            gid("pig").style.visibility = "hidden";
+                gid("you").style.visibility = "hidden";
+                gid("pig").style.visibility = "hidden";
             } else {
                 gid("you").style.visibility = "visible";
                 gid("pig").style.visibility = "visible";
@@ -217,13 +221,13 @@ function stopGame() {
     // AJAX call
 
     // This is the client-side script
-// Initialize the Ajax request
+    // Initialize the Ajax request
     xhr = new XMLHttpRequest();
     str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/saveresult.py?p1name=' + name
         + '&p1score=' + playerScore + '&p2name=Pig' + '&p2score=' + pigScore + '&time=' + time + '&starttime=' + Math.floor(startTime);
     xhr.open('get', str);
 
-// Track the state changes of the request
+    // Track the state changes of the request
     xhr.onreadystatechange = function(){
         // Ready state 4 means the request is done
         if(xhr.readyState === 4){
@@ -344,30 +348,39 @@ function setDice(dice, num) {
     unsetDots(dotsToUnset);
 }
 
-var sortField = 5;
-var sortOrder = 1;
-
 function setField(field, arrow) {
-    sortField = field;
-
     pressArrow(arrow);
-
-
-
+    sortField = field;
     getData(gid("f1"));
 }
 
 var activeArrow = 5;
 
-function pressArrow(arrow) {
-    /*var lastar = gid("field" + activeArrow);
-    var a = lastar.className.split(" ");
-    if (a[0] == "inactive") {
-        lastar.className = "active glyphicon " + a[2];
-    } else {
-        lastar.className = "inactive glyphicon " + a[2];
-    }*/
+var arrows = ["field0", "field1", "field2", "field3", "field4", "field5"];
 
+
+function pressArrow(arrow) {
+
+    var arrowClass = arrow.className.split(" ");
+
+    if (arrowClass[0] == "active") {
+        if (arrowClass[2] == "arrow-down") {
+            sortOrder = 1;
+            arrow.className = "active glyphicon arrow-up";
+        } else {
+            sortOrder = -1;
+            arrow.className = "active glyphicon arrow-down";
+        }
+    } else {
+        arrow.className = "active glyphicon " + arrowClass[2];
+        if (arrowClass[2] == "arrow-down") {
+            sortOrder = -1;
+        } else {
+            sortOrder = 1;
+        }
+        var oldArrowClass = gid(arrows[sortField]).className.split(" ");
+        gid(arrows[sortField]).className = "inactive glyphicon " + oldArrowClass[2];
+    }
 }
 
 function getData(form) {
@@ -447,12 +460,17 @@ function showScores(data) {
             row.className = "tbody-tr";
         }
 
-        for (var j = 0; j < 6; j++) {
+        for (var j = 0; j < 5; j++) {
 
             var cell = row.insertCell(-1);
             cell.className = "tbody-tr-td";
             cell.innerHTML = pieces[j];
         }
+
+            var datecell = row.insertCell(-1);
+            datecell.className = "tbody-tr-td";
+            datecell.innerHTML = timeConverter(pieces[5]);
+
     }
 
     if (nofound) {
@@ -461,4 +479,17 @@ function showScores(data) {
         gid("errow").style.visibility = "collapse"
     }
 
+}
+
+function timeConverter(UNIX_timestamp){
+    var a = new Date(UNIX_timestamp*1000);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes();
+    var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+    return time;
 }
