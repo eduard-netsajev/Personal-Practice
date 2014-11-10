@@ -4,80 +4,209 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.*;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
 import javafx.stage.Stage;
 
+/**
+ * Drawing application. Uses Java 8 and JavaFX features.
+ * Allows for drawing strokes or rectangular shapes
+ * of different size and color.
+ * Different actions on the drawn shapes are supported:
+ * 1. Moving shapes
+ * 2. Erasing shapes
+ *
+ * Actions can be undone or redone using Undo and Redo
+ * buttons or key ESCAPE and SPACE.
+ */
 public class Kimp extends Application {
 
+    /**
+     * Shadow effect for highlighting shapes.
+     */
     private final DropShadow shadow = new DropShadow(15, Color.BLACK);
 
+    /**
+     * Main pane for drawing on it.
+     */
     private Pane canvas;
+
+    /**
+     * Temporary object for holding Path object while drawing.
+     */
     private Path path;
+
+    /**
+     * Temporary object for holding Rectangle object while drawing.
+     */
     private Rectangle rect;
+
+    /**
+     * Sample line under the controls to show the user the stroke settings.
+     */
     private Line sampleLine;
 
-    private double rsX;
-    private double rsY;
+    /**
+     * Rectangle drawing start point X and Y coordinates.
+     */
+    private double rsX, rsY;
 
+    /**
+     * Starting width of a stroke.
+     */
     private static final Double DEFAULTSTROKE = 3.0;
+
+    /**
+     * Maximum width of a stroke.
+     */
     private static final Double MAXSTROKE = 30.0;
+
+    /**
+     * Minimum width of a stroke.
+     */
     private static final Double MINSTROKE = 1.0;
+
+    /**
+     * Starting value of RED pigment in color picker.
+     */
     private static final Integer DEFAULTRED = 0;
+
+    /**
+     * Starting value of GREEN pigment in color picker.
+     */
     private static final Integer DEFAULTGREEN = 0;
+
+    /**
+     * Starting value of BLUE pigment in color picker.
+     */
     private static final Integer DEFAULTBLUE = 255;
+
+    /**
+     * Maximum value for any color pigment in color picker.
+     */
     private static final Integer MAXRGB = 255;
+
+    /**
+     * Minimum value for any color pigment in color picker.
+     */
     private static final Integer MINRGB = 0;
+
+    /**
+     * Boolean value displaying whether anything is being currently drawn.
+     */
     private boolean drawingShape = false;
-    double orgSceneX, orgSceneY;
-    double orgTranslateX, orgTranslateY;
+
+    /**
+     * Moving action cursor starting X and Y coordinates.
+     */
+    private double orgSceneX, orgSceneY;
+
+    /**
+     * Moving action shape starting X and Y coordinates.
+     */
+    private double orgTranslateX, orgTranslateY;
+
+    /**
+     * Boolean value for displaying director or drawer modes.
+     */
     private boolean dirMode = false;
+
+    /**
+     * Toggle Buttons group for switching between drawing different shapes.
+     */
     private ToggleGroup modeChoice;
-    private ToggleButton tbS;
-    private ToggleButton tbR;
+
+    /**
+     * Toggle Buttons for drawing Stroke and Rectangle shapes.
+     */
+    private ToggleButton tbS, tbR;
+
+    /**
+     * Starting scene window width.
+     */
+    private static final int SCENE_WIDTH = 1000;
+
+    /**
+     * Starting scene window height.
+     */
+    private static final int SCENE_HEIGHT = 800;
+
+    /**
+     * Integer value of 10.
+     */
+    private static final int TEN = 10;
+
+    /**
+     * Integer value of 5.
+     */
+    private static final int FIVE = 5;
+
+    /**
+     * Integer value of 77.
+     */
+    private static final int SEVEN_SEVEN = 77;
+
+    /**
+     * Action objects array - buffer.
+     */
+    private Action[] buffer = new Action[TEN * TEN * TEN * TEN];
+
+    /**
+     * Integer value used to navigate in buffer.
+     */
+    private int maxAction = 0;
+
+    /**
+     * Integer value used to navigate in buffer.
+     */
+    private int currentAction = 0;
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Kimp");
         final BorderPane root = new BorderPane();
-
-        Scene scene = new Scene(root, 1000, 800);
-
-
-        // Build the canvas
+        Scene scene = new Scene(root, SCENE_WIDTH, SCENE_HEIGHT);
         canvas = new Pane();
         canvas.setCursor(Cursor.CROSSHAIR);
-
         EventHandler<KeyEvent> filter = ke -> {
             if (ke.getCode() == KeyCode.SPACE) {
                 ke.consume();
                 redo();
             }
         };
-
         scene.addEventFilter(KeyEvent.KEY_PRESSED, filter);
-        // ToggleGroup to hold the selected drawing mode
         modeChoice = new ToggleGroup();
         tbS = new ToggleButton("Stroke");
         tbS.setSelected(true);
         tbR = new ToggleButton("Rectangle");
         tbS.setToggleGroup(modeChoice);
         tbR.setToggleGroup(modeChoice);
-
         // VBox for the toggle buttons
-        VBox toggleBox = new VBox(10);
+        VBox toggleBox = new VBox(TEN);
         toggleBox.getChildren().addAll(tbS, tbR);
-
         // VBox for the buffer buttons
-        VBox bufferBox = new VBox(10);
+        VBox bufferBox = new VBox(TEN);
         Button unB = new Button("Undo");
         unB.setOnAction(event -> undo());
 
@@ -93,45 +222,43 @@ public class Kimp extends Application {
 
         Slider strokeSlider = new Slider(MINSTROKE, MAXSTROKE, DEFAULTSTROKE);
         Label labelStroke = new Label("Stroke Width");
-        VBox utilBox = new VBox(10);
+        VBox utilBox = new VBox(TEN);
         utilBox.setAlignment(Pos.TOP_CENTER);
         utilBox.getChildren().addAll(btnClear, labelStroke, strokeSlider);
 
         // Build the RGB sliders, labels, and HBox containers
         Slider redSlider = new Slider(MINRGB, MAXRGB, DEFAULTRED);
         Label labelRed = new Label("R");
-        HBox rhbox = new HBox(5);
+        HBox rhbox = new HBox(FIVE);
         rhbox.getChildren().addAll(labelRed, redSlider);
 
         Slider greenSlider = new Slider(MINRGB, MAXRGB, DEFAULTGREEN);
         Label labelGreen = new Label("G");
-        HBox ghbox = new HBox(5);
+        HBox ghbox = new HBox(FIVE);
         ghbox.getChildren().addAll(labelGreen, greenSlider);
 
         Slider blueSlider = new Slider(MINRGB, MAXRGB, DEFAULTBLUE);
         Label labelBlue = new Label("B");
-        HBox bhbox = new HBox(5);
+        HBox bhbox = new HBox(FIVE);
         bhbox.getChildren().addAll(labelBlue, blueSlider);
 
         // Build the VBox container for all the slider containers        
-        VBox colorBox = new VBox(10);
+        VBox colorBox = new VBox(TEN);
         colorBox.setAlignment(Pos.TOP_CENTER);
         colorBox.getChildren().addAll(rhbox, ghbox, bhbox);
 
         // Put all controls in one HBox
-        HBox toolBox = new HBox(77);
+        HBox toolBox = new HBox(SEVEN_SEVEN);
         toolBox.setAlignment(Pos.TOP_CENTER);
         toolBox.getChildren().addAll(bufferBox, toggleBox, utilBox, colorBox);
 
         // Build a Binding object to compute a Paint object from the sliders
         ObjectBinding<Paint> colorBinding = new ObjectBinding<Paint>() {
-
             {
                 super.bind(redSlider.valueProperty(),
                         greenSlider.valueProperty(),
                         blueSlider.valueProperty());
             }
-
             @Override
             protected Paint computeValue() {
                 return Color.rgb(redSlider.valueProperty().intValue(),
@@ -139,9 +266,8 @@ public class Kimp extends Application {
                         blueSlider.valueProperty().intValue());
             }
         };
-
         // Build the sample line and its layout container
-        sampleLine = new Line(0, 0, 140, 0);
+        sampleLine = new Line(0, 0, SEVEN_SEVEN * 2, 0);
         sampleLine.strokeWidthProperty().bind(strokeSlider.valueProperty());
         StackPane stackpane = new StackPane();
         stackpane.setPrefHeight(MAXSTROKE);
@@ -156,33 +282,27 @@ public class Kimp extends Application {
 
         scene.setOnKeyPressed(ke -> {
             if (ke.getCode() == KeyCode.ESCAPE) {
-
                 if (currentAction > 0) {
                     undo();
                 } else {
-
                     Stage stage = new Stage();
                     stage.setTitle("Exit Confirmation");
                     // Set a scene with a button in the stage
-                    VBox pane = new VBox(10);
-                    Label question = new Label("Are you sure you want to leave the program?");
-
-                    HBox choice = new HBox(10);
+                    VBox pane = new VBox(TEN);
+                    Label question = new Label("Are you sure you want to leave"
+                            + " the program?");
+                    HBox choice = new HBox(TEN);
                     Button yes = new Button("Yes");
                     Button no = new Button("No");
-
                     no.setOnAction(event -> stage.close());
                     yes.setOnAction(event -> System.exit(0));
-
                     choice.getChildren().addAll(yes, no);
                     pane.getChildren().addAll(question, choice);
-
                     BorderPane pp = new BorderPane();
                     pp.setCenter(pane);
                     stage.setScene(new Scene(pp));
                     stage.show();
                 }
-
             } else if (ke.getCode() == KeyCode.CONTROL) {
                 dirMode = true;
             } else if (ke.getCode() == KeyCode.SPACE) {
@@ -190,41 +310,43 @@ public class Kimp extends Application {
                 redo();
             }
         });
-
         scene.setOnKeyReleased(ke -> {
             if (ke.getCode() == KeyCode.CONTROL) {
                 dirMode = false;
             }
         });
-
         // Build the VBox container for the toolBox and sampleline
-        VBox vb = new VBox(20);
-        vb.setPrefWidth(scene.getWidth() - 20);
-        vb.setLayoutY(20);
-        vb.setLayoutX(10);
+        VBox vb = new VBox(TEN * 2);
+        vb.setPrefWidth(scene.getWidth() - TEN * 2);
+        vb.setLayoutY(TEN * 2);
+        vb.setLayoutX(TEN);
         vb.getChildren().addAll(toolBox, stackpane);
         root.setTop(vb);
         //root.getChildren().addAll(shapes);
-
         root.setCenter(canvas);
-
         primaryStage.setScene(scene);
         primaryStage.show();
-
     }
 
+    /**
+     * Mouse event handler for MouseEvent.MOUSE_CLICKED events.
+     */
     EventHandler<MouseEvent> clickHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent me) {
             if (dirMode) {
-                if (me.getButton() == MouseButton.SECONDARY && me.getSource() instanceof Shape) {
-                    buffer[currentAction] = new EraseAction((Shape) me.getSource());
+                if (me.getButton() == MouseButton.SECONDARY
+                        && me.getSource() instanceof Shape) {
+                    buffer[currentAction] = new EraseAction((Shape)
+                            me.getSource());
                     canvas.getChildren().remove(me.getSource());
                     currentAction++;
                     maxAction = currentAction;
                 }
             } else {
-                if (me.getButton() != MouseButton.PRIMARY) return;
+                if (me.getButton() != MouseButton.PRIMARY) {
+                    return;
+                }
                 if (drawingShape) {
                     drawingShape = false;
                     return;
@@ -247,10 +369,15 @@ public class Kimp extends Application {
         }
     };
 
+    /**
+     * Mouse event handler for MouseEvent.MOUSE_DRAGGED events.
+     */
     EventHandler<MouseEvent> drugHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent me) {
-            if (me.getButton() != MouseButton.PRIMARY) return;
+            if (me.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
             if (dirMode) {
                 double offsetX = me.getSceneX() - orgSceneX;
                 double offsetY = me.getSceneY() - orgSceneY;
@@ -260,16 +387,16 @@ public class Kimp extends Application {
 
 
                 if (me.getSource() instanceof Rectangle) {
-                    ((Rectangle)(me.getSource())).setTranslateX(newTranslateX);
-                    ((Rectangle)(me.getSource())).setTranslateY(newTranslateY);
+                    ((Rectangle) (me.getSource())).setTranslateX(newTranslateX);
+                    ((Rectangle) (me.getSource())).setTranslateY(newTranslateY);
                 } else if (me.getSource() instanceof Path) {
-                    ((Path)(me.getSource())).setTranslateX(newTranslateX);
-                    ((Path)(me.getSource())).setTranslateY(newTranslateY);
+                    ((Path) (me.getSource())).setTranslateX(newTranslateX);
+                    ((Path) (me.getSource())).setTranslateY(newTranslateY);
                 }
 
-                if(me.getSource() instanceof Shape &&
-                        buffer[currentAction -1] instanceof MoveAction) {
-                    MoveAction ma = (MoveAction) buffer[currentAction -1];
+                if (me.getSource() instanceof Shape
+                        && buffer[currentAction - 1] instanceof MoveAction) {
+                    MoveAction ma = (MoveAction) buffer[currentAction - 1];
                     ma.newX = newTranslateX;
                     ma.newY = newTranslateY;
                 }
@@ -278,9 +405,8 @@ public class Kimp extends Application {
                 if (modeChoice.getSelectedToggle() == tbS && path != null) {
                     LineTo lineTo = new LineTo(me.getX(), me.getY());
                     path.getElements().add(lineTo);
-                } else if (modeChoice.getSelectedToggle() == tbR && rect != null) {
-                    // clicked (release)
-
+                } else if (modeChoice.getSelectedToggle() == tbR
+                        && rect != null) {
                     double meX = me.getX();
                     double meY = me.getY();
 
@@ -317,17 +443,24 @@ public class Kimp extends Application {
         }
     };
 
+    /**
+     * Mouse event handler for MouseEvent.MOUSE_PRESSED events.
+     */
     EventHandler<MouseEvent> pressHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent me) {
-            if (me.getButton() != MouseButton.PRIMARY) return;
+            if (me.getButton() != MouseButton.PRIMARY) {
+                return;
+            }
             if (dirMode) {
                 orgSceneX = me.getSceneX();
                 orgSceneY = me.getSceneY();
 
                 if (me.getSource() instanceof Rectangle) {
-                    orgTranslateX = ((Rectangle) (me.getSource())).getTranslateX();
-                    orgTranslateY = ((Rectangle) (me.getSource())).getTranslateY();
+                    orgTranslateX = ((Rectangle)
+                            (me.getSource())).getTranslateX();
+                    orgTranslateY = ((Rectangle)
+                            (me.getSource())).getTranslateY();
                 } else if (me.getSource() instanceof Path) {
                     orgTranslateX = ((Path) (me.getSource())).getTranslateX();
                     orgTranslateY = ((Path) (me.getSource())).getTranslateY();
@@ -387,6 +520,9 @@ public class Kimp extends Application {
         }
     };
 
+    /**
+     * Mouse event handler for MouseEvent.MOUSE_RELEASED events.
+     */
     EventHandler<MouseEvent> releaseHandler = new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
@@ -398,31 +534,33 @@ public class Kimp extends Application {
         }
     };
 
+    /**
+     * Mouse event handler for MouseEvent.MouseEvent.MOUSE_ENTERED events.
+     */
     EventHandler<MouseEvent> enterHandler = me -> {
         if (dirMode) {
-            Object x = me.getSource();
-            if (x instanceof Rectangle) {
-                ((Rectangle) x).setEffect(shadow);
-            } else if (x instanceof Path) {
-                ((Path) x).setEffect(shadow);
+            if (me.getSource() instanceof Rectangle) {
+                ((Rectangle) me.getSource()).setEffect(shadow);
+            } else if (me.getSource() instanceof Path) {
+                ((Path) me.getSource()).setEffect(shadow);
             }
         }
     };
 
+    /**
+     * Mouse event handler for MouseEvent.MouseEvent.MOUSE_EXITED events.
+     */
     EventHandler<MouseEvent> exitHandler = me -> {
-        Object x = me.getSource();
-        if (x instanceof Rectangle) {
-            ((Rectangle) x).setEffect(null);
-        } else if (x instanceof Path) {
-            ((Path) x).setEffect(null);
+        if (me.getSource() instanceof Rectangle) {
+            ((Rectangle) me.getSource()).setEffect(null);
+        } else if (me.getSource() instanceof Path) {
+            ((Path) me.getSource()).setEffect(null);
         }
     };
 
-    private int maxAction = 0;
-    private int currentAction = 0;
-
-    Action[] buffer = new Action[10000];
-
+    /**
+     * Re-do undone action.
+     */
     private void redo() {
         if (currentAction < maxAction) {
             Action action = buffer[currentAction];
@@ -442,6 +580,9 @@ public class Kimp extends Application {
         }
     }
 
+    /**
+     * Undo action.
+     */
     private void undo() {
         if (currentAction > 0) {
             currentAction--;
@@ -462,33 +603,69 @@ public class Kimp extends Application {
     }
 }
 
-interface Action{}
+/**
+ * General Action interface for holding different actions together.
+ */
+interface Action { }
 
+/**
+ * Class for action of drawing a shape.
+ */
 class DrawAction implements Action {
 
+    /**
+     * Shape that was drawn.
+     */
     Shape shape;
 
-    public DrawAction (Shape shape) {
-        this.shape = shape;
+    /**
+     * Constructor of the DrawAction object.
+     * @param newShape Shape that was drawn.
+     */
+    public DrawAction(Shape newShape) {
+        shape = newShape;
     }
 }
 
+/**
+ * Class for action of erasing a shape.
+ */
 class EraseAction implements Action {
 
+    /**
+     * Shape that was erased.
+     */
     Shape shape;
 
-    public EraseAction (Shape shape) {
-        this.shape = shape;
+    /**
+     * Constructor of the EraseAction object.
+     * @param newShape Shape that was erased.
+     */
+    public EraseAction(Shape newShape) {
+        shape = newShape;
     }
 }
 
+/**
+ * Class for action of moving a shape.
+ */
 class MoveAction implements Action {
 
+    /**
+     * Shape that was moved.
+     */
     Shape shape;
 
+    /**
+     * Shape old and new coordinates.
+     */
     double oldX, oldY, newX, newY;
 
-    public MoveAction (Shape shape) {
-        this.shape = shape;
+    /**
+     * Constructor of the MoveAction object.
+     * @param newShape Shape that was moved.
+     */
+    public MoveAction(Shape newShape) {
+        shape = newShape;
     }
 }
