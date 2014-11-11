@@ -17,6 +17,18 @@ html {
     color: inherit;
 }
 
+.acceptbutton {
+    width: auto;
+    height: auto;
+    position: inherit;
+    border-radius: 15px;
+    cursor: pointer;
+    margin: 10px 10px 10px 10px;
+    font: inherit;
+    color: inherit;
+}
+
+
 input {
     font: inherit;
     color: inherit;

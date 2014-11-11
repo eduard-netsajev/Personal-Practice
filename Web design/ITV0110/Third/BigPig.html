@@ -104,10 +104,16 @@
         <div class="container scores" id="pigscore">
             <div id="pig">Pig</div>
         </div>
-    </div></div>
+    </div>
+</div>
 
 <div id="pvpgame" class="noshow">
-    <center>Not implemented yet</center>
+<div class="container" style="display: block">Register me:<br>
+    <button id="register" class="butt" onclick="registerPlayer()">Register</button><br>
+    <div id="players">
+
+    </div>
+</div>
 </div>
 
 <div id="scorespage" class="noshow">
@@ -168,7 +174,92 @@
     </form>
 </div>
 
+<div id="pvpbattle" class="noshow">
+    <div style="display: table; margin-left: auto; margin-right: auto">
+        <div class="container scores" id="oyouscore">
+            <div id="oyou">You</div>
+        </div>
+        <div class="container">
+            <div  class="score">Your score:
+<span id="your_score">
+    0
+</span></div>
 
+            <div class="score">Enemy score:
+<span id="his_score">
+0
+</span></div>
+            <div>
+                <button id="oroll" onclick="pvp_roll();">Roll!</button>
+            </div>
+            <p id="odices"> 2 and 5 </p>
+
+            <div>
+                <div class="dice">
+                    <span id="o11" class="dot"></span>
+                    <span id="o12" class="dot clean"></span>
+                    <span id="o13" class="dot clean"></span>
+                    <br>
+                    <span id="o14" class="dot clean"></span>
+                    <span id="o15" class="dot clean"></span>
+                    <span id="o16" class="dot clean"></span>
+                    <br>
+                    <span id="o17" class="dot clean"></span>
+                    <span id="o18" class="dot clean"></span>
+                    <span id="o19" class="dot"></span>
+                    <br>
+                </div>
+
+                <div class="dice">
+                    <span id="o21" class="dot"></span>
+                    <span id="o22" class="dot clean"></span>
+                    <span id="o23" class="dot"></span>
+                    <br>
+                    <span id="o24" class="dot clean"></span>
+                    <span id="o25" class="dot"></span>
+                    <span id="o26" class="dot clean"></span>
+                    <br>
+                    <span id="o27" class="dot"></span>
+                    <span id="o28" class="dot clean"></span>
+                    <span id="o29" class="dot"></span>
+                    <br>
+                </div>
+
+                <div class="bubble">
+                    <p id="omessages">Let's play!</p>
+                    <div class="pig">
+                        <br>
+                        <span class="dot eye"></span>
+                        <span class="dot clean"></span>
+                        <span class="dot eye"></span>
+                        <br>
+                        <span class="dot clean"></span>
+                        <span class="dot"></span>
+                        <span class="dot clean"></span>
+                        <br>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="margin-right: 120px">Current score:
+                <span id="ocurrent_score">0</span>
+            </div>
+
+            <div>
+                <button id="otake" onclick="otake()">Take</button>
+                <p>
+                    <button id="new_game" onclick="location.reload(false)" disabled>New Game</button>
+                </p>
+            </div>
+
+        </div>
+        <div class="container scores" id="enemyscore">
+            <div id="enemy">Pig</div>
+        </div>
+    </div>
+
+</div>
 </body>
 <script src="pigscript.js"></script>
 </html>

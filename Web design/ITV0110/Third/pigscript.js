@@ -12,27 +12,40 @@ var currentPoints = 0;
 var sortField = 5;
 var sortOrder = -1;
 
-getData(gid("f1"));
-
 var startTime = new Date().getTime() / 1000;
 
 var name = "nbd";
 
+var arrows = ["field0", "field1", "field2", "field3", "field4", "field5"];
+
 var gameAllowed = false;
+
+var canAccept = false;
+
+var enemy = null;
+var role = 0;
 
 toggleButtons(false);
 gid("restart").disabled = true;
 gid("set").disabled = true;
+gid("register").disabled = true;
 
 while(name.length < 4) {
-    name = prompt("Enter your name (atleast 4 chars): ", "Guest").trim();
+    name = prompt("Enter your name (atleast 4 chars): ", "Guest");
+    if (name == null) {
+        name = "nbd";
+    } else {
+        name = name.trim();
+    }
 }
 
 if(name.length > 3 && name != 'null') {
     gameAllowed = true;
     toggleButtons(true);
+    canAccept = true;
     gid("restart").disabled = false;
     gid("set").disabled = false;
+    gid("register").disabled = false;
 }
 
 var curPage = "piggame";
@@ -53,11 +66,12 @@ function show(page) {
                 gid("you").style.visibility = "visible";
                 gid("pig").style.visibility = "visible";
             }
+        } else if (page == "pvpgame") {
+            getRegisteredPlayers();
+        } else if (page == "scorespage") {
+            getData(gid("f1"));
         }
-
-
         gid(curPage).setAttribute("class", "noshow");
-
         setTimeout(function() {gid(page).setAttribute("class", "");}, 400);
         curPage = page;
     }
@@ -66,8 +80,8 @@ function show(page) {
 function fake_rolling(times) {
     var firstDice = Math.floor((Math.random() * 6) + 1);
     var secondDice = Math.floor((Math.random() * 6) + 1);
-    setDice(1, firstDice);
-    setDice(2, secondDice);
+    setDice(1, firstDice, false);
+    setDice(2, secondDice, false);
     if (times > 0) {
         timeoutFakeRoll = setTimeout(function() {fake_rolling(times-1);}, 100);
         timeouts.push(timeoutFakeRoll);
@@ -76,12 +90,21 @@ function fake_rolling(times) {
     }
 }
 
+function online_roll() {
+    var firstDice = Math.floor((Math.random() * 6) + 1);
+    var secondDice = Math.floor((Math.random() * 6) + 1);
+    setDice(1, firstDice, true);
+    setDice(2, secondDice, true);
+    console.log("hehe");
+    timeouts.push(setTimeout(online_roll, 350));
+}
+
 function roll() {
     var firstDice = Math.floor((Math.random() * 6) + 1);
     var secondDice = Math.floor((Math.random() * 6) + 1);
     gid("dices").innerText = String(firstDice) + " and " + String(secondDice);
-    setDice(1, firstDice);
-    setDice(2, secondDice);
+    setDice(1, firstDice, false);
+    setDice(2, secondDice, false);
 
     if ((firstDice == 1 || secondDice == 1) && (firstDice != secondDice)) {
         currentPoints = 0;
@@ -222,8 +245,8 @@ function stopGame() {
 
     // This is the client-side script
     // Initialize the Ajax request
-    xhr = new XMLHttpRequest();
-    str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/saveresult.py?p1name=' + name
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/saveresult.py?p1name=' + name
         + '&p1score=' + playerScore + '&p2name=Pig' + '&p2score=' + pigScore + '&time=' + time + '&starttime=' + Math.floor(startTime);
     xhr.open('get', str);
 
@@ -297,16 +320,28 @@ function gid(x) {
 }
 
 function unsetDots() {
-    for (var i = 0; i < arguments[0].length; i++) {
-        document.getElementById(arguments[0][i]).setAttribute("class", "dot clean");
+    if (arguments[1]) {
+        for (var j = 0; j < arguments[0].length; j++) {
+            document.getElementById('o' + arguments[0][j]).setAttribute("class", "dot clean");
+        }
+    } else {
+        for (var i = 0; i < arguments[0].length; i++) {
+            document.getElementById(arguments[0][i]).setAttribute("class", "dot clean");
+        }
     }
 }
 function setDots() {
-    for (var i = 0; i < arguments[0].length; i++) {
-        document.getElementById(arguments[0][i]).setAttribute("class", "dot");
+    if (arguments[1]) {
+        for (var j = 0; j < arguments[0].length; j++) {
+            document.getElementById('o' + arguments[0][j]).setAttribute("class", "dot");
+        }
+    } else {
+        for (var i = 0; i < arguments[0].length; i++) {
+            document.getElementById(arguments[0][i]).setAttribute("class", "dot");
+        }
     }
 }
-function setDice(dice, num) {
+function setDice(dice, num, o) {
     var dotsToSet;
     var dotsToUnset;
 
@@ -344,8 +379,8 @@ function setDice(dice, num) {
         dotsToUnset[j] += dice * 10;
     }
 
-    setDots(dotsToSet);
-    unsetDots(dotsToUnset);
+    setDots(dotsToSet, o);
+    unsetDots(dotsToUnset, o);
 }
 
 function setField(field, arrow) {
@@ -353,11 +388,6 @@ function setField(field, arrow) {
     sortField = field;
     getData(gid("f1"));
 }
-
-var activeArrow = 5;
-
-var arrows = ["field0", "field1", "field2", "field3", "field4", "field5"];
-
 
 function pressArrow(arrow) {
 
@@ -406,8 +436,8 @@ function getData(form) {
 
     // This is the client-side script
     // Initialize the Ajax request
-    xhr = new XMLHttpRequest();
-    str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/getscores.py?p1=' + p1
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/getscores.py?p1=' + p1
         + '&p2=' + p2 + '&sortfield=' + sortField + '&sortorder=' + sortOrder;
     xhr.open('get', str);
 
@@ -467,9 +497,9 @@ function showScores(data) {
             cell.innerHTML = pieces[j];
         }
 
-            var datecell = row.insertCell(-1);
-            datecell.className = "tbody-tr-td";
-            datecell.innerHTML = timeConverter(pieces[5]);
+        var datecell = row.insertCell(-1);
+        datecell.className = "tbody-tr-td";
+        datecell.innerHTML = timeConverter(pieces[5]);
 
     }
 
@@ -492,4 +522,258 @@ function timeConverter(UNIX_timestamp){
     var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
     var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
     return time;
+}
+
+function getRegisteredPlayers() {
+    // AJAX call
+    // This is the client-side script
+    // Initialize the Ajax request
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=getlist';
+    xhr.open('get', str);
+
+    console.log(str);
+
+    // Track the state changes of the request
+    xhr.onreadystatechange = function(){
+        // Ready state 4 means the request is done
+        if(xhr.readyState === 4){
+            // 200 is a successful return
+            if(xhr.status === 200){
+                console.log("GOT LIST OF REGISTERED PLAYERS");
+                showPlayers(xhr.responseText.trim());  // 'This is the returned text.'
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+    // Send the request to python script
+    xhr.send(null);
+    // end of AJAX
+    return false;
+}
+
+function registerPlayer() {
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=register&name=' + name;
+    xhr.open('get', str);
+    console.log(str);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+            if(xhr.status === 200){
+                canAccept = false;
+                gid("register").disabled = true;
+                role = 1;
+                getRegisteredPlayers();
+                checkGame();
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+    xhr.send(null);
+    return false;
+}
+
+function showPlayers (data) {
+//    console.log(data);
+    var table = document.getElementById("players");
+    table.innerHTML = "";
+    var res = data.split("\n");
+
+    var empty = true;
+
+    for (var i = 0; i < res.length; i++) {
+        var str = res[i].trim();
+        if (str.length < 4) {
+            continue;
+        }
+        if (empty) {
+                table.innerHTML += "Available players:<br>"
+            empty = false;
+        }
+        console.log(canAccept);
+        if (canAccept) {
+            table.innerHTML += '<button class="acceptbutton" onclick="pickPlayer(\'' + str + '\')">' + str + '</button>';
+        } else {
+            table.innerHTML += '<button class="acceptbutton" onclick="pickPlayer(\'' + str + '\')" disabled>' + str + '</button>';
+        }
+    }
+}
+
+function pickPlayer(pickedname) {
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=startgame&name1=' + pickedname
+        + '&name2=' + name + "&starttime=" + Math.floor(new Date().getTime() / 1000);
+    xhr.open('get', str);
+    console.log(str);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+            if(xhr.status === 200){
+                enemy = pickedname;
+                role = -1;
+                startPvP();
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+    xhr.send(null);
+    return false;
+}
+
+function checkGame() {
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=check&name=' + name;
+    xhr.open('get', str);
+    console.log(str);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+            if(xhr.status === 200){
+                if (xhr.responseText == -1) {
+                    timeouts.push(setTimeout(checkGame, 1000))
+                    console.log("WAIT MORE");
+                } else {
+                    enemy = xhr.responseText.trim();
+                    startPvP();
+                    console.log(xhr.responseText);
+                }
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+    xhr.send(null);
+    return false;
+}
+
+function startPvP() {
+    console.log("START PVP");
+    show("pvpbattle");
+    gid("enemy").innerText = enemy;
+    gid("enemy").style.visibility = "hidden";
+    gid("oyou").style.visibility = "hidden";
+
+    gid("pvpig").disabled = true;
+    gid("pvp").disabled = true;
+    gid("scores").disabled = true;
+
+    otoggleButtons(false);
+    timeouts.push(setTimeout(getStatus, 200));
+}
+
+function otoggleButtons(toBool) {
+    if (toBool && gameAllowed) {
+        gid("otake").disabled = false;
+        gid("oroll").disabled = false;
+    } else {
+        gid("otake").disabled = true;
+        gid("oroll").disabled = true;
+    }
+}
+
+function pvp_roll() {
+    otoggleButtons(false);
+    online_roll();
+    Roll();
+    timeouts.push(setTimeout(getStatus, 500));
+}
+
+function otake() {
+    otoggleButtons(false);
+    Take();
+    timeouts.push(setTimeout(getStatus, 200));
+}
+
+function new_game() {
+// TODO maybe
+}
+
+function getStatus() {
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=status&name=' + name + '&role=' + role;
+    xhr.open('get', str);
+    console.log(str);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+            if(xhr.status === 200){
+                clearTimers();
+
+                var info = xhr.responseText.split(",");
+                console.log(info);
+                gid("ocurrent_score").innerText = String(info[0]);
+
+                var d1 = parseInt(info[1]);
+                var d2 = parseInt(info[2]);
+                if (d1 > 0 && d2 > 0) {
+                    setDice(1, d1, true);
+                    setDice(2, d2, true);
+                    gid("odices").innerText = String(d1) + " and " + String(d2);
+                }
+
+                gid("your_score").innerText = info[4];
+                gid("his_score").innerText = info[5];
+
+                var code = parseInt(info[3]);
+                switch (code) {
+                    case 100:
+                        gid("omessages").innerText = "You won!";
+                        gid("new_game").disabled = false;
+                        break;
+                    case -100:
+                        gid("omessages").innerText = "You lost..";
+                        gid("new_game").disabled = false;
+                        break;
+                    case 1:
+                        gid("omessages").innerText = "Your turn!";
+                        otoggleButtons(true);
+                        break;
+                    case -1:
+                        gid("omessages").innerText = "Zzz...";
+                        timeouts.push(setTimeout(getStatus, 500));
+                        break;
+                }
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+    xhr.send(null);
+    return false;
+}
+
+function Roll() {
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=roll&name=' + name + '&role=' + role;
+    xhr.open('get', str);
+    console.log(str);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+            if(xhr.status === 200){
+                // all is OK
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+    xhr.send(null);
+    return false;
+}
+
+function Take() {
+    var xhr = new XMLHttpRequest();
+    var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=take&name=' + name + '&role=' + role;
+    xhr.open('get', str);
+    console.log(str);
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+            if(xhr.status === 200){
+                // all is OK
+            }else{
+                console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+            }
+        }
+    }
+    xhr.send(null);
+    return false;
 }
