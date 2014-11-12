@@ -10,7 +10,7 @@
     <button class="menuitem" id="pvp" onclick="show('pvpgame')">PvP</button>
     <button class="menuitem" id="scores" onclick="show('scorespage')">Scores</button>
 </div>
-<body>
+<body id="body">
 <div id="piggame">
 
     <div style="display: table; margin-left: auto; margin-right: auto">
@@ -249,7 +249,7 @@
             <div>
                 <button id="otake" onclick="otake()">Take</button>
                 <p>
-                    <button id="new_game" onclick="location.reload(false)" disabled>New Game</button>
+                    <button id="new_game" onclick="new_game()" disabled>New Game</button>
                 </p>
             </div>
 

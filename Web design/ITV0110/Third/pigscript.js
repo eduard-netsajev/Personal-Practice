@@ -303,7 +303,10 @@ function setPlayerScore(points) {
 function addPlayerScore() {
     gid("you").innerHTML += "<br>"+ currentPoints;
     gid("you").style.visibility = "visible";
-    hidden = false;
+    if (hidden) {
+        hidden = false;
+        startTime = new Date().getTime() / 1000;
+    }
 }
 
 function addPigScore() {
@@ -589,7 +592,7 @@ function showPlayers (data) {
             continue;
         }
         if (empty) {
-                table.innerHTML += "Available players:<br>"
+            table.innerHTML += "Available players:<br>"
             empty = false;
         }
         console.log(canAccept);
@@ -686,7 +689,15 @@ function otake() {
 }
 
 function new_game() {
-// TODO maybe
+    clearTimers();
+    deleteGame();
+    canAccept = true;
+    enemy = null;
+    role = 0;
+    show("pvpgame");
+    gid("pvpig").disabled = true;
+    gid("pvp").disabled = true;
+    gid("scores").disabled = true;
 }
 
 function getStatus() {
@@ -776,4 +787,55 @@ function Take() {
     }
     xhr.send(null);
     return false;
+}
+
+var has_disconnected = false;
+
+window.onbeforeunload = function () {
+
+    if (role != 0) {
+        while (!has_disconnected) {
+            deleteGame();
+            return true;
+        }
+    }
+}
+
+
+function deleteGame() {
+
+    if(gid("register").disabled == true) {
+        var xhr = new XMLHttpRequest();
+        var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=unreg&name=' + name;
+        xhr.open('get', str);
+        console.log(str);
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState === 4){
+                if(xhr.status === 200){
+                    //ok
+                }else{
+                    console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+                }
+            }
+        }
+        xhr.send(null);
+        return false;
+    }
+    if (gameAllowed) {
+        var xhr = new XMLHttpRequest();
+        var str = 'http://dijkstra.cs.ttu.ee/~Eduard.Netsajev/cgi-bin/pvp.py?op=delgame&name=' + name + '&role=' + role;
+        xhr.open('get', str);
+        console.log(str);
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState === 4){
+                if(xhr.status === 200){
+                    has_disconnected = true;
+                }else{
+                    console.log('Error: '+xhr.status + '\n' + str); // An error occurred during the request
+                }
+            }
+        }
+        xhr.send(null);
+        return false;
+    }
 }

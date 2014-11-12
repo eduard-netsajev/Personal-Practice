@@ -184,3 +184,9 @@ if formdata.has_key("op"):
 
         sstr = ",".join(status)
         print sstr
+    elif operation == "delgame" and formdata.has_key("name") and formdata.has_key("role"):
+        r = int(formdata["role"].value)
+        sname = get_filename(formdata["name"].value, r)
+        os.remove(sname)
+    elif operation == "unreg" and formdata.has_key("name"):
+        unreg(formdata["name"].value)
