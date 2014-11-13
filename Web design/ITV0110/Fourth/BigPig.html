@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Big Pig</title>
+    <meta name="viewport"
+          content="width=device-width,height=device-height,user-scalable=no,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+    <link rel="stylesheet" href="pigstyle.css">
+</head>
+<body>
+<div id="loginpage">
+    <div class="message">
+        Enter your name:
+    </div>
+    <label id="login" class="message">
+        <input id="username" type="text" style="background-color: #FFF8DC; max-width: 100px" value="Guest">
+    </label>
+    <button onclick="login()">Play!</button>
+</div>
+<div id="piggame" class="noshow">
+    <div id="main">
+        <div class="container scores" id="youscore">
+            <div id="you">You</div>
+        </div>
+        <div class="container">
+            <div class="score">Your score:
+<span id="player_score">
+    0
+</span></div>
+            <div class="score">Pig score:
+<span id="pig_score">
+0
+</span></div>
+            <div>
+                <button id="roll" onclick="Roll()">Roll!</button>
+            </div>
+            <p id="dices"> 2 and 5 </p>
+
+            <div>
+                <div class="dice">
+                    <span id="11" class="dot"></span>
+                    <span id="12" class="dot clean"></span>
+                    <span id="13" class="dot clean"></span>
+                    <br>
+                    <span id="14" class="dot clean"></span>
+                    <span id="15" class="dot clean"></span>
+                    <span id="16" class="dot clean"></span>
+                    <br>
+                    <span id="17" class="dot clean"></span>
+                    <span id="18" class="dot clean"></span>
+                    <span id="19" class="dot"></span>
+                    <br>
+                </div>
+
+                <div class="dice">
+                    <span id="21" class="dot"></span>
+                    <span id="22" class="dot clean"></span>
+                    <span id="23" class="dot"></span>
+                    <br>
+                    <span id="24" class="dot clean"></span>
+                    <span id="25" class="dot"></span>
+                    <span id="26" class="dot clean"></span>
+                    <br>
+                    <span id="27" class="dot"></span>
+                    <span id="28" class="dot clean"></span>
+                    <span id="29" class="dot"></span>
+                    <br>
+                </div>
+
+                <div class="bubble">
+                    <p id="messages">Let's play!</p>
+
+                    <div class="pig">
+                        <br>
+                        <span class="dot eye"></span>
+                        <span class="dot clean"></span>
+                        <span class="dot eye"></span>
+                        <br>
+                        <span class="dot clean"></span>
+                        <span class="dot"></span>
+                        <span class="dot clean"></span>
+                        <br>
+                    </div>
+                </div>
+
+            </div>
+
+            <div style="margin-right: 120px">Current score:
+                <span id="current_score">0</span>
+            </div>
+
+            <div>
+                <button id="take" onclick="Take()">Take</button>
+
+                <p>
+                    <button id="restart" onclick="new_game()">New Game</button>
+                </p>
+
+                <form onsubmit="return setThreshold(this);">
+                    <label style="font-weight: normal">
+                        Pig threshold (above zero):
+                        <input style="background-color: #FFF8DC; max-width: 50px" type="number" id="setX"
+                               name="threshold" min="1" max=100
+                               required value="20"></label>
+                    <input id="set" class="butt" type=submit value="Set">
+                </form>
+            </div>
+
+        </div>
+        <div class="container scores" id="pigscore">
+            <div id="pig">Pig</div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="pigscript.js"></script>
+</html>
