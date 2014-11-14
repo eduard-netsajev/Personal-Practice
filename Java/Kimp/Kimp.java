@@ -4,11 +4,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -22,8 +18,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -61,6 +60,16 @@ public class Kimp extends Application {
      * Temporary object for holding Rectangle object while drawing.
      */
     private Rectangle rect;
+
+    private Circle circ;
+
+    private Line line;
+
+    private Ellipse ellipse;
+
+    private Polygon triangle;
+
+    private CheckBox fillBox;
 
     /**
      * Sample line under the controls to show the user the stroke settings.
@@ -140,17 +149,17 @@ public class Kimp extends Application {
     /**
      * Toggle Buttons for drawing Stroke and Rectangle shapes.
      */
-    private ToggleButton tbS, tbR;
+    private ToggleButton tbS, tbR, tbC, tbL, tbE, tbT;
 
     /**
      * Starting scene window width.
      */
-    private static final int SCENE_WIDTH = 1000;
+    private static final int SCENE_WIDTH = 1200;
 
     /**
      * Starting scene window height.
      */
-    private static final int SCENE_HEIGHT = 800;
+    private static final int SCENE_HEIGHT = 1000;
 
     /**
      * Integer value of 10.
@@ -202,9 +211,25 @@ public class Kimp extends Application {
         tbR = new ToggleButton("Rectangle");
         tbS.setToggleGroup(modeChoice);
         tbR.setToggleGroup(modeChoice);
+
+        VBox toggleBox2 = new VBox(TEN);
+
+        tbC = new ToggleButton("Circle");
+        tbC.setToggleGroup(modeChoice);
+
+        tbL = new ToggleButton("Line");
+        tbL.setToggleGroup(modeChoice);
+
+        tbT = new ToggleButton("Triangle");
+        tbT.setToggleGroup(modeChoice);
+
+        tbE = new ToggleButton("Ellipse");
+        tbE.setToggleGroup(modeChoice);
+
         // VBox for the toggle buttons
         VBox toggleBox = new VBox(TEN);
-        toggleBox.getChildren().addAll(tbS, tbR);
+        toggleBox.getChildren().addAll(tbS, tbR, tbC);
+        toggleBox2.getChildren().addAll(tbL, tbT, tbE);
         // VBox for the buffer buttons
         VBox bufferBox = new VBox(TEN);
         Button unB = new Button("Undo");
@@ -222,9 +247,10 @@ public class Kimp extends Application {
 
         Slider strokeSlider = new Slider(MINSTROKE, MAXSTROKE, DEFAULTSTROKE);
         Label labelStroke = new Label("Stroke Width");
+        fillBox = new CheckBox("Fill");
         VBox utilBox = new VBox(TEN);
         utilBox.setAlignment(Pos.TOP_CENTER);
-        utilBox.getChildren().addAll(btnClear, labelStroke, strokeSlider);
+        utilBox.getChildren().addAll(btnClear, labelStroke, strokeSlider, fillBox);
 
         // Build the RGB sliders, labels, and HBox containers
         Slider redSlider = new Slider(MINRGB, MAXRGB, DEFAULTRED);
@@ -250,7 +276,8 @@ public class Kimp extends Application {
         // Put all controls in one HBox
         HBox toolBox = new HBox(SEVEN_SEVEN);
         toolBox.setAlignment(Pos.TOP_CENTER);
-        toolBox.getChildren().addAll(bufferBox, toggleBox, utilBox, colorBox);
+        toolBox.getChildren().addAll(bufferBox, toggleBox, toggleBox2,
+                utilBox, colorBox);
 
         // Build a Binding object to compute a Paint object from the sliders
         ObjectBinding<Paint> colorBinding = new ObjectBinding<Paint>() {
@@ -384,14 +411,24 @@ public class Kimp extends Application {
                 double newTranslateX = orgTranslateX + offsetX;
                 double newTranslateY = orgTranslateY + offsetY;
 
-
-
                 if (me.getSource() instanceof Rectangle) {
                     ((Rectangle) (me.getSource())).setTranslateX(newTranslateX);
                     ((Rectangle) (me.getSource())).setTranslateY(newTranslateY);
                 } else if (me.getSource() instanceof Path) {
                     ((Path) (me.getSource())).setTranslateX(newTranslateX);
                     ((Path) (me.getSource())).setTranslateY(newTranslateY);
+                } else if (me.getSource() instanceof Circle) {
+                    ((Circle) (me.getSource())).setTranslateX(newTranslateX);
+                    ((Circle) (me.getSource())).setTranslateY(newTranslateY);
+                } else if (me.getSource() instanceof Line) {
+                    ((Line) (me.getSource())).setTranslateX(newTranslateX);
+                    ((Line) (me.getSource())).setTranslateY(newTranslateY);
+                } else if (me.getSource() instanceof Ellipse) {
+                    ((Ellipse) (me.getSource())).setTranslateX(newTranslateX);
+                    ((Ellipse) (me.getSource())).setTranslateY(newTranslateY);
+                } else if (me.getSource() instanceof Polygon) {
+                    ((Polygon) (me.getSource())).setTranslateX(newTranslateX);
+                    ((Polygon) (me.getSource())).setTranslateY(newTranslateY);
                 }
 
                 if (me.getSource() instanceof Shape
@@ -438,6 +475,69 @@ public class Kimp extends Application {
                         }
                     }
 
+                } else if (modeChoice.getSelectedToggle() == tbC && circ != null) {
+
+                    double meX = me.getX();
+                    double meY = me.getY();
+
+                    if (rsX < meX) {
+                        circ.setCenterX(rsX + (meX - rsX) / 2);
+                        if (rsY < meY) {
+                            circ.setCenterY(rsY + (meY - rsY) / 2);
+                            circ.setRadius(Math.max(meX - circ.getCenterX(), meY - circ.getCenterY()));
+                        } else {
+                            circ.setCenterY(meY + (rsY - meY) / 2);
+                            circ.setRadius(Math.max(meX - circ.getCenterX(), rsY - circ.getCenterY()));
+                        }
+                    } else {
+                        circ.setCenterX(meX + (rsX - meX) / 2);
+                        if (rsY < meY) {
+                            circ.setCenterY(rsY + (meY - rsY) / 2);
+                            circ.setRadius(Math.max(rsX - circ.getCenterX(), meY - circ.getCenterY()));
+                        } else {
+                            circ.setCenterY(meY + (rsY - meY) / 2);
+                            circ.setRadius(Math.max(rsX - circ.getCenterX(), rsY - circ.getCenterY()));
+                        }
+                    }
+
+                } else if (modeChoice.getSelectedToggle() == tbL && line != null) {
+                    double meX = me.getX();
+                    double meY = me.getY();
+
+                    line.setStartX(rsX);
+                    line.setStartY(rsY);
+                    line.setEndX(meX);
+                    line.setEndY(meY);
+                } else if (modeChoice.getSelectedToggle() == tbE && ellipse != null) {
+
+                    double meX = me.getX();
+                    double meY = me.getY();
+
+                    if (rsX < meX) {
+                        ellipse.setCenterX(rsX + (meX - rsX) / 2);
+                        ellipse.setRadiusX(meX - ellipse.getCenterX());
+                        if (rsY < meY) {
+                            ellipse.setCenterY(rsY + (meY - rsY) / 2);
+                            ellipse.setRadiusY(meY - ellipse.getCenterY());
+                        } else {
+                            ellipse.setCenterY(meY + (rsY - meY) / 2);
+                            ellipse.setRadiusY(rsY - ellipse.getCenterY());
+                        }
+                    } else {
+                        ellipse.setCenterX(meX + (rsX - meX) / 2);
+                        ellipse.setRadiusX(rsX - ellipse.getCenterX());
+                        if (rsY < meY) {
+                            ellipse.setCenterY(rsY + (meY - rsY) / 2);
+                            ellipse.setRadiusY(meY - ellipse.getCenterY());
+                        } else {
+                            ellipse.setCenterY(meY + (rsY - meY) / 2);
+                            ellipse.setRadiusY(rsY - ellipse.getCenterY());
+                        }
+                    }
+                } else if (modeChoice.getSelectedToggle() == tbT && triangle != null) {
+
+                    //TODO TRIANGLE from here
+
                 }
             }
         }
@@ -464,6 +564,15 @@ public class Kimp extends Application {
                 } else if (me.getSource() instanceof Path) {
                     orgTranslateX = ((Path) (me.getSource())).getTranslateX();
                     orgTranslateY = ((Path) (me.getSource())).getTranslateY();
+                } else if (me.getSource() instanceof Circle) {
+                    orgTranslateX = ((Circle) (me.getSource())).getTranslateX();
+                    orgTranslateY = ((Circle) (me.getSource())).getTranslateY();
+                } else if (me.getSource() instanceof Line) {
+                    orgTranslateX = ((Line) (me.getSource())).getTranslateX();
+                    orgTranslateY = ((Line) (me.getSource())).getTranslateY();
+                } else if (me.getSource() instanceof Ellipse) {
+                    orgTranslateX = ((Ellipse) (me.getSource())).getTranslateX();
+                    orgTranslateY = ((Ellipse) (me.getSource())).getTranslateY();
                 }
                 if (me.getSource() instanceof Shape) {
                     MoveAction ma = new MoveAction((Shape) me.getSource());
@@ -503,7 +612,14 @@ public class Kimp extends Application {
                     rsY = me.getY();
 
                     rect = new Rectangle(rsX, rsY, 0, 0);
-                    rect.setFill(sampleLine.getStroke());
+
+                    if (fillBox.isSelected()) {
+                        rect.setFill(sampleLine.getStroke());
+                    } else {
+                        rect.setFill(Color.TRANSPARENT);
+                        rect.setStroke(sampleLine.getStroke());
+                        rect.setStrokeWidth(sampleLine.getStrokeWidth());
+                    }
                     canvas.getChildren().add(rect);
 
                     buffer[currentAction] = new DrawAction(rect);
@@ -515,6 +631,74 @@ public class Kimp extends Application {
                     rect.setOnMouseClicked(clickHandler);
                     rect.setOnMouseEntered(enterHandler);
                     rect.setOnMouseExited(exitHandler);
+                } else if (modeChoice.getSelectedToggle() == tbC) {
+
+                    //Circle drawing
+                    rsX = me.getX();
+                    rsY = me.getY();
+                    if (fillBox.isSelected()) {
+                        circ = new Circle(0, sampleLine.getStroke());
+                    } else {
+                        circ = new Circle(0, Color.TRANSPARENT);
+                        circ.setStroke(sampleLine.getStroke());
+                        circ.setStrokeWidth(sampleLine.getStrokeWidth());
+                    }
+                    canvas.getChildren().add(circ);
+                    buffer[currentAction] = new DrawAction(circ);
+                    currentAction++;
+                    maxAction = currentAction;
+
+                    circ.setOnMousePressed(pressHandler);
+                    circ.setOnMouseDragged(drugHandler);
+                    circ.setOnMouseClicked(clickHandler);
+                    circ.setOnMouseEntered(enterHandler);
+                    circ.setOnMouseExited(exitHandler);
+
+                } else if (modeChoice.getSelectedToggle() == tbL) {
+
+                    //Line drawing
+                    rsX = me.getX();
+                    rsY = me.getY();
+
+                    line = new Line(rsX, rsY, rsX, rsY);
+                    line.setStrokeWidth(sampleLine.getStrokeWidth());
+                    line.setStroke(sampleLine.getStroke());
+                    canvas.getChildren().add(line);
+                    buffer[currentAction] = new DrawAction(line);
+                    currentAction++;
+                    maxAction = currentAction;
+
+                    line.setOnMousePressed(pressHandler);
+                    line.setOnMouseDragged(drugHandler);
+                    line.setOnMouseClicked(clickHandler);
+                    line.setOnMouseEntered(enterHandler);
+                    line.setOnMouseExited(exitHandler);
+
+                } else if (modeChoice.getSelectedToggle() == tbE) {
+
+                    //Ellipse drawing
+                    rsX = me.getX();
+                    rsY = me.getY();
+                    ellipse = new Ellipse(0, 0);
+
+                    if (fillBox.isSelected()) {
+                        ellipse.setFill(sampleLine.getStroke());
+                    } else {
+                        ellipse.setFill(Color.TRANSPARENT);
+                        ellipse.setStroke(sampleLine.getStroke());
+                        ellipse.setStrokeWidth(sampleLine.getStrokeWidth());
+                    }
+                    canvas.getChildren().add(ellipse);
+                    buffer[currentAction] = new DrawAction(ellipse);
+                    currentAction++;
+                    maxAction = currentAction;
+
+                    ellipse.setOnMousePressed(pressHandler);
+                    ellipse.setOnMouseDragged(drugHandler);
+                    ellipse.setOnMouseClicked(clickHandler);
+                    ellipse.setOnMouseEntered(enterHandler);
+                    ellipse.setOnMouseExited(exitHandler);
+
                 }
             }
         }
@@ -530,6 +714,12 @@ public class Kimp extends Application {
                 path = null;
             } else if (modeChoice.getSelectedToggle() == tbR) {
                 rect = null;
+            } else if (modeChoice.getSelectedToggle() == tbC) {
+                circ = null;
+            } else if (modeChoice.getSelectedToggle() == tbL) {
+                line = null;
+            } else if (modeChoice.getSelectedToggle() == tbE) {
+                ellipse = null;
             }
         }
     };
@@ -543,6 +733,12 @@ public class Kimp extends Application {
                 ((Rectangle) me.getSource()).setEffect(shadow);
             } else if (me.getSource() instanceof Path) {
                 ((Path) me.getSource()).setEffect(shadow);
+            } else if (me.getSource() instanceof Circle) {
+                ((Circle) me.getSource()).setEffect(shadow);
+            } else if (me.getSource() instanceof Line) {
+                ((Line) me.getSource()).setEffect(shadow);
+            } else if (me.getSource() instanceof Ellipse) {
+                ((Ellipse) me.getSource()).setEffect(shadow);
             }
         }
     };
@@ -555,6 +751,12 @@ public class Kimp extends Application {
             ((Rectangle) me.getSource()).setEffect(null);
         } else if (me.getSource() instanceof Path) {
             ((Path) me.getSource()).setEffect(null);
+        } else if (me.getSource() instanceof Circle) {
+            ((Circle) me.getSource()).setEffect(null);
+        } else if (me.getSource() instanceof Line) {
+            ((Line) me.getSource()).setEffect(null);
+        } else if (me.getSource() instanceof Ellipse) {
+            ((Ellipse) me.getSource()).setEffect(null);
         }
     };
 
