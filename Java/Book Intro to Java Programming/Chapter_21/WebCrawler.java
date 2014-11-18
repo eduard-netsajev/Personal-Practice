@@ -1,10 +1,9 @@
-package Chapter_12;
+package Chapter_21;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
-public class SearchWeb {
+public class WebCrawler {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         System.out.print("Enter the seraching phrase: ");
@@ -19,13 +18,14 @@ public class SearchWeb {
     public static void crawler(String target, String startingURL){
         final int URLS_LIMIT = 10000;
 
-        ArrayList<String> listOfPendingURLs = new ArrayList<>();
-        ArrayList<String> listOfTraversedURLs = new ArrayList<>();
+        Queue<String> listOfPendingURLs = new LinkedList<>();
+        HashSet<String> listOfTraversedURLs = new HashSet<>();
 
-        listOfPendingURLs.add(startingURL);
+        listOfPendingURLs.offer(startingURL);
+
         while (!listOfPendingURLs.isEmpty()
                 && listOfTraversedURLs.size() <= URLS_LIMIT) {
-            String urlString = listOfPendingURLs.remove(0);
+            String urlString = listOfPendingURLs.poll();
             if (!listOfTraversedURLs.contains(urlString)) {
                 listOfTraversedURLs.add(urlString);
             }
@@ -33,15 +33,15 @@ public class SearchWeb {
 
             for (String s: searchSubURLs(target, urlString)) {
                 if (!listOfTraversedURLs.contains(s)) {
-                    listOfPendingURLs.add(s);
+                    listOfPendingURLs.offer(s);
                 }
             }
         }
     }
 
-    public static ArrayList<String> searchSubURLs(String target,
+    public static HashSet<String> searchSubURLs(String target,
                                                   String urlString) {
-        ArrayList<String> list = new ArrayList<>();
+        HashSet<String> list = new HashSet<>();
 
         try {
             URL url = new URL(urlString);
@@ -75,6 +75,6 @@ public class SearchWeb {
             System.out.println("Error: " + ex.getMessage());
         }
 
-    return  list;
+        return  list;
     }
 }
