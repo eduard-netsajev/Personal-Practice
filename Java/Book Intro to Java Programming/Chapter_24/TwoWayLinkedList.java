@@ -275,37 +275,44 @@ public class TwoWayLinkedList<E> extends AbstractSequentialList<E> {
 
         @Override
         public boolean hasPrevious() {
-            return false;
+            throw new UnsupportedOperationException
+                    ("This operation is not yet supported");
         }
 
         @Override
         public E previous() {
-            return null;
+            throw new UnsupportedOperationException
+                    ("This operation is not yet supported");
         }
 
         @Override
         public int nextIndex() {
-            return 0;
+            throw new UnsupportedOperationException
+                    ("This operation is not yet supported");
         }
 
         @Override
         public int previousIndex() {
-            return 0;
+            throw new UnsupportedOperationException
+                    ("This operation is not yet supported");
         }
 
         @Override
         public void remove() {
-            System.out.println("Implementation left as an exercise");
+            throw new UnsupportedOperationException
+                    ("This operation is not yet supported");
         }
 
         @Override
         public void set(E e) {
-
+            throw new UnsupportedOperationException
+                    ("This operation is not yet supported");
         }
 
         @Override
         public void add(E e) {
-
+            throw new UnsupportedOperationException
+                    ("This operation is not yet supported");
         }
     }
 
