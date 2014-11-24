@@ -1,4 +1,4 @@
-package Chapter_25;
+package Chapter_25_26;
 
 public abstract class AbstractTree<E>
         implements Tree<E> {

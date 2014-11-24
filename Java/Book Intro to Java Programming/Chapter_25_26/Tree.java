@@ -1,4 +1,4 @@
-package Chapter_25;
+package Chapter_25_26;
 
 public interface Tree<E> extends Iterable<E> {
     /** Return true if the element is in the tree */

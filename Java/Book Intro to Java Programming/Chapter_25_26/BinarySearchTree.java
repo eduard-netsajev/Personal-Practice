@@ -1,4 +1,4 @@
-package Chapter_25;
+package Chapter_25_26;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -128,8 +128,7 @@ public class BinarySearchTree<E extends Comparable<E>> extends AbstractTree<E> {
      any instance members defined in its outer class */
     public static class TreeNode<E extends Comparable<E>> {
         protected E element;
-        protected TreeNode<E> left;
-        protected TreeNode<E> right;
+        protected TreeNode<E> left, right;
 
         public TreeNode(E e) {
             element = e;

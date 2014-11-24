@@ -1,4 +1,4 @@
-package Chapter_25;
+package Chapter_25_26;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
