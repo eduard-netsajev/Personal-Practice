@@ -1,5 +1,3 @@
-package gomoku;
-
 /**
  * @author Ago
  * Location on the board, 0-based.

@@ -1,8 +1,3 @@
-package gomoku;
-
-import gomoku.Game.GameStatus;
-import gomoku.Game.SquareState;
-
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -94,6 +89,7 @@ public class GomokuController {
 	
 	private ObservableList<String> getPlayerChoices() {
 		ObservableList<String> choices = FXCollections.observableArrayList();
+		choices.add("EduStrongStrategy");
 		choices.add("Human");
 		choices.add("StudentStrategy");
 		choices.add("OpponentWeak");
@@ -184,6 +180,8 @@ public class GomokuController {
 				players[i] = new ComputerPlayer(new EduWeakStrategy());
 			} else if (playerNames[i].equals("EduardStrategy")) {
 				players[i] = new ComputerPlayer(new EduardStrategy());
+			} else if (playerNames[i].equals("EduStrongStrategy")) {
+				players[i] = new ComputerPlayer(new EduStrongStrategy());
 			}
 		}
 		Player playerW = players[0];

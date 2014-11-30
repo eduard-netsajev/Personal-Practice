@@ -1,5 +1,3 @@
-package gomoku;
-
 public class ComputerPlayer extends Player {
 	/**
 	 * Strategy object which is responsible

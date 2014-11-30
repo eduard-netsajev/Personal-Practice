@@ -1,6 +1,6 @@
-package gomoku;
-
+import gomoku.ComputerStrategyOpponentImplementation;
 import gomoku.ComputerStrategyOpponentImplementationMain;
+import gomoku.ComputerStrategyOpponentKuurberg;
 
 public class ComputerStrategyOpponent implements ComputerStrategy {
 

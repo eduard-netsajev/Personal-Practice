@@ -1,5 +1,3 @@
-package gomoku;
-
 import java.io.IOException;
 
 import javafx.fxml.FXMLLoader;

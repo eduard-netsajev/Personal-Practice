@@ -1,7 +1,3 @@
-package gomoku;
-
-import gomoku.Game.SquareState;
-import gomoku.Game.GameStatus;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;

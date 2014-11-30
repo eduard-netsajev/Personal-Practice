@@ -1,8 +1,5 @@
-package gomoku;
-
-import com.sun.istack.internal.NotNull;
-
 import java.util.*;
+
 
 public class EduWeakStrategy implements ComputerStrategy {
 
@@ -22,126 +19,121 @@ public class EduWeakStrategy implements ComputerStrategy {
 		}
 	}
 
+	private long evaluation(int[] board, int player) {
 
-	private static class Position {
-
-		int[][] board;
-		int turnOfPlayer;
-
-		Position(int[][] board, int player) {
-			this.board = board;
-			turnOfPlayer = player;
-		}
-	}
-
-
-	private long evaluation(Position p) {
-
-		int[][] board = p.board;
-		int player = p.turnOfPlayer;
-
-		long score = gradeDiagsUp(board, player) + gradeDiagsDown(board, player)
+		return gradeDiagsUp(board, player) + gradeDiagsDown(board, player)
 				+ gradeRows(board, player) + gradeColumns(board, player);
-
-		return score;
 	}
 
-	private static long gradeDiagsDown(int[][] board, int player) {
+	private static long gradeDiagsDown(int[] board, int player) {
 
 		long score = 0;
 
 		int[] cells = new int[5];
 		int[] cellindexes = new int[5];
 
+		Tuple t;
+		Move m;
+		int rd, rc;
+
 		for (int rowi = 0; rowi < SIZE - 4; rowi++) {
+			rd = rowi * 100;
 			for (int coli = 0; coli < SIZE - 4; coli++) {
 
-				cells[0] = board[rowi][coli];
-				cells[1] = board[rowi+1][coli+1];
-				cells[2] = board[rowi+2][coli+2];
-				cells[3] = board[rowi+3][coli+3];
-				cells[4] = board[rowi+4][coli+4];
+				rc = rd + coli;
 
-				cellindexes[0] = rowi*100+coli;
-				cellindexes[1] = (rowi+1)*100+coli+1;
-				cellindexes[2] = (rowi+2)*100+coli+2;
-				cellindexes[3] = (rowi+3)*100+coli+3;
-				cellindexes[4] = (rowi+4)*100+coli+4;
+				cells[0] = board[rc];
+				cells[1] = board[rc+101];
+				cells[2] = board[rc+202];
+				cells[3] = board[rc+303];
+				cells[4] = board[rc+404];
 
-				Tuple t = new Tuple(cells.clone(), cellindexes);
+				cellindexes[0] = rc;
+				cellindexes[1] = rc+101;
+				cellindexes[2] = rc+202;
+				cellindexes[3] = rc+303;
+				cellindexes[4] = rc+404;
+
+				t = new Tuple(cells.clone(), cellindexes);
 
 				score = gradeTuple(t, player);
 				if (score == 0) continue;
 
-				Move m = moves[rowi][coli];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+1][coli+1];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 101];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+2][coli+2];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 202];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+3][coli+3];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 303];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+4][coli+4];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 404];
+				m.tuples.add(t);
 				m.score += score;
 			}
 		}
 		return score;
 	}
 
-	private static long gradeDiagsUp(int[][] board, int player) {
+	private static long gradeDiagsUp(int[] board, int player) {
 
 		long score = 0;
 
 		int[] cells = new int[5];
 		int[] cellindexes = new int[5];
 
+		Tuple t;
+		Move m;
+
+		int rc;
 		for (int coli = 4; coli < SIZE; coli++) {
 			for (int rowi = 0; rowi + 4 < SIZE; rowi++) {
+				rc = rowi * 100 + coli;
 
-				cells[0] = board[rowi][coli];
-				cells[1] = board[rowi+1][coli-1];
-				cells[2] = board[rowi+2][coli-2];
-				cells[3] = board[rowi+3][coli-3];
-				cells[4] = board[rowi+4][coli-4];
 
-				cellindexes[0] = rowi*100+coli;
-				cellindexes[1] = (rowi+1)*100+coli-1;
-				cellindexes[2] = (rowi+2)*100+coli-2;
-				cellindexes[3] = (rowi+3)*100+coli-3;
-				cellindexes[4] = (rowi+4)*100+coli-4;
+				cells[0] = board[rc];
+				cells[1] = board[rc + 100 - 1];
+				cells[2] = board[rc + 200 - 2];
+				cells[3] = board[rc + 300 - 3];
+				cells[4] = board[rc + 400 - 4];
 
-				Tuple t = new Tuple(cells.clone(), cellindexes);
+				cellindexes[0] = rc;
+				cellindexes[1] = rc + 100 - 1;
+				cellindexes[2] = rc + 200 - 2;
+				cellindexes[3] = rc + 300 - 3;
+				cellindexes[4] = rc + 400 - 4;
+
+				t = new Tuple(cells.clone(), cellindexes);
 
 				score = gradeTuple(t, player);
 				if (score == 0) continue;
 
-				Move m = moves[rowi][coli];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+1][coli-1];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 100 - 1];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+2][coli-2];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 200 - 2];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+3][coli-3];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 300 - 3];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi+4][coli-4];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc + 400 - 4];
+				m.tuples.add(t);
 				m.score += score;
 			}
 		}
@@ -151,51 +143,57 @@ public class EduWeakStrategy implements ComputerStrategy {
 	/**
 	 * Check every row.
 	 */
-	private static long gradeRows(int[][] board, int player) {
+	private static long gradeRows(int[] board, int player) {
 
 		long score = 0;
 		int[] cells = new int[5];
 		int[] cellindexes = new int[5];
 
-		for (int rowi = 0; rowi < board.length; rowi++) {
-			int[] row = board[rowi];
+		Tuple t;
+		Move m;
+		int rd, rc;
+		for (int rowi = 0; rowi < SIZE; rowi++) {
+			rd = rowi * 100;
+
 			for (int coli = 0; coli < SIZE - 4; coli++) {
 
-				cells[0] = row[coli];
-				cells[1] = row[coli + 1];
-				cells[2] = row[coli + 2];
-				cells[3] = row[coli + 3];
-				cells[4] = row[coli + 4];
+				rc = rd + coli;
 
-				cellindexes[0] = rowi*100+coli;
-				cellindexes[1] = rowi*100+coli+1;
-				cellindexes[2] = rowi*100+coli+2;
-				cellindexes[3] = rowi*100+coli+3;
-				cellindexes[4] = rowi*100+coli+4;
+				cells[0] = board[rc];
+				cells[1] = board[rc + 1];
+				cells[2] = board[rc + 2];
+				cells[3] = board[rc + 3];
+				cells[4] = board[rc + 4];
 
-				Tuple t = new Tuple(cells.clone(), cellindexes);
+				cellindexes[0] = rc;
+				cellindexes[1] = rc+1;
+				cellindexes[2] = rc+2;
+				cellindexes[3] = rc+3;
+				cellindexes[4] = rc+4;
+
+				t = new Tuple(cells.clone(), cellindexes);
 
 				score = gradeTuple(t, player);
-				if (score == 0) continue;
+				if (score < 400) continue;
 
-				Move m = moves[rowi][coli];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi][coli+1];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc+1];
+				m.tuples.add(t);;
 				m.score += score;
 
-				m = moves[rowi][coli+2];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc+2];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi][coli+3];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc+3];
+				m.tuples.add(t);
 				m.score += score;
 
-				m = moves[rowi][coli+4];
-				moveTuples.get(m).addLast(t);
+				m = moves[rc+4];
+				m.tuples.add(t);
 				m.score += score;
 			}
 		}
@@ -205,46 +203,57 @@ public class EduWeakStrategy implements ComputerStrategy {
 	/**
 	 * Check every column.
 	 */
-	private static long gradeColumns(int[][] board, int player) {
+	private static long gradeColumns(int[] board, int player) {
 
 		long score = 0;
 		int[] cells = new int[5];
 		int[] cellindexes = new int[5];
 
+		Tuple t;
+		Move m;
+
+		int rc;
 		for (int coli = 0; coli < SIZE; coli++) {
 			for (int rowi = 0; rowi < SIZE-4; rowi++) {
 
-				cells[0] = board[rowi][coli];
-				cells[1] = board[rowi+1][coli];
-				cells[2] = board[rowi+2][coli];
-				cells[3] = board[rowi+3][coli];
-				cells[4] = board[rowi+4][coli];
+				rc = rowi * 100 + coli;
 
-				cellindexes[0] = rowi*100+coli;
-				cellindexes[1] = (rowi+1)*100+coli;
-				cellindexes[2] = (rowi+2)*100+coli;
-				cellindexes[3] = (rowi+3)*100+coli;
-				cellindexes[4] = (rowi+4)*100+coli;
+				cells[0] = board[rc];
+				cells[1] = board[rc+100];
+				cells[2] = board[rc+200];
+				cells[3] = board[rc+300];
+				cells[4] = board[rc+400];
 
-				Tuple tuple = new Tuple(cells.clone(), cellindexes);
+				cellindexes[0] = rc;
+				cellindexes[1] = rc+100;
+				cellindexes[2] = rc+200;
+				cellindexes[3] = rc+300;
+				cellindexes[4] = rc+400;
 
-				score = gradeTuple(tuple, player);
-				if (score == 0 ) continue;
+				t = new Tuple(cells.clone(), cellindexes);
 
-				moveTuples.get(moves[rowi][coli]).addLast(tuple);
-				moves[rowi][coli].score += score;
+				score = gradeTuple(t, player);
+				if (score < 400) continue;
 
-				moveTuples.get(moves[rowi+1][coli]).addLast(tuple);
-				moves[rowi+1][coli].score += score;
+				m = moves[rc];
+				m.tuples.add(t);
+				m.score += score;
 
-				moveTuples.get(moves[rowi+2][coli]).addLast(tuple);
-				moves[rowi+2][coli].score += score;
+				m = moves[rc+100];
+				m.tuples.add(t);
+				m.score += score;
 
-				moveTuples.get(moves[rowi+3][coli]).addLast(tuple);
-				moves[rowi+3][coli].score += score;
+				m = moves[rc+200];
+				m.tuples.add(t);
+				m.score += score;
 
-				moveTuples.get(moves[rowi+4][coli]).addLast(tuple);
-				moves[rowi+4][coli].score += score;
+				m = moves[rc+300];
+				m.tuples.add(t);
+				m.score += score;
+
+				m = moves[rc+400];
+				m.tuples.add(t);
+				m.score += score;
 
 
 			}
@@ -306,13 +315,9 @@ public class EduWeakStrategy implements ComputerStrategy {
 		return 7;
 	}
 
-	private static void countThreats(Move move, int[][] board, int player) {
-		LinkedList<Tuple> list = moveTuples.get(move);
+	private static void countThreats(Move move, int[] board, int player) {
+		ArrayList<Tuple> list = move.tuples;
 		Tuple[] tuples = new Tuple[list.size()];
-
-		if(move.x == 1 && move.y == 4) {
-			System.out.println();
-		}
 
 		int c = 0;
 		for (Iterator<Tuple> iterator = list.iterator(); iterator.hasNext(); ) {
@@ -331,7 +336,9 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 		for(Tuple t : tuples) {
 
-			if (t.count == 4) {
+			if (t.count < 3) continue;
+
+			if (t.count > 4) {
 				threat4++;
 				if(!move.FantasticFour) {
 					move.FantasticFour = t.player == player;
@@ -339,8 +346,6 @@ public class EduWeakStrategy implements ComputerStrategy {
 				move.score += 10000;
 				continue;
 			}
-
-			if (t.count != 3) continue;
 
 			boolean threat = false;
 			boolean closedthreat = false;
@@ -360,7 +365,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 				if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE) continue;
 
-				if (board[ay][ax] != t.player * -1) {
+				if (board[ay*100 + ax] != t.player * -1) {
 					threat = true;
 				}
 			} else if (cells[3] == EMPTY && cells[4] == EMPTY && cellIndexes[3] == move.hashCode()) {
@@ -376,7 +381,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 				if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) continue;
 
-				if (board[py][px] != t.player * -1) {
+				if (board[py*100 + px] != t.player * -1) {
 					threat = true;
 				}
 			} else if (cells[1] == EMPTY && cells[4] == EMPTY) { // 0-00-
@@ -395,7 +400,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) {
 						threat = false;
-					} else if (board[py][px] != t.player * -1) {
+					} else if (board[py*100 + px] != t.player * -1) {
 						threat = true;
 					} else {
 
@@ -408,7 +413,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 						if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE)
 							continue;
 
-						if (board[ay][ax] != t.player * -1) {
+						if (board[ay*100 + ax] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -424,7 +429,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) {
 						closedthreat = false;
-					} else if (board[py][px] != t.player * -1) {
+					} else if (board[py*100 + px] != t.player * -1) {
 						closedthreat = true;
 					} else {
 
@@ -437,7 +442,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 						if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE)
 							continue;
 
-						if (board[ay][ax] != t.player * -1) {
+						if (board[ay*100 + ax] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -458,7 +463,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE) {
 						closedthreat = false;
-					} else if (board[ay][ax] != t.player * -1) {
+					} else if (board[ay*100 + ax] != t.player * -1) {
 						closedthreat = true;
 					} else {
 						int fy = cellIndexes[0] / 100;
@@ -469,7 +474,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 						if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) continue;
 
-						if (board[py][px] != t.player * -1) {
+						if (board[py*100 + px] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -485,7 +490,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE) {
 						threat = false;
-					} else if (board[ay][ax] != t.player * -1) {
+					} else if (board[ay*100 + ax] != t.player * -1) {
 						threat = true;
 					} else {
 						int fy = cellIndexes[0] / 100;
@@ -496,7 +501,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 						if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) continue;
 
-						if (board[py][px] != t.player * -1) {
+						if (board[py*100 +px] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -517,7 +522,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE) {
 						closedthreat = false;
-					} else if (board[ay][ax] != t.player * -1) {
+					} else if (board[ay*100 + ax] != t.player * -1) {
 						closedthreat = true;
 					} else {
 						int fy = cellIndexes[0] / 100;
@@ -528,7 +533,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 						if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) continue;
 
-						if (board[py][px] != t.player * -1) {
+						if (board[py*100 + px] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -544,7 +549,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE) {
 						threat = false;
-					} else if (board[ay][ax] != t.player * -1) {
+					} else if (board[ay * 100 + ax] != t.player * -1) {
 						threat = true;
 					} else {
 						int fy = cellIndexes[0] / 100;
@@ -555,7 +560,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 						if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) continue;
 
-						if (board[py][px] != t.player * -1) {
+						if (board[py*100 + px] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -576,7 +581,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) {
 						threat = false;
-					} else if (board[py][px] != t.player * -1) {
+					} else if (board[py*100 + px] != t.player * -1) {
 						threat = true;
 					} else {
 
@@ -589,7 +594,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 						if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE)
 							continue;
 
-						if (board[ay][ax] != t.player * -1) {
+						if (board[ay*100 + ax] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -605,7 +610,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 					if (py < 0 || px < 0 || py >= SIZE || px >= SIZE) {
 						closedthreat = false;
-					} else if (board[py][px] != t.player * -1) {
+					} else if (board[py*100 + px] != t.player * -1) {
 						closedthreat = true;
 					} else {
 
@@ -618,7 +623,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 						if (ay < 0 || ax < 0 || ay >= SIZE || ax >= SIZE)
 							continue;
 
-						if (board[ay][ax] != t.player * -1) {
+						if (board[ay*100 + ax] != t.player * -1) {
 							closedthreat = true;
 						}
 					}
@@ -636,45 +641,50 @@ public class EduWeakStrategy implements ComputerStrategy {
 		}
 
 		for(int i = 0; i < c; i++) {
-			// TODO check first tuple here // check for count == 0, move on
+			// first tuple here
+
+			Tuple one = tuples[i];
+			if (one.count < 2) continue;
+
+			int[] oneCellIndexes = one.cellindexes;
+			int[] oneCells = one.cells;
+
+			if (one.count == 2) {
+
+				int fy = oneCellIndexes[0] / 100;
+				int fx = oneCellIndexes[0] % 100;
+
+				int ly = oneCellIndexes[4] / 100;
+				int lx = oneCellIndexes[4] % 100;
+
+				int dy = oneCellIndexes[1] / 100 - oneCellIndexes[0] / 100;
+				int dx = oneCellIndexes[1] % 100 - oneCellIndexes[0] % 100;
+
+				int py = fy - dy;
+				int px = fx - dx;
+
+				int ay = ly + dy;
+				int ax = lx + dx;
+
+				if (py < 0 || ay < 0 || px < 0 || ax < 0 || py >= SIZE || ay >= SIZE || px >= SIZE || ax >= SIZE) continue;
+				if (board[py * 100 + px] == (one.player * -1) || board[ay*100 + ax] == (one.player * -1)) continue;
+			}
+
 			for(int j = i; j < c; j++) { // j = i so we have only unique pairs, only 0-2 and no 2-0 indexes
 				if(i != j) {
-					Tuple one = tuples[i];
+
 					Tuple two = tuples[j];
 
-					if (one.count < 2 || two.count < 2 || (one.player != two.player) ) {
+					if (two.count < 2 || (one.player != two.player) ) {
 						continue;
 					}
 
 					ArrayList<Integer> firstCellsIndexes = new ArrayList<>(5);
 					ArrayList<Integer> secondCellsIndexes = new ArrayList<>(5);
 
-					int[] oneCellIndexes = one.cellindexes;
 					int[] twoCellIndexes = two.cellindexes;
 
-					int[] oneCells = one.cells;
 					int[] twoCells = two.cells;
-
-					if (one.count == 2) {
-
-						int fy = oneCellIndexes[0] / 100;
-						int fx = oneCellIndexes[0] % 100;
-
-						int ly = oneCellIndexes[4] / 100;
-						int lx = oneCellIndexes[4] % 100;
-
-						int dy = oneCellIndexes[1] / 100 - oneCellIndexes[0] / 100;
-						int dx = oneCellIndexes[1] % 100 - oneCellIndexes[0] % 100;
-
-						int py = fy - dy;
-						int px = fx - dx;
-
-						int ay = ly + dy;
-						int ax = lx + dx;
-
-						if (py < 0 || ay < 0 || px < 0 || ax < 0 || py >= SIZE || ay >= SIZE || px >= SIZE || ax >= SIZE) continue;
-						if (board[py][px] == (one.player * -1) || board[ay][ax] == (one.player * -1)) continue;
-					}
 
 					if (two.count == 2) {
 
@@ -694,7 +704,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 						int ax = lx + dx;
 
 						if (py < 0 || ay < 0 || px < 0 || ax < 0 || py >= SIZE || ay >= SIZE || px >= SIZE || ax >= SIZE) continue;
-						if (board[py][px] == (two.player * -1) || board[ay][ax] == (two.player * -1)) continue;
+						if (board[py * 100 + px] == (two.player * -1) || board[ay * 100 + ax] == (two.player * -1)) continue;
 					}
 
 					for(int z = 0; z < 5; z++) {
@@ -777,6 +787,8 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 		boolean FantasticFour = false;
 
+		ArrayList<Tuple> tuples = new ArrayList<>(25);
+
 		int x, y;
 		long score;
 
@@ -798,13 +810,6 @@ public class EduWeakStrategy implements ComputerStrategy {
 			this.y = y;
 		}
 
-		int getRow(){
-			return y;
-		}
-		int getCol(){
-			return x;
-		}
-
 		@Override
 		public boolean equals(Object otherObject) {
 			if (otherObject instanceof Move) {
@@ -822,7 +827,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 		}
 
 		@Override
-		public int compareTo(@NotNull Move otherMove) {
+		public int compareTo(Move otherMove) {
 			if (score > otherMove.score) {
 				return 1;
 			} else if (score < otherMove.score) {
@@ -842,8 +847,7 @@ public class EduWeakStrategy implements ComputerStrategy {
 		}
 	}
 
-	private static HashMap<Move, LinkedList<Tuple>> moveTuples;
-	private static Move[][] moves;
+	private static Move[] moves;
 	private static int iAM;
 
 	@Override
@@ -853,90 +857,55 @@ public class EduWeakStrategy implements ComputerStrategy {
 
 		long t1 = System.nanoTime();
 
-		int[][] rilBoard = board.getBoard();
+		int[][] badBoard = board.getBoard();
 
-		for(int[] row : rilBoard) {
-			for (int i : row) {
-				if (i == WHITE) System.out.print("O ");
-				if (i == BLACK) System.out.print("X ");
-				if (i == EMPTY) System.out.print("- ");
-			}
-			System.out.println();
-		}
+		SIZE = badBoard.length;
 
-		SIZE = rilBoard.length;
-
-		moveTuples = new HashMap<>(SIZE*SIZE);
-		moves = new Move[SIZE][SIZE];
+		moves = new Move[SIZE*100*SIZE];
+		int[] disBoard = new int[SIZE*100*SIZE];
 
 		for(int rowi = 0; rowi < SIZE; rowi++) {
+			int rd = rowi * 100;
 			for(int coli = 0; coli < SIZE; coli++) {
 				Move m = new Move(coli, rowi);
-				moves[rowi][coli] = m;
-				moveTuples.put(m, new LinkedList<>());
+				moves[rd + coli] = m;
+				disBoard[rd + coli] = badBoard[rowi][coli];
 			}
 		}
 
-		evaluation(new Position(rilBoard, player));
+		evaluation(disBoard, player);
 
-		long max = MINUS_INFINITY;
-		int bestX = 0;
-		int bestY = 0;
-
-		ArrayList<Move> moveList = new ArrayList<>(40);
+		ArrayList<Move> moveList = new ArrayList<>(SIZE*SIZE+1);
 
 		for(int rowi = 0; rowi < SIZE; rowi++) {
+			int rd = rowi * 100;
 			for(int coli = 0; coli < SIZE; coli++) {
-				Move m = moves[rowi][coli];
-				if(rilBoard[rowi][coli] == EMPTY) {
+				Move m = moves[rd + coli];
+				if(disBoard[rd+coli] == EMPTY) {
 					moveList.add(m);
-					if(m.score > max) {
-						max = m.score;
-						bestY = m.y;
-						bestX = m.x;
-					}
 				}
 			}
 		}
-		Collections.sort(moveList);
+
 		int n = moveList.size();
-
 		Move[] bestMoves = new Move[n];
-		for (int i = 0; i < n; i++) {
-			bestMoves[i] = moveList.get(i);
+		for(Move m : moveList) {
+			bestMoves[--n] = m;
 		}
 
 		for (int i = 0; i < n; i++) {
-			countThreats(bestMoves[i], rilBoard, player);
+			countThreats(bestMoves[i], disBoard, player);
 		}
-
-		System.out.println("This move:");
-		System.out.println(moves[bestY][bestX].toString());
 
 		Arrays.sort(bestMoves, new ThreatComparator().reversed());
 
-		//	if (bestMoves[0].score * 1.2 > max) {
-		bestX = bestMoves[0].x;
-		bestY = bestMoves[0].y;
-		//	}
-		System.out.println("Alternate move:");
+		int bestX = bestMoves[0].x;
+		int bestY = bestMoves[0].y;
+
 		for (int k = 0; k < min(bestMoves.length, 3); k++) {
 			System.out.println(bestMoves[k].toString());
 		}
 		System.out.println();
-
-
-		/*for(int rowi = 0; rowi < SIZE; rowi++) {
-			for(int coli = 0; coli < SIZE; coli++) {
-				Move m = moves[rowi][coli];
-				if (rilBoard[rowi][coli] != EMPTY) m.score = 0;
-				System.out.printf("%6d", m.score);
-			}
-			System.out.println();
-		}*/
-
-//		System.out.println(bestY + " row and col is " + bestX);
-
 
 		long t2 = System.nanoTime();
 
@@ -949,15 +918,6 @@ public class EduWeakStrategy implements ComputerStrategy {
 	@Override
 	public String getName() {
 		return "Eduard The Great";
-	}
-
-
-	static long max(long a, long b) {
-		return (a > b) ? a : b;
-	}
-
-	static int max(int a, int b) {
-		return (a > b) ? a : b;
 	}
 
 	static int min(int a, int b) {
@@ -1022,16 +982,16 @@ public class EduWeakStrategy implements ComputerStrategy {
 				return -1;
 			}
 
+			// todo maybe should be last
+			if (a.threat2x2 > b.threat2x2) {
+				return 1;
+			} else if (a.threat2x2 < b.threat2x2) {
+				return -1;
+			}
 
 			if (a.threatClosed3 > b.threatClosed3) {
 				return 1;
 			} else if (a.threatClosed3 < b.threatClosed3) {
-				return -1;
-			}
-
-			if (a.threat2x2 > b.threat2x2) {
-				return 1;
-			} else if (a.threat2x2 < b.threat2x2) {
 				return -1;
 			}
 
@@ -1069,4 +1029,3 @@ public class EduWeakStrategy implements ComputerStrategy {
 	}
 
 }
-

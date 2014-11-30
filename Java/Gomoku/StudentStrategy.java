@@ -1,5 +1,3 @@
-package gomoku;
-
 import java.util.*;
 
 public class StudentStrategy implements ComputerStrategy {
@@ -84,7 +82,7 @@ public class StudentStrategy implements ComputerStrategy {
 				fastSearch = false;
 			}
 
-			int depth = 4;
+			int depth = 5; // TODO DEPPTH
 
 			int searchRadius;
 

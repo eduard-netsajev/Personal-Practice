@@ -1,7 +1,3 @@
-package gomoku;
-
-import gomoku.Game.SquareState;
-
 public class Player {
 	private final String name;
 	private SquareState squareState;

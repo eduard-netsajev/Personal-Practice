@@ -1,5 +1,3 @@
-package gomoku;
-
 /**
  * Simple 2-dimensional presentation
  * of the game board.

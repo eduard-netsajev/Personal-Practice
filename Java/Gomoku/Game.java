@@ -1,5 +1,3 @@
-package gomoku;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,63 +12,6 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
  * Holds the state of the game.
  */
 public class Game {
-	
-	/**
-	 * @author Ago
-	 * The status of the game. 
-	 * Its either open (game goes on),
-	 * one of the players has won,
-	 * or a draw (board is full).
-	 */
-	public static enum GameStatus {
-		WHITE_WON {
-			@Override
-			public String toString() {
-				return "White won";
-			}
-		},
-		BLACK_WON {
-			@Override
-			public String toString() {
-				return "Black won";
-			}
-		},
-		DRAW {
-			@Override
-			public String toString() {
-				return "Game drawn";
-			}
-		},
-		OPEN {
-			@Override
-			public String toString() {
-				return "Game on";
-			}
-		};
-		
-		/**
-		 * Used to translate player on the simple board
-		 * into winning state.
-		 * @param value SimpleBoard.board cell value
-		 * @return If the given argument indicates a player,
-		 * corresponding player's winning state is returned,
-		 * OPEN otherwise.
-		 */
-		public static GameStatus getWinnerFromSimpleBoardValue(int value) {
-			if (value == SimpleBoard.PLAYER_WHITE) return WHITE_WON;
-			if (value == SimpleBoard.PLAYER_BLACK) return BLACK_WON;
-			return OPEN;
-		}
-	}
-	
-	public static enum SquareState {
-		WHITE, BLACK, EMPTY {
-			@Override
-			public String toString() {
-				return "-";
-			}
-		}
-	}
 	
 	public static final int WIN_COUNT = 5;
 	
@@ -126,7 +67,7 @@ public class Game {
 		gameStatus = new ReadOnlyObjectWrapper<GameStatus>(this, "gameStatus", GameStatus.OPEN);
 		
 		// binding for game status
-		ObjectBinding<GameStatus> gameStatusBinding = new ObjectBinding<Game.GameStatus>() {
+		ObjectBinding<GameStatus> gameStatusBinding = new ObjectBinding<GameStatus>() {
 
 			{
 				super.bind(allSquares.toArray(new Observable[allSquares.size()]));
