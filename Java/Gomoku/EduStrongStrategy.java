@@ -667,15 +667,182 @@ public class EduStrongStrategy implements ComputerStrategy {
 
         ArrayList<Tuple> tuples = new ArrayList<>(25);
 
+        int var = 0;
+
+        int x, y;
+        long score;
+
+
         /**
          * Connected cells are only 32 cells that lay on 8 sides, each side up to 4 cells
          * In corner for example, it's only 12 cells
          */
 
-        int var = 0;
+        ArrayList<Cell> getAffected() {
+            ArrayList<Cell> affectedCells = new ArrayList<>(33);
 
-        int x, y;
-        long score;
+            // columns down
+
+            {
+                int startrow = max(y-4, 0);
+                int endrow = min(SIZE, y+5);
+                while (startrow < endrow) {
+                    if (startrow != y && cells[startrow*100+x].var == EMPTY) {
+                        affectedCells.add(cells[startrow * 100 + x]);
+                    }
+                    startrow++;
+                }
+            }
+
+            // rows right
+
+            {
+                int rc = y * 100;
+                int startcol = max(x-4, 0);
+                int endcol = min(SIZE, x+5);
+                while(startcol < endcol) {
+                    if (startcol != x && cells[rc+startcol].var == EMPTY) {
+                        affectedCells.add(cells[rc + startcol]);
+                    }
+                    startcol++;
+                }
+            }
+
+            // diags down
+
+            {
+                int startrow = y-4;
+                int startcol = x-4;
+                if (startrow < 0) {
+                    startcol -= startrow;
+                    startrow = 0;
+                }
+                if (startcol < 0) {
+                    startrow -= startcol;
+                    startcol = 0;
+                }
+
+                int endrow = y + 5;
+                int endcol = x + 5;
+                if (endrow > SIZE) {
+                    endcol -= (endrow - SIZE);
+                    endrow = SIZE;
+                }
+                if (endcol > SIZE) {
+                    endrow -= (endcol - SIZE);
+                }
+
+                while(startrow < endrow) {
+
+                    if(startrow != y && cells[startrow * 100 + startcol].var == EMPTY) {
+                        affectedCells.add(cells[startrow*100 + startcol]);
+                    }
+
+                    startrow++;
+                    startcol++;
+                }
+
+            }
+
+            // diags up todo check
+
+            {
+                int startrow = y+4;
+                int startcol = x-4;
+                if (startrow >= SIZE) {
+                    startcol -= (SIZE - startrow - 1);
+                    startrow = SIZE - 1;
+                }
+                if (startcol < 0) {
+                    startrow += startcol;
+                    startcol = 0;
+                }
+
+                int endrow = y - 5;
+                int endcol = x + 5;
+                if (endrow < 0) {
+                    endcol += endrow + 1;
+                    endrow = - 1;
+                }
+                if (endcol > SIZE) {
+                    endrow += (endcol - SIZE - 1);
+                    endcol = SIZE;
+                }
+
+                while(startcol < endcol) {
+//TODO CHECK
+                    if(startrow != y && cells[startrow*100 + startcol].var == EMPTY) {
+                        affectedCells.add(cells[startrow*100 + startcol]);
+                    }
+
+                    startrow--;
+                    startcol++;
+                }
+
+            }
+            return affectedCells;
+        }
+
+
+        ArrayList<Cell> affected() {
+            ArrayList<Cell> affectedCells = new ArrayList<>(33);
+
+            // columns down
+
+            {
+                for(int n = -4; n < 5; n++) {
+                    int z = y + n;
+                    if (n != 0 && z >= 0 && z < SIZE) {
+                        if (cells[hashcode+n*100].var == EMPTY) {
+                            affectedCells.add(cells[hashcode+n*100]);
+                        }
+                    }
+                }
+            }
+
+            // rows right
+            {
+                for(int n = -4; n < 5; n++) {
+                    int z = x + n;
+                    if (n != 0 && z >= 0 && z < SIZE) {
+                        if (cells[hashcode+n].var == EMPTY) {
+                            affectedCells.add(cells[hashcode+n]);
+                        }
+                    }
+                }
+            }
+
+            // diags down
+
+            {
+                for(int n = -4; n < 5; n++) {
+                    int zx = x + n;
+                    int zy = y + n;
+                    if (n != 0 && zx >=0 && zx < SIZE && zy >= 0 && zy < SIZE) {
+                        if(cells[zy*100 + zx].var == EMPTY) {
+                            affectedCells.add(cells[zy*100 + zx]);
+                        }
+                    }
+                }
+            }
+
+            // diags up
+
+            {
+                for(int n = -4; n < 5; n++) {
+                    int zx = x + n;
+                    int zy = y - n;
+                    if (n != 0 && zx >=0 && zx < SIZE && zy >= 0 && zy < SIZE) {
+                        if(cells[zy*100 + zx].var == EMPTY) {
+                            affectedCells.add(cells[zy*100 + zx]);
+                        }
+                    }
+                }
+            }
+
+            return affectedCells;
+        }
+
 
         int threats;
 
@@ -698,11 +865,6 @@ public class EduStrongStrategy implements ComputerStrategy {
             this.y = y;
             hashcode = y * 100 + x;
         }
-// TODO
-        /*HashSet<Move> makeMove(int player) {
-            cells[hashcode].var = player;
-            return connectedMoves;
-        }*/
 
         @Override
         public boolean equals(Object otherObject) {
@@ -750,7 +912,7 @@ public class EduStrongStrategy implements ComputerStrategy {
 
         int[][] badBoard = board.getBoard();
 
-        for(int[] row : badBoard) {
+        for (int[] row : badBoard) {
             for (int i : row) {
                 if (i == WHITE) System.out.print("O ");
                 if (i == BLACK) System.out.print("X ");
@@ -795,7 +957,7 @@ public class EduStrongStrategy implements ComputerStrategy {
 
         int n = moveList.size();
 
-        if(n > 98) {
+        if (n > 98) {
             Collections.sort(moveList);
             Collections.reverse(moveList);
             System.out.println("HOHOHOHOHO, LET'S PLAY A GAME");
@@ -804,7 +966,7 @@ public class EduStrongStrategy implements ComputerStrategy {
 
         int s = n;
         Cell[] bestCells = new Cell[n];
-        for(Cell m : moveList) {
+        for (Cell m : moveList) {
             bestCells[--n] = m;
         }
 
@@ -816,6 +978,42 @@ public class EduStrongStrategy implements ComputerStrategy {
 
         int bestX = bestCells[0].x;
         int bestY = bestCells[0].y;
+
+        long getAf = 0;
+        long af = 0;
+
+        for(int i = 0; i < 2500; i++) {
+            long taf1 = System.nanoTime();
+
+            for (int rowi = 0; rowi < SIZE; rowi++) {
+                for (int coli = 0; coli < SIZE; coli++) {
+                    ArrayList<Cell> afc = cells[rowi * 100 + coli].getAffected();
+//                ArrayList<Cell> afa = cells[rowi*100+coli].affected();
+                }
+            }
+            long taf2 = System.nanoTime();
+            long taf12 = taf2 - taf1;
+            getAf += taf12;
+            long taf3 = System.nanoTime();
+            for (int rowi = 0; rowi < SIZE; rowi++) {
+                for (int coli = 0; coli < SIZE; coli++) {
+//                ArrayList<Cell> afc = cells[rowi*100+coli].getAffected();
+                    ArrayList<Cell> afa = cells[rowi * 100 + coli].affected();
+                }
+            }
+            long taf4 = System.nanoTime();
+            long taf34 = taf4 - taf3;
+            af += taf34;
+
+            /*System.out.println(taf12);
+            System.out.println(taf34);
+            System.out.println();*/
+        }
+
+
+        System.out.println(getAf);
+        System.out.println(af);
+        System.out.println();
 
         for (int k = 0; k < min(bestCells.length, 3); k++) {
             System.out.println(bestCells[k].toString());
@@ -834,10 +1032,6 @@ public class EduStrongStrategy implements ComputerStrategy {
     @Override
     public String getName() {
         return "Eduard The Great";
-    }
-
-    static int min(int a, int b) {
-        return (a < b) ? a : b;
     }
 
     class ThreatComparator implements Comparator<Cell> {
@@ -951,18 +1145,11 @@ public class EduStrongStrategy implements ComputerStrategy {
         System.out.println();
     }
 
-    /*private class Cell {
-        int var, x, y;
+    int max(int a, int b) {
+        return (a > b) ? a : b;
+    }
+    int min(int a, int b) {
+        return (a < b) ? a : b;
+    }
 
-        Cell(int var, int y, int x) {
-            this.var = var;
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public String toString() {
-            return var + " at row " + y + " and col " + x;
-        }
-    }*/
 }
