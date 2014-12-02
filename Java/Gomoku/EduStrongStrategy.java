@@ -389,7 +389,7 @@ public class EduStrongStrategy implements ComputerStrategy {
                     case 2:
                         return t.score = 400;
                     case 3:
-                        return t.score = 1800; // TODO play with this, original 1800 // 8000 is fine for general game
+                        return t.score = 1800; // play with this, original 1800 // 8000 is fine for general game
                     case 4:
                         return t.score = 100000;
                     default:
@@ -677,7 +677,6 @@ public class EduStrongStrategy implements ComputerStrategy {
          * Connected cells are only 32 cells that lay on 8 sides, each side up to 4 cells
          * In corner for example, it's only 12 cells
          */
-
         ArrayList<Cell> getAffected() {
             ArrayList<Cell> affectedCells = new ArrayList<>(33);
 
@@ -744,7 +743,7 @@ public class EduStrongStrategy implements ComputerStrategy {
 
             }
 
-            // diags up todo check
+            // diags up
 
             {
                 int startrow = y+4;
@@ -770,11 +769,9 @@ public class EduStrongStrategy implements ComputerStrategy {
                 }
 
                 while(startcol < endcol) {
-//TODO CHECK
                     if(startrow != y && cells[startrow*100 + startcol].var == EMPTY) {
                         affectedCells.add(cells[startrow*100 + startcol]);
                     }
-
                     startrow--;
                     startcol++;
                 }
@@ -782,67 +779,6 @@ public class EduStrongStrategy implements ComputerStrategy {
             }
             return affectedCells;
         }
-
-
-        ArrayList<Cell> affected() {
-            ArrayList<Cell> affectedCells = new ArrayList<>(33);
-
-            // columns down
-
-            {
-                for(int n = -4; n < 5; n++) {
-                    int z = y + n;
-                    if (n != 0 && z >= 0 && z < SIZE) {
-                        if (cells[hashcode+n*100].var == EMPTY) {
-                            affectedCells.add(cells[hashcode+n*100]);
-                        }
-                    }
-                }
-            }
-
-            // rows right
-            {
-                for(int n = -4; n < 5; n++) {
-                    int z = x + n;
-                    if (n != 0 && z >= 0 && z < SIZE) {
-                        if (cells[hashcode+n].var == EMPTY) {
-                            affectedCells.add(cells[hashcode+n]);
-                        }
-                    }
-                }
-            }
-
-            // diags down
-
-            {
-                for(int n = -4; n < 5; n++) {
-                    int zx = x + n;
-                    int zy = y + n;
-                    if (n != 0 && zx >=0 && zx < SIZE && zy >= 0 && zy < SIZE) {
-                        if(cells[zy*100 + zx].var == EMPTY) {
-                            affectedCells.add(cells[zy*100 + zx]);
-                        }
-                    }
-                }
-            }
-
-            // diags up
-
-            {
-                for(int n = -4; n < 5; n++) {
-                    int zx = x + n;
-                    int zy = y - n;
-                    if (n != 0 && zx >=0 && zx < SIZE && zy >= 0 && zy < SIZE) {
-                        if(cells[zy*100 + zx].var == EMPTY) {
-                            affectedCells.add(cells[zy*100 + zx]);
-                        }
-                    }
-                }
-            }
-
-            return affectedCells;
-        }
-
 
         int threats;
 
@@ -978,42 +914,6 @@ public class EduStrongStrategy implements ComputerStrategy {
 
         int bestX = bestCells[0].x;
         int bestY = bestCells[0].y;
-
-        long getAf = 0;
-        long af = 0;
-
-        for(int i = 0; i < 2500; i++) {
-            long taf1 = System.nanoTime();
-
-            for (int rowi = 0; rowi < SIZE; rowi++) {
-                for (int coli = 0; coli < SIZE; coli++) {
-                    ArrayList<Cell> afc = cells[rowi * 100 + coli].getAffected();
-//                ArrayList<Cell> afa = cells[rowi*100+coli].affected();
-                }
-            }
-            long taf2 = System.nanoTime();
-            long taf12 = taf2 - taf1;
-            getAf += taf12;
-            long taf3 = System.nanoTime();
-            for (int rowi = 0; rowi < SIZE; rowi++) {
-                for (int coli = 0; coli < SIZE; coli++) {
-//                ArrayList<Cell> afc = cells[rowi*100+coli].getAffected();
-                    ArrayList<Cell> afa = cells[rowi * 100 + coli].affected();
-                }
-            }
-            long taf4 = System.nanoTime();
-            long taf34 = taf4 - taf3;
-            af += taf34;
-
-            /*System.out.println(taf12);
-            System.out.println(taf34);
-            System.out.println();*/
-        }
-
-
-        System.out.println(getAf);
-        System.out.println(af);
-        System.out.println();
 
         for (int k = 0; k < min(bestCells.length, 3); k++) {
             System.out.println(bestCells[k].toString());

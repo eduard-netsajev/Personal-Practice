@@ -89,6 +89,7 @@ public class GomokuController {
 	
 	private ObservableList<String> getPlayerChoices() {
 		ObservableList<String> choices = FXCollections.observableArrayList();
+		choices.add("Terminator");
 		choices.add("EduStrongStrategy");
 		choices.add("Human");
 		choices.add("StudentStrategy");
@@ -182,6 +183,8 @@ public class GomokuController {
 				players[i] = new ComputerPlayer(new EduardStrategy());
 			} else if (playerNames[i].equals("EduStrongStrategy")) {
 				players[i] = new ComputerPlayer(new EduStrongStrategy());
+			} else if (playerNames[i].equals("Terminator")) {
+				players[i] = new ComputerPlayer(new Terminator());
 			}
 		}
 		Player playerW = players[0];
