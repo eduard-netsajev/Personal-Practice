@@ -848,14 +848,14 @@ public class EduStrongStrategy implements ComputerStrategy {
 
         int[][] badBoard = board.getBoard();
 
-        for (int[] row : badBoard) {
+        /*for (int[] row : badBoard) {
             for (int i : row) {
                 if (i == WHITE) System.out.print("O ");
                 if (i == BLACK) System.out.print("X ");
                 if (i == EMPTY) System.out.print("- ");
             }
             System.out.println();
-        }
+        }*/
 
         SIZE = badBoard.length;
 
@@ -915,14 +915,14 @@ public class EduStrongStrategy implements ComputerStrategy {
         int bestX = bestCells[0].x;
         int bestY = bestCells[0].y;
 
-        for (int k = 0; k < min(bestCells.length, 3); k++) {
-            System.out.println(bestCells[k].toString());
-        }
-        System.out.println();
+//        for (int k = 0; k < min(bestCells.length, 3); k++) {
+//            System.out.println(bestCells[k].toString());
+//        }
+//        System.out.println();
 
         long t2 = System.nanoTime();
 
-        System.out.println("Me NanoSeconds to decide: " + (t2-t1));
+//        System.out.println("Me NanoSeconds to decide: " + (t2-t1));
 
         //bestMoves[0].makeMove(player);
 

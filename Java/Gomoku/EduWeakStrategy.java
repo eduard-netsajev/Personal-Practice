@@ -902,14 +902,14 @@ public class EduWeakStrategy implements ComputerStrategy {
 		int bestX = bestMoves[0].x;
 		int bestY = bestMoves[0].y;
 
-		for (int k = 0; k < min(bestMoves.length, 3); k++) {
-			System.out.println(bestMoves[k].toString());
-		}
-		System.out.println();
+//		for (int k = 0; k < min(bestMoves.length, 3); k++) {
+//			System.out.println(bestMoves[k].toString());
+//		}
+//		System.out.println();
 
 		long t2 = System.nanoTime();
 
-		System.out.println("Me NanoSeconds to decide: " + (t2-t1));
+		//System.out.println("Me NanoSeconds to decide: " + (t2-t1));
 
 
 		return new Location(bestY, bestX);

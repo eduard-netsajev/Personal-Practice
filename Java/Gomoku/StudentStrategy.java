@@ -82,7 +82,7 @@ public class StudentStrategy implements ComputerStrategy {
 				fastSearch = false;
 			}
 
-			int depth = 5; // TODO DEPPTH
+			int depth = 6; // TODO DEPPTH
 
 			int searchRadius;
 
@@ -228,7 +228,7 @@ public class StudentStrategy implements ComputerStrategy {
 			uBound = var1;
 			rBound = var10000;
 			dBound = var1;
-			this.maxDepth = 4;
+			this.maxDepth = 6;
 			this.sortDepth = 2;
 			searchRadius = 3;
 		}
